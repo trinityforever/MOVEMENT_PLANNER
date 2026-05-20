@@ -1,0 +1,46 @@
+diff --git a/node_modules/expo-router/_ctx.tsx b/node_modules/expo-router/_ctx.tsx
+index 76e90c6..324eaca 100644
+--- a/node_modules/expo-router/_ctx.tsx
++++ b/node_modules/expo-router/_ctx.tsx
+@@ -1,5 +1,15 @@
+-export const ctx = require.context(
++const rawCtx = require.context(
+   process.env.EXPO_ROUTER_APP_ROOT!,
+   true,
+-  /.*/
++  /\.(ts|tsx|js|jsx)$/
+ );
++
++// Filter out extensionless duplicates that webpack 5 generates
++function ctx(key: string) {
++  return rawCtx(key);
++}
++ctx.keys = () => rawCtx.keys().filter((k: string) => /\.(ts|tsx|js|jsx)$/.test(k));
++ctx.resolve = (key: string) => rawCtx.resolve(key);
++ctx.id = rawCtx.id;
++
++export { ctx };
+diff --git a/node_modules/expo-router/_ctx.web.tsx b/node_modules/expo-router/_ctx.web.tsx
+index 1428dc3..46cf238 100644
+--- a/node_modules/expo-router/_ctx.web.tsx
++++ b/node_modules/expo-router/_ctx.web.tsx
+@@ -1,7 +1,17 @@
+-export const ctx = require.context(
++const rawCtx = require.context(
+   process.env.EXPO_ROUTER_APP_ROOT!,
+   true,
+-  /.*/,
++  /\.(ts|tsx|js|jsx)$/,
+   // @ts-expect-error
+   process.env.EXPO_ROUTER_IMPORT_MODE_WEB
+ );
++
++// Filter out extensionless duplicates that webpack 5 generates
++function ctx(key: string) {
++  return rawCtx(key);
++}
++ctx.keys = () => rawCtx.keys().filter((k: string) => /\.(ts|tsx|js|jsx)$/.test(k));
++ctx.resolve = (key: string) => rawCtx.resolve(key);
++ctx.id = rawCtx.id;
++
++export { ctx };

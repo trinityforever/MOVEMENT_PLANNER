@@ -1,0 +1,283 @@
+[
+  {
+    "id": "event-fade-ii-black",
+    "title": "Fade II Black",
+    "venueId": "venue-tangent",
+    "startTime": "2026-05-21T22:00:00",
+    "endTime": "2026-05-22T04:00:00",
+    "category": "Afterparty",
+    "organizer": "Interdimensional Transmission",
+    "artists": ["Max Watts", "Submerge DJs"]
+  },
+  {
+    "id": "event-thrg-kick-off",
+    "title": "thrg Memorial Day Weekend Kick-Off with Bad Divas + Joshua Tree",
+    "venueId": "venue-marble-bar",
+    "startTime": "2026-05-21T22:00:00",
+    "endTime": "2026-05-22T04:00:00",
+    "category": "Afterparty"
+  },
+
+  {
+    "id": "event-bang-tech-12",
+    "title": "Bang Tech 12",
+    "venueId": "venue-bookies",
+    "startTime": "2026-05-22T12:00:00",
+    "endTime": "2026-05-23T02:00:00",
+    "category": "Festival",
+    "description": "65 DJs, 4 stages. All day and night.",
+    "price": 0,
+    "priceNote": "FREE",
+    "artists": ["Local DJs from US cities"]
+  },
+  {
+    "id": "event-razor-n-tape",
+    "title": "Razor-N-Tape Takeover",
+    "venueId": "venue-motor-city-wine",
+    "startTime": "2026-05-22T14:00:00",
+    "endTime": "2026-05-23T02:00:00",
+    "category": "Day Party",
+    "price": 30,
+    "artists": ["Glenn Underground", "Ge-ology", "Andrés", "Tall Black Guy", "Toribio", "JKriv", "Jason Lindner"]
+  },
+  {
+    "id": "event-house-is-home",
+    "title": "House Is Home",
+    "venueId": "venue-northern-lights",
+    "startTime": "2026-05-22T18:00:00",
+    "endTime": "2026-05-23T02:00:00",
+    "category": "Afterparty",
+    "price": 29,
+    "artists": ["Stacey Hotwaxx Hale", "Peter Croce", "Dru Allan", "Rootsin", "Delano Smith", "Ash Lauryn", "Medha Achar"]
+  },
+  {
+    "id": "event-paris-bar-anniversary",
+    "title": "Paris Bar 1-Year Anniversary",
+    "venueId": "venue-paris-bar",
+    "startTime": "2026-05-22T19:00:00",
+    "endTime": "2026-05-23T02:00:00",
+    "category": "Afterparty",
+    "artists": ["DJ Assault", "Esham", "DANA"]
+  },
+  {
+    "id": "event-endzeit",
+    "title": "Endzeit",
+    "venueId": "venue-marble-bar",
+    "startTime": "2026-05-22T22:00:00",
+    "endTime": "2026-05-23T06:00:00",
+    "category": "Afterparty",
+    "artists": ["Rrose", "Reeko", "Neel", "Feral", "Spekki Webu", "Z.I.P.P.O", "Kerrie", "Timnah", "Kudeki", "Torsion", "RMNA"]
+  },
+  {
+    "id": "event-t4t-luv-nrg",
+    "title": "T4T Luv NRG",
+    "venueId": "venue-tangent",
+    "startTime": "2026-05-22T22:00:00",
+    "endTime": "2026-05-23T06:00:00",
+    "category": "Afterparty",
+    "price": 52,
+    "organizer": "Interdimensional Transmission",
+    "artists": ["Octo Octa", "Eris Drew", "Boyz II Them", "Introspekt", "Sister Zo", "Amino"]
+  },
+
+  {
+    "id": "event-detroit-transmissions",
+    "title": "Detroit Transmissions",
+    "venueId": "venue-313-rave",
+    "startTime": "2026-05-23T14:00:00",
+    "endTime": "2026-05-23T22:00:00",
+    "category": "Afterparty",
+    "description": "Demographic-based pricing. No phones or cameras allowed.",
+    "artists": ["Eris Drew", "Lauren Flax", "Mike Servito", "Kiernan Laveaux", "S4M23", "Faited", "Tammy Lakkis", "Venn Diagramm", "Amino", "Savannah G", "joycxi"]
+  },
+  {
+    "id": "event-underground-black",
+    "title": "Underground & Black",
+    "venueId": "venue-spot-lite",
+    "startTime": "2026-05-23T14:00:00",
+    "endTime": "2026-05-23T22:00:00",
+    "category": "Day Party",
+    "price": 40,
+    "artists": ["Ash Lauryn", "JADALAREIGN", "CTRLZORA", "Sevyn", "BLKshine", "The AM/AMX", "James Bangura", "DAIYAH", "AIDEL"]
+  },
+  {
+    "id": "event-viva-la-resistance",
+    "title": "Viva La Resistance XII",
+    "venueId": "venue-motor-city-wine",
+    "startTime": "2026-05-23T15:00:00",
+    "endTime": "2026-05-24T02:00:00",
+    "category": "Afterparty",
+    "artists": ["John Beltran", "David A-P", "Den Hur", "Detroit Disco Daddies", "Donna Gardner", "Eddie Logix", "Gino", "Hoagie Dreams", "J.Scott", "Kiki LeFreak", "Marc Meistro", "Peter Croce", "DJ Righteous", "Yukiko", "AIDEL"]
+  },
+  {
+    "id": "event-tresor-313",
+    "title": "Tresor 313",
+    "venueId": "venue-tangent",
+    "startTime": "2026-05-23T22:00:00",
+    "endTime": "2026-05-24T06:00:00",
+    "category": "Afterparty",
+    "price": 85,
+    "organizer": "Interdimensional Transmission",
+    "seriesId": "return-to-source",
+    "seriesName": "Return to the Source",
+    "artists": ["Surgeon", "Function", "Depth Charge", "Daniel Bell", "AZA", "DJ Sphinx", "Tauceti", "DJ Etta", "LNS", "Mutagenix", "Sharlese"]
+  },
+  {
+    "id": "event-texture-sat",
+    "title": "10 Years of Texture (Saturday)",
+    "venueId": "venue-marble-bar",
+    "startTime": "2026-05-23T22:00:00",
+    "endTime": "2026-05-24T06:00:00",
+    "category": "Afterparty",
+    "artists": ["Anthony Rother", "Ben UFO", "Juliana Huxtable", "Vladimir Ivkovic", "Scott Zacharias", "Reptant", "mad miran", "Sepehr", "sts (US)", "Ashton Swinton"]
+  },
+  {
+    "id": "event-club-cousins",
+    "title": "Club Cousins",
+    "venueId": "venue-paris-bar",
+    "startTime": "2026-05-23T22:00:00",
+    "endTime": "2026-05-24T04:00:00",
+    "category": "Afterparty",
+    "artists": ["999ADJ", "Auntie Chanel", "DJ Dolla", "flotussin", "NEPTUNEFLESH", "Sapphyre", "SDOT MUSIC"]
+  },
+  {
+    "id": "event-club-toilet",
+    "title": "Club Toilet",
+    "venueId": "venue-menjos",
+    "startTime": "2026-05-23T22:00:00",
+    "endTime": "2026-05-24T06:00:00",
+    "category": "Afterparty",
+    "price": 40,
+    "priceNote": "Cash only at door. No presale.",
+    "description": "LGBTQ+ dance music community event. Includes full harm reduction team with medic and dance floor safety team.",
+    "artists": ["Kim Ann Foxman", "Tama Sumo", "Shaun J. Wright", "Bijoux Cone", "BLKshine", "Detroit Bureau of Sound", "Doula", "DykeChow", "GIDEÖN", "Cora", "CEM", "Scotia", "Tongue in the Mind", "Perspects", "S4M23", "Sterling Juan Diaz"]
+  },
+
+  {
+    "id": "event-freaks-come-out",
+    "title": "Freaks Come Out at Light",
+    "venueId": "venue-art-park-mcw",
+    "startTime": "2026-05-24T04:20:00",
+    "endTime": "2026-05-24T12:00:00",
+    "category": "Sunrise",
+    "price": 0,
+    "priceNote": "FREE"
+  },
+
+  {
+    "id": "event-d-life",
+    "title": "D-Life 10th Anniversary",
+    "venueId": "venue-motor-city-wine",
+    "startTime": "2026-05-24T14:00:00",
+    "endTime": "2026-05-25T02:30:00",
+    "category": "Day Party",
+    "price": 63,
+    "description": "12.5 hours of music.",
+    "artists": ["Maurice Fulton", "Marcellus Pittman", "Rick Wade", "Ash Lauryn", "DJ Spinna", "Iz & Diz", "Jez", "DJ Lady D", "LADYMONIX", "Mike Dunn", "Norm Talley", "Tekila", "Your Friend Brett"]
+  },
+  {
+    "id": "event-convergence",
+    "title": "Convergence",
+    "venueId": "venue-paris-bar",
+    "startTime": "2026-05-24T15:00:00",
+    "endTime": "2026-05-25T03:00:00",
+    "category": "Afterparty",
+    "price": 46,
+    "description": "2 stages, 21+.",
+    "artists": ["Evelyn", "1morning", "BEIGE", "Faited", "Father Dukes", "Gustav Brovold", "Lauryn Lesley", "Kitty Spit", "Kobe Dupree", "Spacey Lacey", "Tekk Nikk", "Amandroid", "D.Untethered", "Fractal Drip"]
+  },
+  {
+    "id": "event-texture-sun",
+    "title": "10 Years of Texture (Sunday)",
+    "venueId": "venue-marble-bar",
+    "startTime": "2026-05-24T21:00:00",
+    "endTime": "2026-05-25T06:00:00",
+    "category": "Afterparty",
+    "artists": ["Jlin", "Batu", "Laurel Halo", "Carrier", "Emily Jeanne", "DJ Plead", "Mia Koden", "Sha Ru", "Ben Bondy"]
+  },
+  {
+    "id": "event-no-way-back",
+    "title": "No Way Back",
+    "venueId": "venue-tangent",
+    "startTime": "2026-05-24T22:00:00",
+    "endTime": "2026-05-25T12:00:00",
+    "category": "Afterparty",
+    "price": 85,
+    "description": "All day / night nonstop.",
+    "artists": ["Erika", "Eris Drew", "Mike Servito", "Derek Plaslaiko", "Carlos Souffront", "Function", "Raica", "BMG", "Bryan Kasenic", "Craig Gonzalez", "Patrick Russell", "Chuck Gunn", "Jo Johnson", "MERIVOR", "Scott Zacharias"]
+  },
+
+  {
+    "id": "event-where-are-my-keys",
+    "title": "Where Are My Keys?",
+    "venueId": "venue-3fifty",
+    "startTime": "2026-05-25T05:00:00",
+    "endTime": "2026-05-25T14:00:00",
+    "category": "Sunrise",
+    "price": 67,
+    "description": "Sunrise Monday into day.",
+    "artists": ["Acid Pauli", "Danny Daze", "DJ Godfather", "Dubtribe Sound System", "Egyptian Lover", "Kiernan Laveaux", "LADYMONIX", "Margaret Dygas", "The Advent", "Will Renuart", "Atnarko", "Inbal", "Jacob Park", "Puma"]
+  },
+  {
+    "id": "event-toasted",
+    "title": "Toasted",
+    "venueId": "venue-marble-bar",
+    "startTime": "2026-05-25T07:00:00",
+    "endTime": "2026-05-25T18:00:00",
+    "category": "Sunrise",
+    "artists": ["Derrick Carter", "Horse Meat Disco", "Tama Sumo", "Lakuti", "Scan 7", "Mike Servito", "Kyle Hall", "Byron the Aquarius", "Norm Talley", "Eddie C", "Steve Bug"]
+  },
+  {
+    "id": "event-lot-mass",
+    "title": "Lot Mass",
+    "venueId": "venue-tangent",
+    "startTime": "2026-05-25T12:00:00",
+    "endTime": "2026-05-25T22:00:00",
+    "category": "Day Party",
+    "price": 34,
+    "organizer": "Interdimensional Transmission",
+    "seriesId": "return-to-source",
+    "seriesName": "Return to the Source",
+    "artists": ["Tammy Lakkis", "Matias Aguayo", "Yessi", "Solar"]
+  },
+  {
+    "id": "event-monday-new-monday",
+    "title": "Monday Is the New Monday",
+    "venueId": "venue-motor-city-wine",
+    "startTime": "2026-05-25T14:00:00",
+    "endTime": "2026-05-25T22:00:00",
+    "category": "Day Party",
+    "artists": ["Carlos Souffront", "Tammy Lakkis", "Shigeto", "Ryan Spencer", "4AM NYC", "Ameera", "Kiernan Laveaux", "Charles Trees", "Kenjiro"]
+  },
+  {
+    "id": "event-skeez-bbq",
+    "title": "On The One — Skeez Backyard BBQ Bash",
+    "venueId": "venue-paris-bar",
+    "startTime": "2026-05-25T16:00:00",
+    "endTime": "2026-05-25T22:00:00",
+    "category": "Day Party",
+    "artists": ["DJ Skeez"]
+  },
+  {
+    "id": "event-the-bunker",
+    "title": "The Bunker",
+    "venueId": "venue-tangent",
+    "startTime": "2026-05-25T22:00:00",
+    "endTime": "2026-05-26T10:00:00",
+    "category": "Afterparty",
+    "organizer": "Interdimensional Transmission",
+    "seriesId": "return-to-source",
+    "seriesName": "Return to the Source",
+    "description": "Night nonstop. Covered by Return to the Source pass (Lot Mass ticket).",
+    "artists": ["Surgeon", "Erika", "Octo Octa", "Faited", "Lauren Flax", "Shaun J. Wright", "Mike Servito", "Max Watts", "Juliana Huxtable", "Nita Aviance", "1morning", "Chloe Harris", "Jo Johnson", "Bryan Kasenic", "Carrier", "Scotia"]
+  },
+
+  {
+    "id": "event-glow",
+    "title": "GLOW",
+    "venueId": "venue-third-street-bar",
+    "startTime": "2026-05-26T22:00:00",
+    "endTime": "2026-05-27T04:00:00",
+    "category": "Afterparty"
+  }
+]

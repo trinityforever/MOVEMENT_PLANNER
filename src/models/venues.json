@@ -1,0 +1,107 @@
+[
+  {
+    "id": "venue-tangent",
+    "name": "Tangent Gallery",
+    "address": "715 E Milwaukee St",
+    "city": "Detroit",
+    "coordinates": { "latitude": 42.3752, "longitude": -83.0445 }
+  },
+  {
+    "id": "venue-marble-bar",
+    "name": "Marble Bar",
+    "address": "1501 Holden St",
+    "city": "Detroit",
+    "coordinates": { "latitude": 42.3685, "longitude": -83.0872 }
+  },
+  {
+    "id": "venue-paris-bar",
+    "name": "Paris Bar",
+    "address": "2961 E McNichols Rd",
+    "city": "Hamtramck",
+    "coordinates": { "latitude": 42.4191, "longitude": -83.0412 }
+  },
+  {
+    "id": "venue-motor-city-wine",
+    "name": "Motor City Wine",
+    "address": "1949 Michigan Ave",
+    "city": "Detroit",
+    "coordinates": { "latitude": 42.3317, "longitude": -83.0737 }
+  },
+  {
+    "id": "venue-menjos",
+    "name": "Menjo's",
+    "address": "950 W McNichols Rd",
+    "city": "Detroit",
+    "coordinates": { "latitude": 42.4211, "longitude": -83.1177 }
+  },
+  {
+    "id": "venue-northern-lights",
+    "name": "Northern Lights Lounge",
+    "address": "660 W Baltimore St",
+    "city": "Detroit",
+    "coordinates": { "latitude": 42.3388, "longitude": -83.0561 }
+  },
+  {
+    "id": "venue-bookies",
+    "name": "Bookies Bar N' Grille",
+    "address": "2208 Cass Ave",
+    "city": "Detroit",
+    "coordinates": { "latitude": 42.3484, "longitude": -83.0524 }
+  },
+  {
+    "id": "venue-spot-lite",
+    "name": "Spot Lite",
+    "address": "2905 Beaufait",
+    "city": "Detroit",
+    "coordinates": { "latitude": 42.3638, "longitude": -83.0225 }
+  },
+  {
+    "id": "venue-3fifty",
+    "name": "3fifty Terrace",
+    "address": "350 Madison St",
+    "city": "Detroit",
+    "coordinates": { "latitude": 42.3298, "longitude": -83.0430 }
+  },
+  {
+    "id": "venue-313-rave",
+    "name": "TBA — (313) 513 RAVE",
+    "address": "TBA",
+    "city": "Detroit",
+    "coordinates": null
+  },
+  {
+    "id": "venue-third-street-bar",
+    "name": "Third Street Bar",
+    "address": "701 W Forest Ave",
+    "city": "Detroit",
+    "coordinates": { "latitude": 42.3625, "longitude": -83.0601 }
+  },
+  {
+    "id": "venue-art-park-mcw",
+    "name": "Lincoln Street Art Park",
+    "address": "5926 Lincoln St",
+    "city": "Detroit",
+    "coordinates": { "latitude": 42.3630, "longitude": -83.0815 }
+  },
+  {
+    "id": "venue-spkrbox",
+    "name": "Spkrbox",
+    "address": "200 Grand River Ave",
+    "city": "Detroit",
+    "coordinates": { "latitude": 42.33381, "longitude": -83.04987 }
+  },
+  {
+    "id": "venue-lincoln-factory",
+    "name": "Lincoln Factory",
+    "address": "1331 Holden St",
+    "city": "Detroit",
+    "coordinates": { "latitude": 42.3626, "longitude": -83.0820 }
+  },
+  {
+    "id": "venue-tba",
+    "name": "TBA",
+    "address": "TBA",
+    "city": "Detroit",
+    "coordinates": null
+  }
+]

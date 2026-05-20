@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Movement Planning",
+    "slug": "movement-planning",
+    "version": "1.0.0",
+    "sdkVersion": "49.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "scheme": "movement-planning",
+    "jsEngine": "hermes",
+    "plugins": [
+      "expo-router"
+    ],
+    "android": {
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyC9BZxEIex2AnWd_gCH3CEL1yauAhBKG_U"
+        }
+      }
+    },
+    "ios": {
+      "config": {
+        "googleMapsApiKey": "AIzaSyC9BZxEIex2AnWd_gCH3CEL1yauAhBKG_U"
+      }
+    }
+  }
+}
