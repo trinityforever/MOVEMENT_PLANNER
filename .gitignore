@@ -1,3 +1,7 @@
+# Secrets
+.env
+.env.local
+
 # Node dependencies
 node_modules/
 
@@ -32,3 +36,4 @@ free-claude-code/
 !.claude/settings.json
 CLAUDE.local.md
 *.local.md
+app.json
