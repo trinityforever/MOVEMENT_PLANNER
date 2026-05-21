@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>MOVEMENT 2026 — MAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --acid: #CCFF00;
+    --pink: #FF0080;
+    --void: #000000;
+    --white: #FFFFFF;
+    --green: #00FF41;
+    --amber: #FF8C00;
+    --dim: #111111;
+    --grid: #1a1a1a;
+  }
+
+  html, body {
+    background: var(--void);
+    color: var(--acid);
+    font-family: 'Share Tech Mono', monospace;
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* SCANLINES OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.15) 2px,
+      rgba(0,0,0,0.15) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+    animation: scanroll 8s linear infinite;
+  }
+
+  @keyframes scanroll {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100px; }
+  }
+
+  /* CRT VIGNETTE */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.7) 100%);
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 12px 16px 8px;
+    border-bottom: 1px solid var(--acid);
+    background: var(--void);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 4px;
+    color: var(--acid);
+    text-shadow: 0 0 20px var(--acid), 0 0 40px rgba(204,255,0,0.5);
+    animation: glitch-logo 4s infinite;
+  }
+
+  @keyframes glitch-logo {
+    0%, 90%, 100% { text-shadow: 0 0 20px var(--acid), 0 0 40px rgba(204,255,0,0.5); transform: none; }
+    92% { text-shadow: 3px 0 var(--pink), -3px 0 var(--green); transform: skewX(-2deg); }
+    94% { text-shadow: -3px 0 var(--pink), 3px 0 var(--green); transform: skewX(2deg); }
+    96% { text-shadow: 0 0 20px var(--acid); transform: none; }
+  }
+
+  .header-meta {
+    text-align: right;
+    font-size: 10px;
+    color: rgba(204,255,0,0.6);
+    line-height: 1.4;
+  }
+
+  .header-meta span {
+    display: block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    color: var(--pink);
+  }
+
+  /* NAV TABS */
+  .nav-tabs {
+    display: flex;
+    border-bottom: 1px solid rgba(204,255,0,0.3);
+    background: var(--void);
+  }
+
+  .nav-tab {
+    flex: 1;
+    padding: 10px 4px;
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: rgba(204,255,0,0.4);
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.1s;
+  }
+
+  .nav-tab.active {
+    color: var(--acid);
+    border-bottom-color: var(--acid);
+    text-shadow: 0 0 10px var(--acid);
+  }
+
+  /* MAP CONTAINER */
+  .map-wrapper {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    background: var(--void);
+    border-bottom: 1px solid rgba(204,255,0,0.2);
+    overflow: hidden;
+  }
+
+  #detroit-map {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* MAP CONTROLS */
+  .map-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 10;
+  }
+
+  .map-btn {
+    width: 32px;
+    height: 32px;
+    background: rgba(0,0,0,0.9);
+    border: 1px solid var(--acid);
+    color: var(--acid);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-shadow: 0 0 8px var(--acid);
+  }
+
+  .map-btn:active {
+    background: var(--acid);
+    color: var(--void);
+  }
+
+  /* ROUTE MODE BANNER */
+  .route-banner {
+    background: var(--pink);
+    color: var(--void);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    padding: 6px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .route-banner.hidden { display: none; }
+
+  .route-cancel {
+    background: var(--void);
+    color: var(--pink);
+    border: 1px solid var(--pink);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    padding: 2px 8px;
+    cursor: pointer;
+    letter-spacing: 1px;
+  }
+
+  /* ROUTE RESULT CARD */
+  .route-result {
+    background: #0a0a0a;
+    border-bottom: 1px solid var(--acid);
+    padding: 10px 16px;
+    display: none;
+  }
+
+  .route-result.show { display: block; }
+
+  .route-result-header {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--pink);
+    margin-bottom: 6px;
+  }
+
+  .route-venues {
+    font-size: 11px;
+    color: var(--acid);
+    margin-bottom: 8px;
+  }
+
+  .route-venues span {
+    color: var(--white);
+    font-size: 13px;
+  }
+
+  .route-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+
+  .route-stat {
+    background: #111;
+    border: 1px solid rgba(204,255,0,0.3);
+    padding: 6px;
+    text-align: center;
+  }
+
+  .route-stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--acid);
+    text-shadow: 0 0 10px var(--acid);
+    display: block;
+  }
+
+  .route-stat-label {
+    font-size: 9px;
+    color: rgba(204,255,0,0.5);
+    letter-spacing: 1px;
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* VENUE LIST */
+  .venue-list-header {
+    padding: 10px 16px 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(204,255,0,0.2);
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 3px;
+    color: var(--acid);
+  }
+
+  .venue-count {
+    font-size: 10px;
+    color: var(--pink);
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .venue-item {
+    padding: 10px 16px;
+    border-bottom: 1px solid rgba(204,255,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: background 0.1s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .venue-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0;
+    width: 2px;
+    height: 100%;
+    background: var(--acid);
+    transform: scaleY(0);
+    transition: transform 0.1s;
+  }
+
+  .venue-item:active { background: rgba(204,255,0,0.05); }
+  .venue-item:active::before { transform: scaleY(1); }
+
+  .venue-item.selected {
+    background: rgba(204,255,0,0.08);
+    border-color: rgba(204,255,0,0.3);
+  }
+
+  .venue-item.selected::before { transform: scaleY(1); }
+
+  .venue-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 8px currentColor;
+  }
+
+  .venue-dot.afterparty { background: #FF0080; color: #FF0080; }
+  .venue-dot.sunrise { background: #FF8C00; color: #FF8C00; }
+  .venue-dot.dayparty { background: #CCFF00; color: #CCFF00; }
+  .venue-dot.festival { background: #00FF41; color: #00FF41; }
+
+  .venue-info { flex: 1; min-width: 0; }
+
+  .venue-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 14px;
+    color: var(--white);
+    letter-spacing: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .venue-addr {
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    margin-top: 1px;
+  }
+
+  .venue-badge {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    padding: 2px 6px;
+    letter-spacing: 1px;
+    border: 1px solid;
+    flex-shrink: 0;
+  }
+
+  .venue-badge.afterparty { color: #FF0080; border-color: #FF0080; }
+  .venue-badge.sunrise { color: #FF8C00; border-color: #FF8C00; }
+  .venue-badge.dayparty { color: #CCFF00; border-color: #CCFF00; }
+  .venue-badge.festival { color: #00FF41; border-color: #00FF41; }
+
+  .venue-events {
+    font-size: 10px;
+    color: rgba(204,255,0,0.6);
+    font-family: 'Share Tech Mono', monospace;
+    flex-shrink: 0;
+  }
+
+  /* FAB */
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    background: var(--acid);
+    color: var(--void);
+    border: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 200;
+    box-shadow: 0 0 20px var(--acid), 0 0 40px rgba(204,255,0,0.4);
+    animation: fab-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes fab-pulse {
+    0%, 100% { box-shadow: 0 0 20px var(--acid), 0 0 40px rgba(204,255,0,0.4); }
+    50% { box-shadow: 0 0 30px var(--acid), 0 0 60px rgba(204,255,0,0.6); }
+  }
+
+  /* STATUS BAR */
+  .status-bar {
+    display: flex;
+    gap: 6px;
+    padding: 6px 16px;
+    background: #050505;
+    border-bottom: 1px solid rgba(204,255,0,0.15);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .status-bar::-webkit-scrollbar { display: none; }
+
+  .status-chip {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border: 1px solid;
+    white-space: nowrap;
+    font-size: 9px;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 1px;
+    cursor: pointer;
+  }
+
+  .status-chip .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .chip-afterparty { color: #FF0080; border-color: rgba(255,0,128,0.4); }
+  .chip-afterparty .dot { background: #FF0080; box-shadow: 0 0 4px #FF0080; }
+  .chip-sunrise { color: #FF8C00; border-color: rgba(255,140,0,0.4); }
+  .chip-sunrise .dot { background: #FF8C00; box-shadow: 0 0 4px #FF8C00; }
+  .chip-dayparty { color: #CCFF00; border-color: rgba(204,255,0,0.4); }
+  .chip-dayparty .dot { background: #CCFF00; box-shadow: 0 0 4px #CCFF00; }
+  .chip-festival { color: #00FF41; border-color: rgba(0,255,65,0.4); }
+  .chip-festival .dot { background: #00FF41; box-shadow: 0 0 4px #00FF41; }
+
+  /* ROUTE SELECT INDICATOR */
+  .route-select-count {
+    font-size: 11px;
+    color: var(--pink);
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  /* Glitch on venue hover */
+  .venue-item:active .venue-name {
+    animation: text-glitch 0.2s steps(2);
+  }
+
+  @keyframes text-glitch {
+    0% { text-shadow: 2px 0 var(--pink); transform: translateX(2px); }
+    50% { text-shadow: -2px 0 var(--green); transform: translateX(-2px); }
+    100% { text-shadow: none; transform: none; }
+  }
+
+  /* DIAGONAL SLASH ACCENT */
+  .slash-accent {
+    position: absolute;
+    right: -20px;
+    top: -10px;
+    width: 3px;
+    height: 80px;
+    background: var(--acid);
+    transform: rotate(20deg);
+    opacity: 0.1;
+  }
+
+  /* LOAD GLITCH ANIMATION */
+  @keyframes load-in {
+    0% { opacity: 0; transform: translateY(-4px); filter: hue-rotate(180deg); }
+    50% { opacity: 0.7; filter: hue-rotate(90deg); }
+    100% { opacity: 1; transform: translateY(0); filter: hue-rotate(0deg); }
+  }
+
+  .map-wrapper { animation: load-in 0.6s ease-out; }
+  .venue-item:nth-child(1) { animation: load-in 0.4s ease-out 0.1s both; }
+  .venue-item:nth-child(2) { animation: load-in 0.4s ease-out 0.15s both; }
+  .venue-item:nth-child(3) { animation: load-in 0.4s ease-out 0.2s both; }
+  .venue-item:nth-child(4) { animation: load-in 0.4s ease-out 0.25s both; }
+  .venue-item:nth-child(5) { animation: load-in 0.4s ease-out 0.3s both; }
+  .venue-item:nth-child(6) { animation: load-in 0.4s ease-out 0.35s both; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo">MOVEMENT</div>
+    <div class="header-meta">
+      <span>DETROIT 2026</span>
+      MAY 22–25 / 12 VENUES
+    </div>
+  </div>
+</div>
+
+<div class="nav-tabs">
+  <div class="nav-tab active">MAP</div>
+  <div class="nav-tab">SCHEDULE</div>
+  <div class="nav-tab">PLAN</div>
+</div>
+
+<div class="status-bar">
+  <div class="status-chip chip-afterparty"><span class="dot"></span>AFTERPARTY</div>
+  <div class="status-chip chip-sunrise"><span class="dot"></span>SUNRISE</div>
+  <div class="status-chip chip-dayparty"><span class="dot"></span>DAY PARTY</div>
+  <div class="status-chip chip-festival"><span class="dot"></span>FESTIVAL</div>
+  <div style="margin-left:auto; display:flex; align-items:center;">
+    <span class="route-select-count" id="routeStatus">TAP 2 TO ROUTE</span>
+  </div>
+</div>
+
+<!-- ROUTE RESULT PANEL -->
+<div class="route-result" id="routeResult">
+  <div class="route-result-header">// ROUTE CALCULATED</div>
+  <div class="route-venues" id="routeVenueNames">—</div>
+  <div class="route-stats">
+    <div class="route-stat">
+      <span class="route-stat-val" id="routeDist">—</span>
+      <span class="route-stat-label">MILES</span>
+    </div>
+    <div class="route-stat">
+      <span class="route-stat-val" id="routeWalk">—</span>
+      <span class="route-stat-label">MIN WALK</span>
+    </div>
+    <div class="route-stat">
+      <span class="route-stat-val" id="routeDrive">—</span>
+      <span class="route-stat-label">MIN DRIVE</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAP -->
+<div class="map-wrapper">
+  <svg id="detroit-map" viewBox="0 0 375 400" xmlns="http://www.w3.org/2000/svg">
+    <!-- Dark background -->
+    <rect width="375" height="400" fill="#000"/>
+
+    <!-- Grid pattern - Detroit street grid -->
+    <defs>
+      <pattern id="smallGrid" width="15" height="15" patternUnits="userSpaceOnUse">
+        <path d="M 15 0 L 0 0 0 15" fill="none" stroke="#0d1a00" stroke-width="0.5"/>
+      </pattern>
+      <pattern id="grid" width="75" height="75" patternUnits="userSpaceOnUse">
+        <rect width="75" height="75" fill="url(#smallGrid)"/>
+        <path d="M 75 0 L 0 0 0 75" fill="none" stroke="#1a2d00" stroke-width="1"/>
+      </pattern>
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+        <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="pinkGlow">
+        <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+        <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+
+    <!-- Grid -->
+    <rect width="375" height="400" fill="url(#grid)"/>
+
+    <!-- Detroit River (south) -->
+    <path d="M 0 370 Q 90 360 187 365 Q 280 370 375 358 L375 400 L0 400 Z"
+          fill="#001a33" stroke="#003366" stroke-width="1"/>
+    <text x="130" y="390" fill="#003d7a" font-family="'Share Tech Mono'" font-size="9" letter-spacing="3">DETROIT RIVER</text>
+
+    <!-- Windsor, ON (across river) -->
+    <text x="140" y="355" fill="#002244" font-family="'Share Tech Mono'" font-size="7" letter-spacing="2">WINDSOR, ON</text>
+
+    <!-- I-75 Highway -->
+    <path d="M 210 0 L 210 160 L 220 200 L 215 370" stroke="#1a3300" stroke-width="6" fill="none" stroke-dasharray="20,4"/>
+    <text x="217" y="80" fill="#1a3300" font-family="'Share Tech Mono'" font-size="7" transform="rotate(90, 217, 80)">I-75</text>
+
+    <!-- I-94 Highway -->
+    <path d="M 0 175 Q 100 170 200 172 Q 280 174 375 168" stroke="#1a3300" stroke-width="6" fill="none" stroke-dasharray="20,4"/>
+    <text x="50" y="165" fill="#1a3300" font-family="'Share Tech Mono'" font-size="7">I-94</text>
+
+    <!-- Major Streets - horizontal -->
+    <line x1="0" y1="85" x2="375" y2="85" stroke="#0d1a00" stroke-width="1.5"/>
+    <text x="5" y="82" fill="#112200" font-family="'Share Tech Mono'" font-size="7">8 MILE</text>
+
+    <line x1="0" y1="130" x2="375" y2="130" stroke="#0d1a00" stroke-width="1.5"/>
+    <text x="5" y="127" fill="#112200" font-family="'Share Tech Mono'" font-size="7">7 MILE</text>
+
+    <line x1="0" y1="195" x2="375" y2="195" stroke="#111" stroke-width="2"/>
+    <text x="5" y="192" fill="#1a1a1a" font-family="'Share Tech Mono'" font-size="7">GRAND BLVD</text>
+
+    <line x1="0" y1="250" x2="375" y2="250" stroke="#0d1a00" stroke-width="1.5"/>
+    <text x="5" y="247" fill="#112200" font-family="'Share Tech Mono'" font-size="7">MICHIGAN AVE</text>
+
+    <line x1="0" y1="290" x2="375" y2="295" stroke="#111" stroke-width="2"/>
+    <text x="5" y="287" fill="#1a1a1a" font-family="'Share Tech Mono'" font-size="7">VERNOR HWY</text>
+
+    <!-- Major Streets - vertical -->
+    <line x1="80" y1="0" x2="80" y2="400" stroke="#0d1a00" stroke-width="1.5"/>
+    <line x1="155" y1="0" x2="155" y2="400" stroke="#111" stroke-width="2"/>
+    <line x1="270" y1="0" x2="270" y2="400" stroke="#0d1a00" stroke-width="1.5"/>
+    <line x1="325" y1="0" x2="325" y2="400" stroke="#0d1a00" stroke-width="1.5"/>
+
+    <!-- Woodward Ave label -->
+    <text x="152" y="20" fill="#1a1a1a" font-family="'Share Tech Mono'" font-size="7" transform="rotate(90, 152, 20)">WOODWARD</text>
+
+    <!-- Neighborhoods labels -->
+    <text x="20" y="220" fill="#0d1a00" font-family="'Bebas Neue'" font-size="10" letter-spacing="1">MEXICANTOWN</text>
+    <text x="240" y="155" fill="#0d1a00" font-family="'Bebas Neue'" font-size="10" letter-spacing="1">MIDTOWN</text>
+    <text x="30" y="155" fill="#0d1a00" font-family="'Bebas Neue'" font-size="10" letter-spacing="1">CORKTOWN</text>
+
+    <!-- Route line (drawn when active) -->
+    <line id="routeLine" x1="0" y1="0" x2="0" y2="0"
+          stroke="#FF0080" stroke-width="2" stroke-dasharray="6,4"
+          opacity="0" filter="url(#pinkGlow)"/>
+
+    <!-- VENUES as pins -->
+    <!-- Hart Plaza / Movement Main Stage -->
+    <g class="venue-pin" data-venue="0" id="pin-0" style="cursor:pointer">
+      <circle cx="218" cy="348" r="12" fill="rgba(0,255,65,0.15)" stroke="#00FF41" stroke-width="1.5" filter="url(#glow)"/>
+      <circle cx="218" cy="348" r="5" fill="#00FF41" filter="url(#glow)"/>
+      <line x1="218" y1="353" x2="218" y2="368" stroke="#00FF41" stroke-width="1.5"/>
+      <text x="230" y="355" fill="#00FF41" font-family="'Bebas Neue'" font-size="8" letter-spacing="1">HART PLAZA</text>
+    </g>
+
+    <!-- Marble Bar -->
+    <g class="venue-pin" data-venue="1" id="pin-1" style="cursor:pointer">
+      <circle cx="95" cy="215" r="12" fill="rgba(255,0,128,0.15)" stroke="#FF0080" stroke-width="1.5" filter="url(#pinkGlow)"/>
+      <circle cx="95" cy="215" r="5" fill="#FF0080" filter="url(#pinkGlow)"/>
+      <line x1="95" y1="220" x2="95" y2="235" stroke="#FF0080" stroke-width="1.5"/>
+      <text x="60" y="244" fill="#FF0080" font-family="'Bebas Neue'" font-size="8" letter-spacing="1">MARBLE BAR</text>
+    </g>
+
+    <!-- TV Lounge -->
+    <g class="venue-pin" data-venue="2" id="pin-2" style="cursor:pointer">
+      <circle cx="235" cy="340" r="10" fill="rgba(255,140,0,0.15)" stroke="#FF8C00" stroke-width="1.5" filter="url(#glow)"/>
+      <circle cx="235" cy="340" r="5" fill="#FF8C00" filter="url(#glow)"/>
+      <line x1="235" y1="345" x2="235" y2="358" stroke="#FF8C00" stroke-width="1.5"/>
+      <text x="242" y="345" fill="#FF8C00" font-family="'Bebas Neue'" font-size="8" letter-spacing="1">TV LOUNGE</text>
+    </g>
+
+    <!-- Deluxx Fluxx -->
+    <g class="venue-pin" data-venue="3" id="pin-3" style="cursor:pointer">
+      <circle cx="175" cy="322" r="10" fill="rgba(204,255,0,0.15)" stroke="#CCFF00" stroke-width="1.5" filter="url(#glow)"/>
+      <circle cx="175" cy="322" r="5" fill="#CCFF00" filter="url(#glow)"/>
+      <line x1="175" y1="327" x2="175" y2="342" stroke="#CCFF00" stroke-width="1.5"/>
+      <text x="140" y="348" fill="#CCFF00" font-family="'Bebas Neue'" font-size="8" letter-spacing="1">DELUXX FLUXX</text>
+    </g>
+
+    <!-- El Club -->
+    <g class="venue-pin" data-venue="4" id="pin-4" style="cursor:pointer">
+      <circle cx="50" cy="295" r="10" fill="rgba(255,0,128,0.15)" stroke="#FF0080" stroke-width="1.5" filter="url(#pinkGlow)"/>
+      <circle cx="50" cy="295" r="5" fill="#FF0080" filter="url(#pinkGlow)"/>
+      <line x1="50" y1="300" x2="50" y2="315" stroke="#FF0080" stroke-width="1.5"/>
+      <text x="12" y="323" fill="#FF0080" font-family="'Bebas Neue'" font-size="8" letter-spacing="1">EL CLUB</text>
+    </g>
+
+    <!-- Tangent Gallery -->
+    <g class="venue-pin" data-venue="5" id="pin-5" style="cursor:pointer">
+      <circle cx="305" cy="215" r="10" fill="rgba(255,0,128,0.15)" stroke="#FF0080" stroke-width="1.5" filter="url(#pinkGlow)"/>
+      <circle cx="305" cy="215" r="5" fill="#FF0080" filter="url(#pinkGlow)"/>
+      <line x1="305" y1="220" x2="305" y2="235" stroke="#FF0080" stroke-width="1.5"/>
+      <text x="265" y="243" fill="#FF0080" font-family="'Bebas Neue'" font-size="7" letter-spacing="1">TANGENT GAL.</text>
+    </g>
+
+    <!-- Noise/grain overlay -->
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feBlend in="SourceGraphic" mode="overlay"/>
+    </filter>
+    <rect width="375" height="400" fill="transparent" filter="url(#noise)" opacity="0.03"/>
+
+    <!-- Compass -->
+    <g transform="translate(340, 30)">
+      <text x="0" y="0" fill="rgba(204,255,0,0.4)" font-family="'Bebas Neue'" font-size="10" text-anchor="middle">N</text>
+      <line x1="0" y1="2" x2="0" y2="14" stroke="rgba(204,255,0,0.4)" stroke-width="1.5"/>
+      <polygon points="0,-2 -3,8 0,6 3,8" fill="rgba(204,255,0,0.6)" transform="translate(0,2)"/>
+    </g>
+
+    <!-- Scale bar -->
+    <g transform="translate(16, 380)">
+      <line x1="0" y1="0" x2="40" y2="0" stroke="rgba(204,255,0,0.5)" stroke-width="1"/>
+      <line x1="0" y1="-3" x2="0" y2="3" stroke="rgba(204,255,0,0.5)" stroke-width="1"/>
+      <line x1="40" y1="-3" x2="40" y2="3" stroke="rgba(204,255,0,0.5)" stroke-width="1"/>
+      <text x="20" y="-5" fill="rgba(204,255,0,0.5)" font-family="'Share Tech Mono'" font-size="7" text-anchor="middle">1 MILE</text>
+    </g>
+  </svg>
+
+  <div class="map-controls">
+    <div class="map-btn">+</div>
+    <div class="map-btn">−</div>
+  </div>
+</div>
+
+<!-- VENUE LIST -->
+<div class="venue-list-header">
+  <div class="section-title">// VENUES</div>
+  <div class="venue-count">6 LOCATIONS · 28 EVENTS</div>
+</div>
+
+<div id="venueList">
+  <div class="venue-item" data-venue="1" onclick="selectVenue(1, this)">
+    <div class="venue-dot afterparty"></div>
+    <div class="venue-info">
+      <div class="venue-name">MARBLE BAR</div>
+      <div class="venue-addr">1501 Holden St, Corktown</div>
+    </div>
+    <div class="venue-badge afterparty">AFTER</div>
+    <div class="venue-events">12 EVT</div>
+  </div>
+  <div class="venue-item" data-venue="0" onclick="selectVenue(0, this)">
+    <div class="venue-dot festival"></div>
+    <div class="venue-info">
+      <div class="venue-name">HART PLAZA</div>
+      <div class="venue-addr">1 Hart Plaza, Downtown</div>
+    </div>
+    <div class="venue-badge festival">FEST</div>
+    <div class="venue-events">4 EVT</div>
+  </div>
+  <div class="venue-item" data-venue="3" onclick="selectVenue(3, this)">
+    <div class="venue-dot dayparty"></div>
+    <div class="venue-info">
+      <div class="venue-name">DELUXX FLUXX</div>
+      <div class="venue-addr">1274 Library St, Downtown</div>
+    </div>
+    <div class="venue-badge dayparty">DAY</div>
+    <div class="venue-events">5 EVT</div>
+  </div>
+  <div class="venue-item" data-venue="2" onclick="selectVenue(2, this)">
+    <div class="venue-dot sunrise"></div>
+    <div class="venue-info">
+      <div class="venue-name">TV LOUNGE</div>
+      <div class="venue-addr">1 Atwater St, Rivertown</div>
+    </div>
+    <div class="venue-badge sunrise">SUNRS</div>
+    <div class="venue-events">4 EVT</div>
+  </div>
+  <div class="venue-item" data-venue="5" onclick="selectVenue(5, this)">
+    <div class="venue-dot afterparty"></div>
+    <div class="venue-info">
+      <div class="venue-name">TANGENT GALLERY</div>
+      <div class="venue-addr">715 E Milwaukee Ave, East</div>
+    </div>
+    <div class="venue-badge afterparty">AFTER</div>
+    <div class="venue-events">4 EVT</div>
+  </div>
+  <div class="venue-item" data-venue="4" onclick="selectVenue(4, this)">
+    <div class="venue-dot afterparty"></div>
+    <div class="venue-info">
+      <div class="venue-name">EL CLUB</div>
+      <div class="venue-addr">4114 Vernor Hwy, Mexicantown</div>
+    </div>
+    <div class="venue-badge afterparty">AFTER</div>
+    <div class="venue-events">3 EVT</div>
+  </div>
+</div>
+
+<button class="fab" onclick="fabAction()">+</button>
+
+<script>
+const venues = [
+  { id: 0, name: 'HART PLAZA', svgX: 218, svgY: 348 },
+  { id: 1, name: 'MARBLE BAR', svgX: 95, svgY: 215 },
+  { id: 2, name: 'TV LOUNGE', svgX: 235, svgY: 340 },
+  { id: 3, name: 'DELUXX FLUXX', svgX: 175, svgY: 322 },
+  { id: 4, name: 'EL CLUB', svgX: 50, svgY: 295 },
+  { id: 5, name: 'TANGENT GALLERY', svgX: 305, svgY: 215 },
+];
+
+// Route distances (miles) between venues [from][to]
+const distances = [
+  [0, 3.2, 0.3, 0.6, 5.1, 4.8],
+  [3.2, 0, 3.4, 2.9, 2.1, 4.2],
+  [0.3, 3.4, 0, 0.4, 5.3, 4.9],
+  [0.6, 2.9, 0.4, 0, 4.8, 4.3],
+  [5.1, 2.1, 5.3, 4.8, 0, 6.1],
+  [4.8, 4.2, 4.9, 4.3, 6.1, 0],
+];
+
+let selectedVenues = [];
+
+function selectVenue(id, el) {
+  const already = selectedVenues.findIndex(v => v.id === id);
+
+  if (already >= 0) {
+    selectedVenues.splice(already, 1);
+    el.classList.remove('selected');
+  } else {
+    if (selectedVenues.length >= 2) {
+      // Reset
+      document.querySelectorAll('.venue-item.selected').forEach(e => e.classList.remove('selected'));
+      document.querySelectorAll('.venue-pin circle:first-child').forEach(c => c.style.opacity = '1');
+      selectedVenues = [];
+      document.getElementById('routeResult').classList.remove('show');
+      document.getElementById('routeLine').setAttribute('opacity', '0');
+    }
+    selectedVenues.push({ id, el });
+    el.classList.add('selected');
+  }
+
+  updateRouteStatus();
+
+  if (selectedVenues.length === 2) {
+    calculateRoute(selectedVenues[0].id, selectedVenues[1].id);
+  }
+}
+
+function updateRouteStatus() {
+  const statusEl = document.getElementById('routeStatus');
+  if (selectedVenues.length === 0) statusEl.textContent = 'TAP 2 TO ROUTE';
+  else if (selectedVenues.length === 1) statusEl.textContent = `[1/2] TAP SECOND VENUE`;
+  else statusEl.textContent = `// ROUTE ACTIVE`;
+}
+
+function calculateRoute(a, b) {
+  const dist = distances[a][b];
+  const walkMin = Math.round(dist * 20);
+  const driveMin = Math.round(dist * 4 + 3);
+
+  const va = venues[a];
+  const vb = venues[b];
+
+  // Draw route line on SVG
+  const line = document.getElementById('routeLine');
+  line.setAttribute('x1', va.svgX);
+  line.setAttribute('y1', va.svgY);
+  line.setAttribute('x2', vb.svgX);
+  line.setAttribute('y2', vb.svgY);
+  line.setAttribute('opacity', '0.9');
+
+  // Animate line draw
+  const len = Math.sqrt(Math.pow(vb.svgX - va.svgX, 2) + Math.pow(vb.svgY - va.svgY, 2));
+  line.style.strokeDasharray = `${len}`;
+  line.style.strokeDashoffset = `${len}`;
+  line.style.transition = 'stroke-dashoffset 0.5s ease-out';
+  setTimeout(() => line.style.strokeDashoffset = '0', 50);
+
+  // Update result card
+  document.getElementById('routeDist').textContent = dist.toFixed(1);
+  document.getElementById('routeWalk').textContent = walkMin;
+  document.getElementById('routeDrive').textContent = driveMin;
+  document.getElementById('routeVenueNames').innerHTML =
+    `<span>${va.name}</span> → <span>${vb.name}</span>`;
+
+  document.getElementById('routeResult').classList.add('show');
+}
+
+function fabAction() {
+  // Flash the FAB
+  const fab = document.querySelector('.fab');
+  fab.style.background = '#FF0080';
+  fab.style.boxShadow = '0 0 30px #FF0080';
+  setTimeout(() => {
+    fab.style.background = '';
+    fab.style.boxShadow = '';
+  }, 200);
+  // In real app: open add location modal
+}
+
+// Pulse animation for pins
+const pins = document.querySelectorAll('.venue-pin circle:nth-child(1)');
+pins.forEach((pin, i) => {
+  setInterval(() => {
+    pin.style.transform = 'scale(1.15)';
+    pin.style.transformOrigin = '50% 50%';
+    pin.style.transformBox = 'fill-box';
+    setTimeout(() => pin.style.transform = 'scale(1)', 300);
+  }, 2000 + i * 400);
+});
+</script>
+</body>
+</html>

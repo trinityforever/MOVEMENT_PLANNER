@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Movement 2026 — Schedule</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Syncopate:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #050510;
+    --deep: #080820;
+    --text: #e8e8ff;
+    --text-dim: rgba(232,232,255,0.45);
+    --border: rgba(255,255,255,0.07);
+    /* Category colors */
+    --afterparty: #b06aff;
+    --afterparty-bg: rgba(123,47,255,0.18);
+    --afterparty-border: rgba(176,106,255,0.3);
+    --sunrise: #ff6b35;
+    --sunrise-bg: rgba(255,107,53,0.15);
+    --sunrise-border: rgba(255,107,53,0.3);
+    --dayparty: #ffb800;
+    --dayparty-bg: rgba(255,184,0,0.15);
+    --dayparty-border: rgba(255,184,0,0.3);
+    --festival: #00ff88;
+    --festival-bg: rgba(0,255,136,0.12);
+    --festival-border: rgba(0,255,136,0.25);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--void);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      conic-gradient(from 60deg at 80% 20%, transparent 0deg, rgba(255,107,53,0.07) 60deg, transparent 120deg),
+      conic-gradient(from 240deg at 20% 80%, transparent 0deg, rgba(123,47,255,0.09) 80deg, transparent 160deg),
+      radial-gradient(ellipse at 50% 0%, rgba(255,184,0,0.05) 0%, transparent 50%);
+    animation: bgShift 30s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @keyframes bgShift {
+    from { filter: hue-rotate(0deg); }
+    to { filter: hue-rotate(360deg); }
+  }
+
+  /* Header */
+  .header {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    z-index: 100;
+    padding: 16px 20px 0;
+    background: linear-gradient(180deg, rgba(5,5,16,0.97) 0%, rgba(5,5,16,0.75) 100%);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .logo-text {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    background: linear-gradient(90deg, #ff00ff, #00ffff, #ff9500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .event-count {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+
+  .nav-tab {
+    flex: 1;
+    padding: 8px 4px;
+    text-align: center;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: transparent;
+    border: 1px solid transparent;
+  }
+
+  .nav-tab.active {
+    color: #ff9500;
+    background: rgba(255,149,0,0.08);
+    border-color: rgba(255,149,0,0.2);
+    text-shadow: 0 0 12px rgba(255,149,0,0.4);
+  }
+
+  /* Day selector */
+  .day-selector {
+    display: flex;
+    gap: 6px;
+    padding: 0 0 12px;
+  }
+
+  .day-chip {
+    flex: 1;
+    padding: 7px 4px;
+    text-align: center;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    transition: all 0.25s;
+  }
+
+  .day-chip.active {
+    background: linear-gradient(135deg, rgba(123,47,255,0.2), rgba(255,0,255,0.15));
+    border-color: rgba(176,106,255,0.35);
+  }
+
+  .day-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .day-chip.active .day-num {
+    background: linear-gradient(90deg, #b06aff, #ff00ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+  }
+
+  .day-name {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    margin-top: 2px;
+  }
+
+  .day-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--afterparty);
+    margin: 4px auto 0;
+    opacity: 0;
+  }
+
+  .day-chip.has-events .day-dot { opacity: 1; }
+
+  /* View toggle */
+  .view-toggle {
+    display: flex;
+    gap: 3px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 3px;
+    margin: 0 0 10px;
+    align-self: center;
+  }
+
+  .toggle-btn {
+    flex: 1;
+    padding: 5px 8px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-align: center;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-dim);
+  }
+
+  .toggle-btn.active {
+    background: linear-gradient(135deg, rgba(123,47,255,0.3), rgba(0,255,255,0.2));
+    color: #00ffff;
+    text-shadow: 0 0 8px rgba(0,255,255,0.4);
+  }
+
+  .controls-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 10px;
+  }
+
+  /* Category filter pills */
+  .filter-strip {
+    display: flex;
+    gap: 5px;
+    flex: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .filter-strip::-webkit-scrollbar { display: none; }
+
+  .filter-pill {
+    white-space: nowrap;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    border: 1px solid;
+    transition: all 0.2s;
+    opacity: 0.5;
+  }
+  .filter-pill.active { opacity: 1; }
+
+  .fp-after { color: var(--afterparty); border-color: var(--afterparty-border); background: var(--afterparty-bg); }
+  .fp-sunrise { color: var(--sunrise); border-color: var(--sunrise-border); background: var(--sunrise-bg); }
+  .fp-day { color: var(--dayparty); border-color: var(--dayparty-border); background: var(--dayparty-bg); }
+  .fp-fest { color: var(--festival); border-color: var(--festival-border); background: var(--festival-bg); }
+
+  /* ====== GANTT VIEW ====== */
+  .gantt-container {
+    display: none;
+    margin-top: 190px;
+    overflow-x: auto;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(123,47,255,0.4) transparent;
+    padding-bottom: 24px;
+  }
+
+  .gantt-container.visible { display: block; }
+
+  .gantt-inner {
+    min-width: 800px;
+    padding: 0 0 40px;
+  }
+
+  /* Time ruler */
+  .gantt-ruler {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(5,5,16,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    margin-left: 90px;
+  }
+
+  .ruler-hour {
+    width: 60px;
+    flex-shrink: 0;
+    padding: 6px 0 6px 4px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    border-left: 1px solid rgba(255,255,255,0.05);
+    letter-spacing: 0.05em;
+  }
+
+  /* Venue rows */
+  .gantt-row {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    min-height: 52px;
+    position: relative;
+  }
+
+  .gantt-venue-label {
+    width: 90px;
+    flex-shrink: 0;
+    position: sticky;
+    left: 0;
+    background: rgba(5,5,16,0.95);
+    z-index: 5;
+    padding: 8px 10px 8px 8px;
+    border-right: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+  }
+
+  .gantt-venue-name {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .gantt-venue-type {
+    font-size: 8px;
+    color: var(--text-dim);
+    margin-top: 2px;
+    letter-spacing: 0.06em;
+  }
+
+  .gantt-timeline {
+    flex: 1;
+    position: relative;
+    height: 52px;
+  }
+
+  /* Background hour lines */
+  .gantt-row-bg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+  }
+
+  .gantt-hr-cell {
+    width: 60px;
+    flex-shrink: 0;
+    border-left: 1px solid rgba(255,255,255,0.04);
+    height: 100%;
+  }
+
+  /* Event bars */
+  .gantt-event {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid;
+  }
+
+  .gantt-event:active {
+    transform: translateY(-50%) scale(0.97);
+  }
+
+  .gantt-event::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.5s;
+  }
+
+  .gantt-event:hover::after {
+    transform: translateX(100%);
+  }
+
+  .gantt-event-name {
+    font-size: 9px;
+    font-weight: 700;
+    white-space: nowrap;
+    letter-spacing: 0.06em;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ge-afterparty {
+    background: var(--afterparty-bg);
+    border-color: var(--afterparty-border);
+    color: var(--afterparty);
+    box-shadow: 0 0 10px rgba(123,47,255,0.15);
+  }
+
+  .ge-sunrise {
+    background: var(--sunrise-bg);
+    border-color: var(--sunrise-border);
+    color: var(--sunrise);
+    box-shadow: 0 0 10px rgba(255,107,53,0.15);
+  }
+
+  .ge-dayparty {
+    background: var(--dayparty-bg);
+    border-color: var(--dayparty-border);
+    color: var(--dayparty);
+    box-shadow: 0 0 10px rgba(255,184,0,0.15);
+  }
+
+  .ge-festival {
+    background: var(--festival-bg);
+    border-color: var(--festival-border);
+    color: var(--festival);
+    box-shadow: 0 0 10px rgba(0,255,136,0.15);
+  }
+
+  /* "Now" marker */
+  .now-marker {
+    position: absolute;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(180deg, #ff00ff, #00ffff);
+    z-index: 8;
+    box-shadow: 0 0 8px rgba(255,0,255,0.6);
+  }
+
+  .now-label {
+    position: absolute;
+    top: -1px;
+    transform: translateX(-50%);
+    background: #ff00ff;
+    color: white;
+    font-size: 7px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 0.05em;
+    box-shadow: 0 0 8px rgba(255,0,255,0.6);
+  }
+
+  /* ====== LIST VIEW ====== */
+  .list-container {
+    display: none;
+    margin-top: 190px;
+    padding: 8px 16px 80px;
+  }
+
+  .list-container.visible { display: block; }
+
+  .list-time-group {
+    margin-bottom: 4px;
+  }
+
+  .time-group-header {
+    padding: 12px 0 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .time-group-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+  }
+
+  .time-group-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  /* Event card */
+  .event-card {
+    margin-bottom: 8px;
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.2s;
+  }
+
+  .event-card:active {
+    transform: scale(0.98);
+  }
+
+  .event-card-inner {
+    padding: 12px 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border: 1px solid;
+    border-radius: 14px;
+    backdrop-filter: blur(8px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Shimmer sweep animation on hover */
+  .event-card-inner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.08) 50%, transparent 80%);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+    pointer-events: none;
+  }
+  .event-card:hover .event-card-inner::before {
+    transform: translateX(100%);
+  }
+
+  .ec-afterparty { background: var(--afterparty-bg); border-color: var(--afterparty-border); box-shadow: 0 2px 20px rgba(123,47,255,0.1); }
+  .ec-sunrise { background: var(--sunrise-bg); border-color: var(--sunrise-border); box-shadow: 0 2px 20px rgba(255,107,53,0.1); }
+  .ec-dayparty { background: var(--dayparty-bg); border-color: var(--dayparty-border); box-shadow: 0 2px 20px rgba(255,184,0,0.1); }
+  .ec-festival { background: var(--festival-bg); border-color: var(--festival-border); box-shadow: 0 2px 20px rgba(0,255,136,0.1); }
+
+  .ec-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 36px;
+  }
+
+  .ec-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-bottom: 4px;
+    flex-shrink: 0;
+  }
+
+  .ec-time {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    text-align: center;
+    line-height: 1.4;
+    letter-spacing: 0.03em;
+  }
+
+  .ec-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ec-artist {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 3px;
+    letter-spacing: 0.02em;
+  }
+
+  .ec-venue {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+
+  .ec-tags {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .ec-tag {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 2px 7px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .ec-price {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+
+  .ec-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .rsvp-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    border: 1px solid;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .rsvp-btn.going {
+    background: rgba(0,255,136,0.15);
+    border-color: rgba(0,255,136,0.3);
+    color: #00ff88;
+    box-shadow: 0 0 10px rgba(0,255,136,0.2);
+  }
+
+  .rsvp-btn.want {
+    background: rgba(255,184,0,0.1);
+    border-color: rgba(255,184,0,0.25);
+    color: #ffb800;
+  }
+
+  .rsvp-btn.none {
+    background: rgba(255,255,255,0.04);
+    border-color: var(--border);
+    color: var(--text-dim);
+  }
+
+  .ra-link {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  /* Event detail modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5,5,16,0.85);
+    z-index: 200;
+    display: none;
+    align-items: flex-end;
+    backdrop-filter: blur(8px);
+  }
+
+  .modal-overlay.open {
+    display: flex;
+  }
+
+  .modal-sheet {
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    background: linear-gradient(180deg, #0d0d28 0%, #080820 100%);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px 24px 0 0;
+    padding: 20px 20px 40px;
+    animation: slideUp 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .modal-sheet::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      conic-gradient(from 180deg at 50% 0%, rgba(123,47,255,0.1) 0deg, rgba(0,255,255,0.08) 120deg, rgba(255,0,255,0.1) 240deg, rgba(123,47,255,0.1) 360deg);
+    pointer-events: none;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .modal-handle {
+    width: 36px;
+    height: 4px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 2px;
+    margin: 0 auto 20px;
+  }
+
+  .modal-category-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    margin-bottom: 10px;
+    border: 1px solid;
+  }
+
+  .modal-artist {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #e8e8ff 0%, #b06aff 50%, #00ffff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+  }
+
+  .modal-meta {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+    line-height: 1.6;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    position: relative;
+  }
+
+  .modal-divider {
+    height: 1px;
+    background: linear-gradient(90deg, rgba(123,47,255,0.3), rgba(0,255,255,0.2), transparent);
+    margin: 16px 0;
+  }
+
+  .modal-genre-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .genre-tag {
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 8px;
+    position: relative;
+  }
+
+  .modal-btn {
+    flex: 1;
+    padding: 14px 8px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    border: 1px solid;
+    transition: all 0.2s;
+    font-family: 'Rajdhani', sans-serif;
+  }
+
+  .mb-primary {
+    background: linear-gradient(135deg, rgba(123,47,255,0.3), rgba(255,0,255,0.2));
+    border-color: rgba(176,106,255,0.4);
+    color: #d090ff;
+    box-shadow: 0 0 20px rgba(123,47,255,0.2);
+  }
+
+  .mb-secondary {
+    background: rgba(255,255,255,0.04);
+    border-color: var(--border);
+    color: var(--text-dim);
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 1;
+    z-index: 1;
+  }
+
+  /* Load animation */
+  @keyframes fadeScaleIn {
+    from { opacity: 0; transform: translateY(16px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .event-card { animation: fadeScaleIn 0.4s ease both; }
+  .event-card:nth-child(1) { animation-delay: 0.05s; }
+  .event-card:nth-child(2) { animation-delay: 0.1s; }
+  .event-card:nth-child(3) { animation-delay: 0.15s; }
+  .event-card:nth-child(4) { animation-delay: 0.2s; }
+  .event-card:nth-child(5) { animation-delay: 0.25s; }
+  .event-card:nth-child(6) { animation-delay: 0.3s; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-top">
+    <span class="logo-text">MOVEMENT 2026</span>
+    <span class="event-count">28 EVENTS · 12 VENUES</span>
+  </div>
+  <div class="nav-tabs">
+    <div class="nav-tab">PLAN</div>
+    <div class="nav-tab">MAP</div>
+    <div class="nav-tab active">SCHEDULE</div>
+  </div>
+  <div class="day-selector">
+    <div class="day-chip has-events" data-day="22" onclick="selectDay(22, this)">
+      <div class="day-num">22</div>
+      <div class="day-name">FRI</div>
+      <div class="day-dot"></div>
+    </div>
+    <div class="day-chip has-events active" data-day="23" onclick="selectDay(23, this)">
+      <div class="day-num">23</div>
+      <div class="day-name">SAT</div>
+      <div class="day-dot"></div>
+    </div>
+    <div class="day-chip has-events" data-day="24" onclick="selectDay(24, this)">
+      <div class="day-num">24</div>
+      <div class="day-name">SUN</div>
+      <div class="day-dot"></div>
+    </div>
+    <div class="day-chip has-events" data-day="25" onclick="selectDay(25, this)">
+      <div class="day-num">25</div>
+      <div class="day-name">MON</div>
+      <div class="day-dot"></div>
+    </div>
+  </div>
+  <div class="controls-row">
+    <div class="filter-strip" id="filterStrip">
+      <div class="filter-pill fp-after active" data-cat="afterparty" onclick="toggleFilter(this)">AFTERPARTY</div>
+      <div class="filter-pill fp-sunrise active" data-cat="sunrise" onclick="toggleFilter(this)">SUNRISE</div>
+      <div class="filter-pill fp-day active" data-cat="dayparty" onclick="toggleFilter(this)">DAY PARTY</div>
+      <div class="filter-pill fp-fest active" data-cat="festival" onclick="toggleFilter(this)">FESTIVAL</div>
+    </div>
+    <div class="view-toggle">
+      <div class="toggle-btn" onclick="setView('gantt', this)">GANTT</div>
+      <div class="toggle-btn active" onclick="setView('list', this)">LIST</div>
+    </div>
+  </div>
+</div>
+
+<!-- Gantt View -->
+<div class="gantt-container" id="ganttView">
+  <div class="gantt-inner" id="ganttInner"></div>
+</div>
+
+<!-- List View -->
+<div class="list-container visible" id="listView">
+  <div id="listInner"></div>
+</div>
+
+<!-- Event Detail Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal-sheet" id="modalSheet">
+    <div class="modal-handle"></div>
+    <div class="modal-close" onclick="closeModalDirect()">×</div>
+    <div class="modal-category-badge" id="mBadge">AFTERPARTY</div>
+    <div class="modal-artist" id="mArtist">Seth Troxler</div>
+    <div class="modal-meta" id="mMeta"></div>
+    <div class="modal-divider"></div>
+    <div class="modal-genre-list" id="mGenres"></div>
+    <div class="modal-divider"></div>
+    <div class="modal-actions">
+      <div class="modal-btn mb-primary" id="mRsvpBtn" onclick="toggleRsvp()">+ ADD TO MY PLAN</div>
+      <div class="modal-btn mb-secondary" onclick="closeModalDirect()">RA LINK ↗</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const events = [
+  // Friday May 22
+  { id:0, day:22, artist:'Seth Troxler', venue:'Marble Bar', addr:'1501 Holden St', start:23, end:29, cat:'afterparty', price:'$25', rsvp:'going', genres:['TECHNO','HOUSE','ACID'], ra:true },
+  { id:1, day:22, artist:'Puce Mary', venue:'Tangent Gallery', addr:'715 E Milwaukee', start:22, end:26, cat:'afterparty', price:'$20', rsvp:'none', genres:['INDUSTRIAL','NOISE','EBM'], ra:true },
+  { id:2, day:22, artist:'Movement Preview', venue:'Hart Plaza', addr:'1 Hart Plaza', start:14, end:22, cat:'festival', price:'INCL.', rsvp:'going', genres:['TECHNO','ELECTRONIC'], ra:false },
+  { id:3, day:22, artist:'Rebūke', venue:'El Club', addr:'4114 Vernor Hwy', start:22, end:26, cat:'afterparty', price:'$18', rsvp:'want', genres:['TECHNO','MELODIC'], ra:true },
+
+  // Saturday May 23
+  { id:4, day:23, artist:'Call Super', venue:'Deluxx Fluxx', addr:'1274 Library St', start:14, end:18, cat:'dayparty', price:'$15', rsvp:'none', genres:['HOUSE','AMBIENT','ELECTRONICA'], ra:true },
+  { id:5, day:23, artist:'Blawan', venue:'Marble Bar', addr:'1501 Holden St', start:25, end:29, cat:'afterparty', price:'$30', rsvp:'want', genres:['TECHNO','HARDCORE','INDUSTRIAL'], ra:true },
+  { id:6, day:23, artist:'Skee Mask', venue:'TV Lounge', addr:'1 Atwater St', start:29, end:33, cat:'sunrise', price:'$20', rsvp:'going', genres:['TECHNO','IDM','DRUM+BASS'], ra:true },
+  { id:7, day:23, artist:'Paula Temple', venue:'Tangent Gallery', addr:'715 E Milwaukee', start:24, end:28, cat:'afterparty', price:'$22', rsvp:'none', genres:['TECHNO','NOISE','EXPERIMENTAL'], ra:true },
+  { id:8, day:23, artist:'Movement Sat', venue:'Hart Plaza', addr:'1 Hart Plaza', start:12, end:22, cat:'festival', price:'INCL.', rsvp:'going', genres:['TECHNO','ELECTRONIC'], ra:false },
+  { id:9, day:23, artist:'Dj Python', venue:'Deluxx Fluxx', addr:'1274 Library St', start:20, end:23, cat:'dayparty', price:'$15', rsvp:'none', genres:['REGGAETON','AMBIENT','DEMBOW'], ra:true },
+
+  // Sunday May 24
+  { id:10, day:24, artist:'Octave One', venue:'Hart Plaza', addr:'1 Hart Plaza', start:16, end:18, cat:'festival', price:'INCL.', rsvp:'going', genres:['TECHNO','DETROIT'], ra:false },
+  { id:11, day:24, artist:'Drumcode All Night', venue:'Marble Bar', addr:'1501 Holden St', start:23, end:31, cat:'afterparty', price:'$35', rsvp:'none', genres:['TECHNO','SWEDISH'], ra:true },
+  { id:12, day:24, artist:'Honey Dijon', venue:'Deluxx Fluxx', addr:'1274 Library St', start:15, end:19, cat:'dayparty', price:'$20', rsvp:'want', genres:['HOUSE','DISCO','BALLROOM'], ra:true },
+  { id:13, day:24, artist:'Carl Cox', venue:'Hart Plaza', addr:'1 Hart Plaza', start:19, end:21, cat:'festival', price:'INCL.', rsvp:'going', genres:['TECHNO','HOUSE'], ra:false },
+  { id:14, day:24, artist:'Aurora Halal', venue:'TV Lounge', addr:'1 Atwater St', start:29, end:33, cat:'sunrise', price:'$18', rsvp:'none', genres:['TECHNO','EXPERIMENTAL'], ra:true },
+
+  // Monday May 25
+  { id:15, day:25, artist:'Mathew Jonson', venue:'Tangent Gallery', addr:'715 E Milwaukee', start:24, end:28, cat:'afterparty', price:'$20', rsvp:'going', genres:['TECHNO','MELODIC','ANALOG'], ra:true },
+  { id:16, day:25, artist:'Ben UFO', venue:'Marble Bar', addr:'1501 Holden St', start:25, end:29, cat:'afterparty', price:'$25', rsvp:'none', genres:['TECHNO','GRIME','UKG'], ra:true },
+  { id:17, day:25, artist:'Movement Sun', venue:'Hart Plaza', addr:'1 Hart Plaza', start:12, end:22, cat:'festival', price:'INCL.', rsvp:'going', genres:['TECHNO','ELECTRONIC'], ra:false },
+  { id:18, day:25, artist:'Peggy Gou', venue:'TV Lounge', addr:'1 Atwater St', start:5, end:9, cat:'sunrise', price:'$25', rsvp:'none', genres:['HOUSE','K-POP','DISCO'], ra:true },
+];
+
+const rsvpState = {};
+events.forEach(e => { rsvpState[e.id] = e.rsvp; });
+
+let activeDay = 23;
+let activeFilters = new Set(['afterparty','sunrise','dayparty','festival']);
+let activeView = 'list';
+let activeModal = null;
+
+const catColors = {
+  afterparty: { color: '#b06aff', bg: 'rgba(123,47,255,0.18)', border: 'rgba(176,106,255,0.3)' },
+  sunrise:    { color: '#ff6b35', bg: 'rgba(255,107,53,0.15)', border: 'rgba(255,107,53,0.3)' },
+  dayparty:   { color: '#ffb800', bg: 'rgba(255,184,0,0.15)',  border: 'rgba(255,184,0,0.3)' },
+  festival:   { color: '#00ff88', bg: 'rgba(0,255,136,0.12)',  border: 'rgba(0,255,136,0.25)' },
+};
+
+function formatHour(h) {
+  const h24 = h % 24;
+  const ampm = h24 < 12 ? 'AM' : 'PM';
+  const h12 = h24 % 12 || 12;
+  return `${h12}${ampm}`;
+}
+
+function getEventsForDay(day) {
+  return events.filter(e => e.day === day && activeFilters.has(e.cat));
+}
+
+function renderList() {
+  const dayEvents = getEventsForDay(activeDay);
+  // Sort by start time (normalize: times >=24 mean next day early morning)
+  dayEvents.sort((a, b) => {
+    const normA = a.start >= 24 ? a.start - 24 + 0.01 : a.start;
+    const normB = b.start >= 24 ? b.start - 24 + 0.01 : b.start;
+    return normA - normB;
+  });
+
+  // Group by time slot
+  const groups = {};
+  dayEvents.forEach(e => {
+    const key = e.start >= 24 ? 'LATE NIGHT' :
+                e.start < 12 ? 'MORNING' :
+                e.start < 17 ? 'AFTERNOON' :
+                e.start < 22 ? 'EVENING' : 'NIGHT';
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(e);
+  });
+
+  const order = ['MORNING','AFTERNOON','EVENING','NIGHT','LATE NIGHT'];
+  let html = '';
+  order.forEach(key => {
+    if (!groups[key]) return;
+    html += `<div class="list-time-group">
+      <div class="time-group-header">
+        <span class="time-group-label">${key}</span>
+        <div class="time-group-line"></div>
+      </div>`;
+    groups[key].forEach(e => {
+      const c = catColors[e.cat];
+      const rsvp = rsvpState[e.id];
+      const rsvpIcon = rsvp === 'going' ? '✓' : rsvp === 'want' ? '★' : '+';
+      const rsvpClass = rsvp === 'going' ? 'going' : rsvp === 'want' ? 'want' : 'none';
+      const startStr = formatHour(e.start);
+      const endStr = formatHour(e.end);
+      const catLabel = e.cat === 'dayparty' ? 'DAY PARTY' : e.cat.toUpperCase();
+
+      html += `<div class="event-card" onclick="openModal(${e.id})">
+        <div class="event-card-inner ec-${e.cat}">
+          <div class="ec-left">
+            <div class="ec-dot" style="background:${c.color}; box-shadow:0 0 6px ${c.color}55;"></div>
+            <div class="ec-time">${startStr}<br>—<br>${endStr}</div>
+          </div>
+          <div class="ec-body">
+            <div class="ec-artist">${e.artist}</div>
+            <div class="ec-venue">${e.venue}</div>
+            <div class="ec-tags">
+              <div class="ec-tag" style="color:${c.color}; border-color:${c.border}; background:${c.bg};">${catLabel}</div>
+              <div class="ec-price">${e.price}</div>
+              ${e.ra ? '<span class="ec-price" style="color:rgba(0,255,255,0.5)">RA ↗</span>' : ''}
+            </div>
+          </div>
+          <div class="ec-right">
+            <div class="rsvp-btn ${rsvpClass}">${rsvpIcon}</div>
+          </div>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+  });
+
+  if (!html) {
+    html = `<div style="text-align:center; padding:60px 20px; color:var(--text-dim); font-family:'Share Tech Mono'; font-size:11px; letter-spacing:0.1em;">NO EVENTS MATCH FILTERS</div>`;
+  }
+
+  document.getElementById('listInner').innerHTML = html;
+}
+
+function renderGantt() {
+  const venues = [
+    { name: 'Marble Bar', type: 'AFTERPARTY', id: 'marble' },
+    { name: 'TV Lounge', type: 'SUNRISE', id: 'tv' },
+    { name: 'Deluxx Fluxx', type: 'DAY PARTY', id: 'deluxx' },
+    { name: 'El Club', type: 'AFTERPARTY', id: 'elclub' },
+    { name: 'Tangent Gallery', type: 'AFTERPARTY', id: 'tangent' },
+    { name: 'Hart Plaza', type: 'FESTIVAL', id: 'hart' },
+  ];
+
+  const venueMap = {
+    'Marble Bar': 'marble', 'TV Lounge': 'tv', 'Deluxx Fluxx': 'deluxx',
+    'El Club': 'elclub', 'Tangent Gallery': 'tangent', 'Hart Plaza': 'hart',
+  };
+
+  const dayEvents = getEventsForDay(activeDay);
+
+  // Determine hour range
+  const startHour = 8;
+  const endHour = 34; // 10am next day
+  const totalHours = endHour - startHour;
+  const hourWidth = 60;
+
+  // Ruler
+  let rulerHtml = '';
+  for (let h = startHour; h <= endHour; h++) {
+    rulerHtml += `<div class="ruler-hour">${formatHour(h)}</div>`;
+  }
+
+  let rowsHtml = '';
+  venues.forEach(v => {
+    const vEvents = dayEvents.filter(e => venueMap[e.venue] === v.id);
+
+    let barsHtml = '';
+    // BG lines
+    let bgHtml = '';
+    for (let h = startHour; h <= endHour; h++) {
+      bgHtml += `<div class="gantt-hr-cell"></div>`;
+    }
+
+    vEvents.forEach(e => {
+      const left = (e.start - startHour) * hourWidth;
+      const width = (e.end - e.start) * hourWidth;
+      barsHtml += `<div class="gantt-event ge-${e.cat}" style="left:${left}px; width:${Math.max(width,40)}px;" onclick="openModal(${e.id})">
+        <span class="gantt-event-name">${e.artist}</span>
+      </div>`;
+    });
+
+    rowsHtml += `<div class="gantt-row">
+      <div class="gantt-venue-label">
+        <div class="gantt-venue-name">${v.name}</div>
+        <div class="gantt-venue-type">${v.type}</div>
+      </div>
+      <div class="gantt-timeline">
+        <div class="gantt-row-bg">${bgHtml}</div>
+        ${barsHtml}
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('ganttInner').innerHTML = `
+    <div class="gantt-ruler">${rulerHtml}</div>
+    ${rowsHtml}
+  `;
+}
+
+function openModal(eventId) {
+  const e = events.find(ev => ev.id === eventId);
+  if (!e) return;
+  activeModal = e;
+
+  const c = catColors[e.cat];
+  const catLabel = e.cat === 'dayparty' ? 'DAY PARTY' : e.cat.toUpperCase();
+  const rsvp = rsvpState[e.id];
+
+  document.getElementById('mBadge').textContent = catLabel;
+  document.getElementById('mBadge').style.cssText = `color:${c.color}; border-color:${c.border}; background:${c.bg};`;
+  document.getElementById('mArtist').textContent = e.artist;
+  document.getElementById('mMeta').innerHTML = `
+    ${e.venue} · ${e.addr}<br>
+    MAY ${e.day} · ${formatHour(e.start)}–${formatHour(e.end)}<br>
+    ${e.price !== 'INCL.' ? e.price + ' · ' : ''}${e.price === 'INCL.' ? 'INCLUDED WITH FESTIVAL PASS' : 'ADVANCE TIX AVAILABLE'}
+  `;
+  document.getElementById('mGenres').innerHTML = e.genres.map(g => `<div class="genre-tag">${g}</div>`).join('');
+
+  const btn = document.getElementById('mRsvpBtn');
+  if (rsvp === 'going') {
+    btn.textContent = '✓ GOING';
+    btn.style.cssText = 'background:rgba(0,255,136,0.15); border-color:rgba(0,255,136,0.3); color:#00ff88;';
+  } else if (rsvp === 'want') {
+    btn.textContent = '★ WANT TO GO';
+    btn.style.cssText = 'background:rgba(255,184,0,0.12); border-color:rgba(255,184,0,0.3); color:#ffb800;';
+  } else {
+    btn.textContent = '+ ADD TO MY PLAN';
+    btn.style.cssText = '';
+  }
+
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function toggleRsvp() {
+  if (!activeModal) return;
+  const current = rsvpState[activeModal.id];
+  rsvpState[activeModal.id] = current === 'none' ? 'want' : current === 'want' ? 'going' : 'none';
+  openModal(activeModal.id);
+  renderList();
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModalDirect();
+}
+
+function closeModalDirect() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  activeModal = null;
+}
+
+function selectDay(day, el) {
+  activeDay = day;
+  document.querySelectorAll('.day-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderList();
+  if (activeView === 'gantt') renderGantt();
+}
+
+function toggleFilter(el) {
+  const cat = el.dataset.cat;
+  if (activeFilters.has(cat)) {
+    if (activeFilters.size > 1) {
+      activeFilters.delete(cat);
+      el.classList.remove('active');
+    }
+  } else {
+    activeFilters.add(cat);
+    el.classList.add('active');
+  }
+  renderList();
+  if (activeView === 'gantt') renderGantt();
+}
+
+function setView(view, btn) {
+  activeView = view;
+  document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  if (view === 'gantt') {
+    document.getElementById('ganttView').classList.add('visible');
+    document.getElementById('listView').classList.remove('visible');
+    renderGantt();
+  } else {
+    document.getElementById('listView').classList.add('visible');
+    document.getElementById('ganttView').classList.remove('visible');
+  }
+}
+
+// Initial render
+renderList();
+</script>
+</body>
+</html>

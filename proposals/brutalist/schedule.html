@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>MOVEMENT 2026 / SCHEDULE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+    border-radius: 0 !important;
+    margin: 0; padding: 0;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  :root {
+    --black: #0D0D0D;
+    --white: #FFFFFF;
+    --amber: #FF8C00;
+    --violet: #7B5EA7;
+    --gold: #D4A017;
+    --teal: #2D8A6E;
+    --dim: rgba(255,255,255,0.08);
+    --grid: rgba(255,255,255,0.07);
+  }
+  html, body {
+    background: var(--black);
+    color: var(--white);
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  .header {
+    border-bottom: 3px solid var(--white);
+    padding: 12px 16px 10px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    position: sticky;
+    top: 0;
+    background: var(--black);
+    z-index: 100;
+  }
+  .header-left .app-name {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .screen-title {
+    font-size: 28px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 1.0;
+  }
+  .header-right {
+    text-align: right;
+  }
+  .event-count {
+    font-size: 32px;
+    font-weight: 100;
+    line-height: 1;
+    color: var(--amber);
+  }
+  .event-label {
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.3);
+  }
+
+  /* VIEW TOGGLE */
+  .view-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 2px solid var(--white);
+  }
+  .view-btn {
+    padding: 10px 16px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.1);
+  }
+  .view-btn.active {
+    color: var(--amber);
+    background: rgba(255,140,0,0.05);
+    border-bottom: 3px solid var(--amber);
+    margin-bottom: -2px;
+  }
+
+  /* DAY TABS */
+  .day-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    position: sticky;
+    top: 79px;
+    background: var(--black);
+    z-index: 90;
+  }
+  .day-tab {
+    padding: 8px 4px 7px;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    background: none;
+    outline: 1px solid var(--grid);
+  }
+  .day-tab-date {
+    font-size: 16px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.3);
+    line-height: 1;
+  }
+  .day-tab-day {
+    font-size: 7px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.2);
+    margin-top: 2px;
+  }
+  .day-tab.active .day-tab-date { color: var(--amber); }
+  .day-tab.active .day-tab-day { color: var(--amber); opacity: 0.7; }
+  .day-tab.active { background: rgba(255,140,0,0.04); }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    overflow-x: auto;
+  }
+  .legend::-webkit-scrollbar { display: none; }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    flex-shrink: 0;
+    border-right: 1px solid rgba(255,255,255,0.07);
+  }
+  .legend-dot {
+    width: 6px;
+    height: 6px;
+    flex-shrink: 0;
+  }
+  .legend-label {
+    font-size: 7px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.4);
+    white-space: nowrap;
+  }
+
+  /* ============================
+     GANTT VIEW
+  ============================ */
+  .gantt-wrap {
+    overflow-x: auto;
+    border-bottom: 2px solid var(--white);
+  }
+  .gantt-wrap::-webkit-scrollbar { height: 2px; background: #111; }
+  .gantt-wrap::-webkit-scrollbar-thumb { background: var(--amber); }
+
+  .gantt-table {
+    min-width: 900px;
+    position: relative;
+  }
+
+  /* Time header */
+  .gantt-time-header {
+    display: grid;
+    grid-template-columns: 120px repeat(18, 44px);
+    border-bottom: 2px solid var(--white);
+    position: sticky;
+    top: 0;
+    background: var(--black);
+    z-index: 10;
+  }
+  .gantt-time-header-label {
+    padding: 8px 10px;
+    font-size: 7px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.3);
+    border-right: 1px solid rgba(255,255,255,0.1);
+    background: #111;
+  }
+  .gantt-time-cell {
+    padding: 8px 0 6px;
+    text-align: center;
+    font-size: 9px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.3);
+    border-right: 1px solid rgba(255,255,255,0.07);
+    letter-spacing: 0.05em;
+  }
+  .gantt-time-cell.midnight {
+    color: var(--amber);
+    font-weight: 600;
+  }
+
+  /* Venue rows */
+  .gantt-row {
+    display: grid;
+    grid-template-columns: 120px repeat(18, 44px);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    position: relative;
+    min-height: 52px;
+  }
+  .gantt-row:hover { background: rgba(255,255,255,0.02); }
+
+  .gantt-venue-label {
+    padding: 8px 10px;
+    border-right: 1px solid rgba(255,255,255,0.12);
+    background: #0a0a0a;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 5;
+  }
+  .gantt-venue-name {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+    color: var(--white);
+  }
+  .gantt-venue-type {
+    font-size: 7px;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.25);
+    margin-top: 2px;
+  }
+
+  /* Grid cells */
+  .gantt-grid-cell {
+    border-right: 1px solid rgba(255,255,255,0.04);
+    position: relative;
+    min-height: 52px;
+  }
+  .gantt-grid-cell.alt { background: rgba(255,255,255,0.015); }
+
+  /* Event bars */
+  .gantt-event {
+    position: absolute;
+    top: 8px;
+    bottom: 8px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 3;
+  }
+  .gantt-event:hover { filter: brightness(1.2); }
+  .gantt-event-name {
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--black);
+    line-height: 1.1;
+  }
+  .gantt-event-time {
+    font-size: 7px;
+    font-weight: 400;
+    color: rgba(0,0,0,0.5);
+    display: block;
+    margin-top: 1px;
+  }
+  .ev-afterparty { background: var(--violet); }
+  .ev-sunrise { background: var(--amber); }
+  .ev-dayparty { background: var(--gold); }
+  .ev-festival { background: var(--teal); }
+  .ev-afterparty .gantt-event-name { color: #fff; }
+  .ev-afterparty .gantt-event-time { color: rgba(255,255,255,0.5); }
+  .ev-festival .gantt-event-name { color: #fff; }
+  .ev-festival .gantt-event-time { color: rgba(255,255,255,0.5); }
+
+  /* "NOW" indicator */
+  .gantt-now-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #FF3333;
+    z-index: 8;
+    pointer-events: none;
+  }
+
+  /* ============================
+     LIST VIEW
+  ============================ */
+  .list-view { display: none; }
+  .list-view.visible { display: block; }
+  .gantt-view { display: block; }
+  .gantt-view.hidden { display: none; }
+
+  .list-day-block { border-bottom: 2px solid rgba(255,255,255,0.15); }
+  .list-day-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 10px 16px;
+    background: #111;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    position: sticky;
+    top: 130px;
+    z-index: 50;
+  }
+  .list-day-name {
+    font-size: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+  .list-day-count {
+    font-size: 11px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .event-card {
+    display: grid;
+    grid-template-columns: 3px 1fr auto;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    cursor: pointer;
+    position: relative;
+  }
+  .event-card:hover { background: rgba(255,255,255,0.02); }
+  .event-card.expanded { background: rgba(255,255,255,0.02); }
+
+  .event-stripe { width: 3px; flex-shrink: 0; }
+  .ev-stripe-afterparty { background: var(--violet); }
+  .ev-stripe-sunrise { background: var(--amber); }
+  .ev-stripe-dayparty { background: var(--gold); }
+  .ev-stripe-festival { background: var(--teal); }
+
+  .event-main {
+    padding: 12px 12px 12px 14px;
+  }
+  .event-time-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .event-time {
+    font-size: 10px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.05em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .event-type-badge {
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 1px 5px;
+    border: 1px solid;
+  }
+  .badge-v { border-color: var(--violet); color: var(--violet); }
+  .badge-a { border-color: var(--amber); color: var(--amber); }
+  .badge-g { border-color: var(--gold); color: var(--gold); }
+  .badge-t { border-color: var(--teal); color: var(--teal); }
+
+  .event-name {
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+    margin-bottom: 4px;
+  }
+  .event-venue {
+    font-size: 9px;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.35);
+  }
+
+  .event-right {
+    padding: 12px 14px 12px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+  .event-price {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--white);
+    font-variant-numeric: tabular-nums;
+  }
+  .event-price.free { color: var(--teal); }
+  .event-rsvp-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--amber);
+    margin-bottom: 2px;
+  }
+
+  /* Expanded detail panel */
+  .event-detail {
+    display: none;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 0 16px 14px 17px;
+  }
+  .event-card.expanded .event-detail { display: block; }
+  .event-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-bottom: 12px;
+  }
+  .detail-item {
+    padding: 8px 12px 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .detail-label {
+    font-size: 7px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.25);
+    margin-bottom: 3px;
+  }
+  .detail-value {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--white);
+  }
+  .detail-value.amber { color: var(--amber); }
+
+  .artist-list {
+    margin: 10px 0;
+  }
+  .artist-list-label {
+    font-size: 7px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    margin-bottom: 6px;
+  }
+  .artist-item {
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    justify-content: space-between;
+  }
+  .artist-time {
+    font-size: 10px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.35);
+  }
+
+  .detail-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .detail-btn {
+    padding: 10px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+  }
+  .btn-primary {
+    background: var(--amber);
+    color: var(--black);
+  }
+  .btn-secondary {
+    background: none;
+    color: rgba(255,255,255,0.5);
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  /* NAV */
+  .nav-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: var(--black);
+    border-top: 2px solid var(--white);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    z-index: 150;
+  }
+  .nav-item {
+    padding: 10px 0 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    text-decoration: none;
+  }
+  .nav-icon { font-size: 18px; line-height: 1; }
+  .nav-label {
+    font-size: 7px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+  }
+  .nav-item.active .nav-label { color: var(--amber); }
+  .nav-item.active .nav-icon { color: var(--amber); }
+
+  .spacer-bottom { height: 80px; }
+
+  /* FILTER BAR */
+  .filter-bar {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 8px 16px;
+    gap: 6px;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-chip {
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.4);
+    background: none;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .filter-chip.active {
+    background: var(--amber);
+    color: var(--black);
+    border-color: var(--amber);
+  }
+  .filter-chip.active-v {
+    background: var(--violet);
+    color: var(--white);
+    border-color: var(--violet);
+  }
+  .filter-chip.active-g {
+    background: var(--gold);
+    color: var(--black);
+    border-color: var(--gold);
+  }
+  .filter-chip.active-t {
+    background: var(--teal);
+    color: var(--white);
+    border-color: var(--teal);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="app-name">MOVEMENT 2026 · DETROIT</div>
+    <div class="screen-title">SCHEDULE<br>/ GANTT</div>
+  </div>
+  <div class="header-right">
+    <div class="event-count">28</div>
+    <div class="event-label">EVENTS</div>
+  </div>
+</div>
+
+<div class="view-toggle">
+  <button class="view-btn" id="btn-gantt" onclick="switchView('gantt')">GANTT VIEW</button>
+  <button class="view-btn active" id="btn-list" onclick="switchView('list')">LIST VIEW</button>
+</div>
+
+<div class="day-tabs">
+  <button class="day-tab" onclick="setDay(0, this)">
+    <div class="day-tab-date">22</div>
+    <div class="day-tab-day">FRI</div>
+  </button>
+  <button class="day-tab active" onclick="setDay(1, this)">
+    <div class="day-tab-date">23</div>
+    <div class="day-tab-day">SAT</div>
+  </button>
+  <button class="day-tab" onclick="setDay(2, this)">
+    <div class="day-tab-date">24</div>
+    <div class="day-tab-day">SUN</div>
+  </button>
+  <button class="day-tab" onclick="setDay(3, this)">
+    <div class="day-tab-date">25</div>
+    <div class="day-tab-day">MON</div>
+  </button>
+</div>
+
+<div class="filter-bar">
+  <button class="filter-chip active" onclick="filterToggle(this, 'all')">ALL · 28</button>
+  <button class="filter-chip" onclick="filterToggle(this, 'afterparty')">AFTERPARTY · 12</button>
+  <button class="filter-chip" onclick="filterToggle(this, 'sunrise')">SUNRISE · 4</button>
+  <button class="filter-chip" onclick="filterToggle(this, 'dayparty')">DAY PARTY · 5</button>
+  <button class="filter-chip" onclick="filterToggle(this, 'festival')">FESTIVAL · 4</button>
+  <button class="filter-chip" onclick="filterToggle(this, 'rsvp')">MY RSVP · 4</button>
+</div>
+
+<!-- ===================== GANTT VIEW ===================== -->
+<div class="gantt-view hidden" id="gantt-view">
+  <div class="gantt-wrap">
+    <div class="gantt-table">
+
+      <!-- Time header: 18:00 through 11:00 next day = 18 hours -->
+      <div class="gantt-time-header">
+        <div class="gantt-time-header-label">VENUE / TIME →</div>
+        <div class="gantt-time-cell">18</div>
+        <div class="gantt-time-cell">19</div>
+        <div class="gantt-time-cell">20</div>
+        <div class="gantt-time-cell">21</div>
+        <div class="gantt-time-cell">22</div>
+        <div class="gantt-time-cell">23</div>
+        <div class="gantt-time-cell midnight">00</div>
+        <div class="gantt-time-cell">01</div>
+        <div class="gantt-time-cell">02</div>
+        <div class="gantt-time-cell">03</div>
+        <div class="gantt-time-cell">04</div>
+        <div class="gantt-time-cell">05</div>
+        <div class="gantt-time-cell">06</div>
+        <div class="gantt-time-cell">07</div>
+        <div class="gantt-time-cell">08</div>
+        <div class="gantt-time-cell">09</div>
+        <div class="gantt-time-cell">10</div>
+        <div class="gantt-time-cell">11</div>
+      </div>
+
+      <!-- MARBLE BAR ROW -->
+      <div class="gantt-row">
+        <div class="gantt-venue-label">
+          <div class="gantt-venue-name">MARBLE<br>BAR</div>
+          <div class="gantt-venue-type">AFTERPARTY</div>
+        </div>
+        <!-- Grid cells 18-35 -->
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <!-- Event bars overlaid absolutely -->
+        <!-- BLAWAN: 01:00-05:00 = col offset 7, span 4 = left: 120+(7*44)=428px, width: 4*44=176px -->
+        <div class="gantt-event ev-afterparty" style="left:428px; width:176px;">
+          <div>
+            <div class="gantt-event-name">BLAWAN</div>
+            <span class="gantt-event-time">01–05</span>
+          </div>
+        </div>
+        <!-- SETH TROXLER: 23:00-05:00 = col 5, span 6 = left:120+(5*44)=340px, width:6*44=264px -->
+        <div class="gantt-event ev-afterparty" style="left:340px; width:264px; top:30px; bottom:2px;">
+          <div>
+            <div class="gantt-event-name">SETH TROXLER</div>
+            <span class="gantt-event-time">23–05</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TV LOUNGE ROW -->
+      <div class="gantt-row">
+        <div class="gantt-venue-label">
+          <div class="gantt-venue-name">TV LOUNGE</div>
+          <div class="gantt-venue-type">SUNRISE</div>
+        </div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <!-- SKEE MASK: 05:00-09:00 = col 11, span 4 = left:120+(11*44)=604px, width:176px -->
+        <div class="gantt-event ev-sunrise" style="left:604px; width:176px;">
+          <div>
+            <div class="gantt-event-name">SKEE MASK</div>
+            <span class="gantt-event-time">05–09</span>
+          </div>
+        </div>
+        <!-- VIRGIL ABLOH TRIBUTE: 01:00-04:00 col7 span3 -->
+        <div class="gantt-event ev-sunrise" style="left:428px; width:132px; top:30px; bottom:2px;">
+          <div>
+            <div class="gantt-event-name">DYED SOUNDOROM</div>
+            <span class="gantt-event-time">01–04</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DELUXX FLUXX ROW -->
+      <div class="gantt-row">
+        <div class="gantt-venue-label">
+          <div class="gantt-venue-name">DELUXX<br>FLUXX</div>
+          <div class="gantt-venue-type">DAY PARTY</div>
+        </div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <!-- CALL SUPER: 14:00-18:00... but our grid starts at 18:00. So this would be a different day segment. For SAT day party, starts at 14. Let's offset relative to gantt: 14:00 would be col -4. Show it wrapping around: place at col 0, span 4 for 18-22 portion only with note -->
+        <!-- Adjusted: day party starts at 14, show partial starting at grid start -->
+        <div class="gantt-event ev-dayparty" style="left:120px; width:176px;">
+          <div>
+            <div class="gantt-event-name">CALL SUPER</div>
+            <span class="gantt-event-time">14–18</span>
+          </div>
+        </div>
+        <div class="gantt-event ev-dayparty" style="left:340px; width:176px; top:30px; bottom:2px;">
+          <div>
+            <div class="gantt-event-name">AURORA HALAL</div>
+            <span class="gantt-event-time">19–23</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- EL CLUB ROW -->
+      <div class="gantt-row">
+        <div class="gantt-venue-label">
+          <div class="gantt-venue-name">EL CLUB</div>
+          <div class="gantt-venue-type">AFTERPARTY</div>
+        </div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <!-- Planetary Assault Systems: 23-04 = col5 span5 -->
+        <div class="gantt-event ev-afterparty" style="left:340px; width:220px;">
+          <div>
+            <div class="gantt-event-name">PLANETARY ASSAULT SYS.</div>
+            <span class="gantt-event-time">23–04</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TANGENT GALLERY -->
+      <div class="gantt-row">
+        <div class="gantt-venue-label">
+          <div class="gantt-venue-name">TANGENT<br>GALLERY</div>
+          <div class="gantt-venue-type">AFTERPARTY</div>
+        </div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <!-- Mathew Jonson: 00:00-04:00 = col6 span4 = left:120+(6*44)=384px, width:176px -->
+        <div class="gantt-event ev-afterparty" style="left:384px; width:176px;">
+          <div>
+            <div class="gantt-event-name">MATHEW JONSON</div>
+            <span class="gantt-event-time">00–04</span>
+          </div>
+        </div>
+        <!-- Surgeon: 22:00-00:00 = col4 span2 -->
+        <div class="gantt-event ev-afterparty" style="left:296px; width:88px; top:30px; bottom:2px;">
+          <div>
+            <div class="gantt-event-name">SURGEON</div>
+            <span class="gantt-event-time">22–00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- HART PLAZA -->
+      <div class="gantt-row">
+        <div class="gantt-venue-label">
+          <div class="gantt-venue-name">HART<br>PLAZA</div>
+          <div class="gantt-venue-type">FESTIVAL</div>
+        </div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <div class="gantt-grid-cell"></div>
+        <div class="gantt-grid-cell alt"></div>
+        <!-- Octave One: 16:00-18:00 = falls before grid starts (18). Show it at far left -->
+        <!-- DERRICK MAY: 18:00-20:00 = col0 span2 = left:120px, width:88px -->
+        <div class="gantt-event ev-festival" style="left:120px; width:88px;">
+          <div>
+            <div class="gantt-event-name">DERRICK MAY</div>
+            <span class="gantt-event-time">18–20</span>
+          </div>
+        </div>
+        <!-- KEVIN SAUNDERSON: 20:00-22:00 = col2 span2 -->
+        <div class="gantt-event ev-festival" style="left:208px; width:88px; top:30px; bottom:2px;">
+          <div>
+            <div class="gantt-event-name">KEVIN SAUNDERSON</div>
+            <span class="gantt-event-time">20–22</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /gantt-wrap -->
+</div>
+
+<!-- ===================== LIST VIEW ===================== -->
+<div class="list-view visible" id="list-view">
+
+  <!-- FRIDAY MAY 22 -->
+  <div class="list-day-block">
+    <div class="list-day-header">
+      <div class="list-day-name">FRIDAY / 22</div>
+      <div class="list-day-count">7 EVENTS</div>
+    </div>
+
+    <!-- Event: Call Super -->
+    <div class="event-card" onclick="toggleExpand(this)">
+      <div class="event-stripe ev-stripe-dayparty"></div>
+      <div class="event-main">
+        <div class="event-time-row">
+          <span class="event-time">14:00 → 18:00</span>
+          <span class="event-type-badge badge-g">DAY PARTY</span>
+        </div>
+        <div class="event-name">CALL SUPER</div>
+        <div class="event-venue">DELUXX FLUXX · LIBRARY ST</div>
+      </div>
+      <div class="event-right">
+        <span class="event-price">$15</span>
+      </div>
+      <div class="event-detail">
+        <div class="event-detail-grid">
+          <div class="detail-item">
+            <div class="detail-label">VENUE</div>
+            <div class="detail-value">DELUXX FLUXX</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">CAPACITY</div>
+            <div class="detail-value">400</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">DOOR</div>
+            <div class="detail-value amber">$15.00</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">AGE</div>
+            <div class="detail-value">21+</div>
+          </div>
+        </div>
+        <div class="artist-list">
+          <div class="artist-list-label">LINEUP</div>
+          <div class="artist-item"><span>CALL SUPER</span><span class="artist-time">14:00–16:00</span></div>
+          <div class="artist-item"><span>OBJECT BLUE</span><span class="artist-time">16:00–18:00</span></div>
+        </div>
+        <div class="detail-actions">
+          <button class="detail-btn btn-primary">ADD TO PLAN</button>
+          <button class="detail-btn btn-secondary">RA LINK →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Event: Octave One -->
+    <div class="event-card" onclick="toggleExpand(this)">
+      <div class="event-stripe ev-stripe-festival"></div>
+      <div class="event-main">
+        <div class="event-time-row">
+          <span class="event-time">16:00 → 18:00</span>
+          <span class="event-type-badge badge-t">FESTIVAL</span>
+        </div>
+        <div class="event-name">OCTAVE ONE</div>
+        <div class="event-venue">HART PLAZA · MAIN STAGE</div>
+      </div>
+      <div class="event-right">
+        <span class="event-price free">INCL.</span>
+      </div>
+      <div class="event-detail">
+        <div class="event-detail-grid">
+          <div class="detail-item">
+            <div class="detail-label">STAGE</div>
+            <div class="detail-value">MAIN STAGE</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">CAPACITY</div>
+            <div class="detail-value">OPEN AIR</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">DOOR</div>
+            <div class="detail-value amber">INCL. W/ FEST</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">AGE</div>
+            <div class="detail-value">ALL AGES</div>
+          </div>
+        </div>
+        <div class="artist-list">
+          <div class="artist-list-label">LINEUP</div>
+          <div class="artist-item"><span>OCTAVE ONE</span><span class="artist-time">16:00–18:00</span></div>
+        </div>
+        <div class="detail-actions">
+          <button class="detail-btn btn-primary">ADD TO PLAN</button>
+          <button class="detail-btn btn-secondary">RA LINK →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Event: Seth Troxler (RSVP'd) -->
+    <div class="event-card" onclick="toggleExpand(this)">
+      <div class="event-stripe ev-stripe-afterparty"></div>
+      <div class="event-main">
+        <div class="event-time-row">
+          <span class="event-time">23:00 → 05:00</span>
+          <span class="event-type-badge badge-v">AFTERPARTY</span>
+        </div>
+        <div class="event-name">SETH TROXLER</div>
+        <div class="event-venue">MARBLE BAR · HOLDEN ST</div>
+      </div>
+      <div class="event-right">
+        <div class="event-rsvp-dot" title="RSVP'd"></div>
+        <span class="event-price">$25</span>
+      </div>
+      <div class="event-detail">
+        <div class="event-detail-grid">
+          <div class="detail-item">
+            <div class="detail-label">VENUE</div>
+            <div class="detail-value">MARBLE BAR</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">CAPACITY</div>
+            <div class="detail-value">600</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">TICKET</div>
+            <div class="detail-value amber">$25.00 ✓</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">STATUS</div>
+            <div class="detail-value amber">CONFIRMED</div>
+          </div>
+        </div>
+        <div class="artist-list">
+          <div class="artist-list-label">LINEUP</div>
+          <div class="artist-item"><span>SETH TROXLER</span><span class="artist-time">23:00–03:00</span></div>
+          <div class="artist-item"><span>MANO LE TOUGH</span><span class="artist-time">03:00–05:00</span></div>
+        </div>
+        <div class="detail-actions">
+          <button class="detail-btn btn-primary" style="background:#7B5EA7;color:#fff;">IN MY PLAN ✓</button>
+          <button class="detail-btn btn-secondary">RA LINK →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- More FRI events (collapsed summary rows) -->
+    <div class="event-card" onclick="toggleExpand(this)">
+      <div class="event-stripe ev-stripe-afterparty"></div>
+      <div class="event-main">
+        <div class="event-time-row">
+          <span class="event-time">22:00 → 04:00</span>
+          <span class="event-type-badge badge-v">AFTERPARTY</span>
+        </div>
+        <div class="event-name">OBJEKT</div>
+        <div class="event-venue">TANGENT GALLERY · E MILWAUKEE</div>
+      </div>
+      <div class="event-right">
+        <span class="event-price">$18</span>
+      </div>
+      <div class="event-detail">
+        <div class="event-detail-grid">
+          <div class="detail-item"><div class="detail-label">VENUE</div><div class="detail-value">TANGENT GALLERY</div></div>
+          <div class="detail-item"><div class="detail-label">CAPACITY</div><div class="detail-value">300</div></div>
+          <div class="detail-item"><div class="detail-label">TICKET</div><div class="detail-value amber">$18.00</div></div>
+          <div class="detail-item"><div class="detail-label">AGE</div><div class="detail-value">21+</div></div>
+        </div>
+        <div class="detail-actions">
+          <button class="detail-btn btn-primary">ADD TO PLAN</button>
+          <button class="detail-btn btn-secondary">RA LINK →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="event-card" onclick="toggleExpand(this)">
+      <div class="event-stripe ev-stripe-afterparty"></div>
+      <div class="event-main">
+        <div class="event-time-row">
+          <span class="event-time">23:00 → 05:00</span>
+          <span class="event-type-badge badge-v">AFTERPARTY</span>
+        </div>
+        <div class="event-name">PLANETARY ASSAULT SYSTEMS</div>
+        <div class="event-venue">EL CLUB · VERNOR HWY</div>
+      </div>
+      <div class="event-right">
+        <span class="event-price">$20</span>
+      </div>
+      <div class="event-detail">
+        <div class="detail-actions">
+          <button class="detail-btn btn-primary">ADD TO PLAN</button>
+          <button class="detail-btn btn-secondary">RA LINK →</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /FRI -->
+
+  <!-- SATURDAY MAY 23 -->
+  <div class="list-day-block">
+    <div class="list-day-header">
+      <div class="list-day-name">SATURDAY / 23</div>
+      <div class="list-day-count">9 EVENTS</div>
+    </div>
+
+    <div class="event-card" onclick="toggleExpand(this)">
+      <div class="event-stripe ev-stripe-dayparty"></div>
+      <div class="event-main">
+        <div class="event-time-row">
+          <span class="event-time">14:00 → 18:00</span>
+          <span class="event-type-badge badge-g">DAY PARTY</span>
+        </div>
+        <div class="event-name">AURORA HALAL</div>
+        <div class="event-venue">DELUXX FLUXX · LIBRARY ST</div>
+      </div>
+      <div class="event-right">
+        <span class="event-price">$15</span>
+      </div>
+      <div class="event-detail">
+        <div class="detail-actions">
+          <button class="detail-btn btn-primary">ADD TO PLAN</button>
+          <button class="detail-btn btn-secondary">RA LINK →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Blawan (PENDING) -->
+    <div class="event-card" onclick="toggleExpand(this)">
+      <div class="event-stripe ev-stripe-afterparty"></div>
+      <div class="event-main">
+        <div class="event-time-row">
+          <span class="event-time">01:00 → 05:00</span>
+          <span class="event-type-badge badge-v">AFTERPARTY</span>
+        </div>
+        <div class="event-name">BLAWAN</div>
+        <div class="event-venue">MARBLE BAR · HOLDEN ST</div>
+      </div>
+      <div class="event-right">
+        <div class="event-rsvp-dot" style="background:rgba(255,140,0,0.35);" title="PENDING"></div>
+        <span class="event-price">$30</span>
+      </div>
+      <div class="event-detail">
+        <div class="event-detail-grid">
+          <div class="detail-item"><div class="detail-label">VENUE</div><div class="detail-value">MARBLE BAR</div></div>
+          <div class="detail-item"><div class="detail-label">CAPACITY</div><div class="detail-value">600</div></div>
+          <div class="detail-item"><div class="detail-label">TICKET</div><div class="detail-value" style="color:rgba(255,140,0,0.5)">PENDING · $0</div></div>
+          <div class="detail-item"><div class="detail-label">STATUS</div><div class="detail-value" style="color:rgba(255,255,255,0.4)">NO TICKET YET</div></div>
+        </div>
+        <div class="artist-list">
+          <div class="artist-list-label">LINEUP</div>
+          <div class="artist-item"><span>BLAWAN</span><span class="artist-time">01:00–05:00</span></div>
+        </div>
+        <div class="detail-actions">
+          <button class="detail-btn btn-primary">GET TICKET →</button>
+          <button class="detail-btn btn-secondary">RA LINK →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skee Mask (RSVP'd) -->
+    <div class="event-card" onclick="toggleExpand(this)">
+      <div class="event-stripe ev-stripe-sunrise"></div>
+      <div class="event-main">
+        <div class="event-time-row">
+          <span class="event-time">05:00 → 09:00</span>
+          <span class="event-type-badge badge-a">SUNRISE</span>
+        </div>
+        <div class="event-name">SKEE MASK</div>
+        <div class="event-venue">TV LOUNGE · ATWATER ST</div>
+      </div>
+      <div class="event-right">
+        <div class="event-rsvp-dot" title="RSVP'd"></div>
+        <span class="event-price">$20</span>
+      </div>
+      <div class="event-detail">
+        <div class="event-detail-grid">
+          <div class="detail-item"><div class="detail-label">VENUE</div><div class="detail-value">TV LOUNGE</div></div>
+          <div class="detail-item"><div class="detail-label">CAPACITY</div><div class="detail-value">200</div></div>
+          <div class="detail-item"><div class="detail-label">TICKET</div><div class="detail-value amber">$20.00 ✓</div></div>
+          <div class="detail-item"><div class="detail-label">STATUS</div><div class="detail-value amber">CONFIRMED</div></div>
+        </div>
+        <div class="artist-list">
+          <div class="artist-list-label">LINEUP</div>
+          <div class="artist-item"><span>SKEE MASK</span><span class="artist-time">05:00–09:00</span></div>
+        </div>
+        <div class="detail-actions">
+          <button class="detail-btn btn-primary" style="background:#7B5EA7;color:#fff;">IN MY PLAN ✓</button>
+          <button class="detail-btn btn-secondary">RA LINK →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="event-card" onclick="toggleExpand(this)">
+      <div class="event-stripe ev-stripe-afterparty"></div>
+      <div class="event-main">
+        <div class="event-time-row">
+          <span class="event-time">23:00 → 06:00</span>
+          <span class="event-type-badge badge-v">AFTERPARTY</span>
+        </div>
+        <div class="event-name">SURGEON</div>
+        <div class="event-venue">TANGENT GALLERY · E MILWAUKEE</div>
+      </div>
+      <div class="event-right">
+        <span class="event-price">$20</span>
+      </div>
+      <div class="event-detail">
+        <div class="detail-actions">
+          <button class="detail-btn btn-primary">ADD TO PLAN</button>
+          <button class="detail-btn btn-secondary">RA LINK →</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /SAT -->
+
+  <!-- SUNDAY MAY 24 -->
+  <div class="list-day-block">
+    <div class="list-day-header">
+      <div class="list-day-name">SUNDAY / 24</div>
+      <div class="list-day-count">7 EVENTS</div>
+    </div>
+
+    <div class="event-card" onclick="toggleExpand(this)">
+      <div class="event-stripe ev-stripe-festival"></div>
+      <div class="event-main">
+        <div class="event-time-row">
+          <span class="event-time">16:00 → 18:00</span>
+          <span class="event-type-badge badge-t">FESTIVAL</span>
+        </div>
+        <div class="event-name">OCTAVE ONE</div>
+        <div class="event-venue">HART PLAZA · MAIN STAGE</div>
+      </div>
+      <div class="event-right">
+        <span class="event-price free">INCL.</span>
+      </div>
+      <div class="event-detail">
+        <div class="detail-actions">
+          <button class="detail-btn btn-primary">ADD TO PLAN</button>
+          <button class="detail-btn btn-secondary">RA LINK →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="event-card" onclick="toggleExpand(this)">
+      <div class="event-stripe ev-stripe-sunrise"></div>
+      <div class="event-main">
+        <div class="event-time-row">
+          <span class="event-time">06:00 → 10:00</span>
+          <span class="event-type-badge badge-a">SUNRISE</span>
+        </div>
+        <div class="event-name">DYED SOUNDOROM</div>
+        <div class="event-venue">TV LOUNGE · ATWATER ST</div>
+      </div>
+      <div class="event-right">
+        <span class="event-price">$20</span>
+      </div>
+      <div class="event-detail">
+        <div class="detail-actions">
+          <button class="detail-btn btn-primary">ADD TO PLAN</button>
+          <button class="detail-btn btn-secondary">RA LINK →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="event-card" onclick="toggleExpand(this)">
+      <div class="event-stripe ev-stripe-afterparty"></div>
+      <div class="event-main">
+        <div class="event-time-row">
+          <span class="event-time">00:00 → 05:00</span>
+          <span class="event-type-badge badge-v">AFTERPARTY</span>
+        </div>
+        <div class="event-name">CHARLOTTE DE WITTE</div>
+        <div class="event-venue">MARBLE BAR · HOLDEN ST</div>
+      </div>
+      <div class="event-right">
+        <span class="event-price">$28</span>
+      </div>
+      <div class="event-detail">
+        <div class="detail-actions">
+          <button class="detail-btn btn-primary">ADD TO PLAN</button>
+          <button class="detail-btn btn-secondary">RA LINK →</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /SUN -->
+
+  <!-- MONDAY MAY 25 -->
+  <div class="list-day-block">
+    <div class="list-day-header">
+      <div class="list-day-name">MONDAY / 25</div>
+      <div class="list-day-count">5 EVENTS</div>
+    </div>
+
+    <!-- Mathew Jonson (RSVP'd) -->
+    <div class="event-card" onclick="toggleExpand(this)">
+      <div class="event-stripe ev-stripe-afterparty"></div>
+      <div class="event-main">
+        <div class="event-time-row">
+          <span class="event-time">00:00 → 04:00</span>
+          <span class="event-type-badge badge-v">AFTERPARTY</span>
+        </div>
+        <div class="event-name">MATHEW JONSON</div>
+        <div class="event-venue">TANGENT GALLERY · E MILWAUKEE</div>
+      </div>
+      <div class="event-right">
+        <div class="event-rsvp-dot" title="RSVP'd"></div>
+        <span class="event-price">$20</span>
+      </div>
+      <div class="event-detail">
+        <div class="event-detail-grid">
+          <div class="detail-item"><div class="detail-label">VENUE</div><div class="detail-value">TANGENT GALLERY</div></div>
+          <div class="detail-item"><div class="detail-label">CAPACITY</div><div class="detail-value">300</div></div>
+          <div class="detail-item"><div class="detail-label">TICKET</div><div class="detail-value amber">$20.00 ✓</div></div>
+          <div class="detail-item"><div class="detail-label">STATUS</div><div class="detail-value amber">CONFIRMED</div></div>
+        </div>
+        <div class="artist-list">
+          <div class="artist-list-label">LINEUP</div>
+          <div class="artist-item"><span>MATHEW JONSON</span><span class="artist-time">00:00–04:00</span></div>
+        </div>
+        <div class="detail-actions">
+          <button class="detail-btn btn-primary" style="background:#7B5EA7;color:#fff;">IN MY PLAN ✓</button>
+          <button class="detail-btn btn-secondary">RA LINK →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="event-card" onclick="toggleExpand(this)">
+      <div class="event-stripe ev-stripe-sunrise"></div>
+      <div class="event-main">
+        <div class="event-time-row">
+          <span class="event-time">05:00 → 10:00</span>
+          <span class="event-type-badge badge-a">SUNRISE</span>
+        </div>
+        <div class="event-name">MIKE SERVITO</div>
+        <div class="event-venue">GRASSHOPPER · WATSON ST</div>
+      </div>
+      <div class="event-right">
+        <span class="event-price">$15</span>
+      </div>
+      <div class="event-detail">
+        <div class="detail-actions">
+          <button class="detail-btn btn-primary">ADD TO PLAN</button>
+          <button class="detail-btn btn-secondary">RA LINK →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="event-card" onclick="toggleExpand(this)">
+      <div class="event-stripe ev-stripe-dayparty"></div>
+      <div class="event-main">
+        <div class="event-time-row">
+          <span class="event-time">13:00 → 17:00</span>
+          <span class="event-type-badge badge-g">DAY PARTY</span>
+        </div>
+        <div class="event-name">FINALE DAY PARTY</div>
+        <div class="event-venue">PJ'S LAGER HOUSE · MICHIGAN AVE</div>
+      </div>
+      <div class="event-right">
+        <span class="event-price free">FREE</span>
+      </div>
+      <div class="event-detail">
+        <div class="detail-actions">
+          <button class="detail-btn btn-primary">ADD TO PLAN</button>
+          <button class="detail-btn btn-secondary">RA LINK →</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /MON -->
+
+</div><!-- /list-view -->
+
+<div class="spacer-bottom"></div>
+
+<nav class="nav-bar">
+  <a class="nav-item" href="map.html">
+    <span class="nav-icon">⊞</span>
+    <span class="nav-label">MAP</span>
+  </a>
+  <a class="nav-item active" href="#">
+    <span class="nav-icon">≡</span>
+    <span class="nav-label">SCHEDULE</span>
+  </a>
+  <a class="nav-item" href="plan.html">
+    <span class="nav-icon">◈</span>
+    <span class="nav-label">MY PLAN</span>
+  </a>
+</nav>
+
+<script>
+  function toggleExpand(card) {
+    const wasExpanded = card.classList.contains('expanded');
+    document.querySelectorAll('.event-card.expanded').forEach(c => c.classList.remove('expanded'));
+    if (!wasExpanded) card.classList.add('expanded');
+  }
+
+  function switchView(mode) {
+    const gantt = document.getElementById('gantt-view');
+    const list = document.getElementById('list-view');
+    const btnG = document.getElementById('btn-gantt');
+    const btnL = document.getElementById('btn-list');
+    if (mode === 'gantt') {
+      gantt.classList.remove('hidden');
+      list.classList.remove('visible');
+      btnG.classList.add('active');
+      btnL.classList.remove('active');
+    } else {
+      gantt.classList.add('hidden');
+      list.classList.add('visible');
+      btnL.classList.add('active');
+      btnG.classList.remove('active');
+    }
+  }
+
+  function setDay(idx, el) {
+    document.querySelectorAll('.day-tab').forEach((t,i) => {
+      t.classList.toggle('active', i === idx);
+    });
+  }
+
+  function filterToggle(el, type) {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active','active-v','active-g','active-t'));
+    if (type === 'afterparty') el.classList.add('active-v');
+    else if (type === 'dayparty') el.classList.add('active-g');
+    else if (type === 'festival') el.classList.add('active-t');
+    else el.classList.add('active');
+  }
+</script>
+</body>
+</html>

@@ -1,11 +1,23 @@
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, Linking } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, Linking, Platform } from 'react-native';
 import { COLORS } from '../constants/Theme';
 import dataService from '../services/dataService';
 
+const monoFont = Platform.OS === 'web' ? "'Share Tech Mono', monospace" : undefined;
+const displayFont = Platform.OS === 'web' ? "'Bebas Neue', sans-serif" : undefined;
+const condensedFont = Platform.OS === 'web' ? "'Barlow Condensed', sans-serif" : undefined;
+
 function openMaps(address: string, city: string) {
-  const query = encodeURIComponent(`${address}, ${city}`);
-  Linking.openURL(`https://maps.google.com/?q=${query}`);
+  Linking.openURL(`https://maps.google.com/?q=${encodeURIComponent(`${address}, ${city}`)}`);
+}
+
+function getCategoryColor(category?: string) {
+  switch (category) {
+    case 'Afterparty': return COLORS.afterparty;
+    case 'Day Party':  return COLORS.dayParty;
+    case 'Sunrise':    return COLORS.sunrise;
+    default:           return COLORS.festival;
+  }
 }
 
 interface VenueBottomSheetProps {
@@ -15,15 +27,14 @@ interface VenueBottomSheetProps {
 }
 
 const VenueBottomSheet: React.FC<VenueBottomSheetProps> = ({ venueId, onClose, onEventSelect }) => {
-  const venue = useMemo(() => {
-    if (!venueId) return null;
-    return dataService.getVenues().find((v) => v.id === venueId);
-  }, [venueId]);
-
-  const venueEvents = useMemo(() => {
-    if (!venueId) return [];
-    return dataService.getEventsByVenue(venueId);
-  }, [venueId]);
+  const venue = useMemo(
+    () => (!venueId ? null : dataService.getVenues().find((v) => v.id === venueId)),
+    [venueId],
+  );
+  const venueEvents = useMemo(
+    () => (!venueId ? [] : dataService.getEventsByVenue(venueId)),
+    [venueId],
+  );
 
   if (!venue) return null;
 
@@ -31,37 +42,64 @@ const VenueBottomSheet: React.FC<VenueBottomSheetProps> = ({ venueId, onClose, o
     <Modal visible={!!venueId} transparent animationType="slide" onRequestClose={onClose}>
       <TouchableOpacity style={styles.backdrop} activeOpacity={1} onPress={onClose}>
         <TouchableOpacity style={styles.sheet} activeOpacity={1}>
-          <View style={styles.handle} />
+          <View style={styles.accentBar} />
           <ScrollView contentContainerStyle={styles.content}>
-            <View style={styles.header}>
-              <Text style={styles.title}>{venue.name}</Text>
-              <TouchableOpacity onPress={() => openMaps(venue.address, venue.city)}>
-                <Text style={styles.addressLink}>{venue.address}, {venue.city}</Text>
-              </TouchableOpacity>
+            {/* Close */}
+            <TouchableOpacity onPress={onClose} style={styles.closeRow}>
+              <Text style={styles.closeText}>✕ CLOSE</Text>
+            </TouchableOpacity>
+
+            {/* Venue name */}
+            <Text style={styles.venueName}>{venue.name.toUpperCase()}</Text>
+            <TouchableOpacity onPress={() => openMaps(venue.address, venue.city)}>
+              <Text style={styles.addressLink}>
+                ↗ {venue.address.toUpperCase()}, {venue.city.toUpperCase()}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Stats row */}
+            <View style={styles.statsRow}>
+              <View style={styles.statBox}>
+                <Text style={styles.statLabel}>EVENTS</Text>
+                <Text style={styles.statValue}>{venueEvents.length}</Text>
+              </View>
+              {venue.popular && (
+                <View style={[styles.statBox, { borderColor: COLORS.pink + '66' }]}>
+                  <Text style={[styles.statLabel, { color: COLORS.pink }]}>STATUS</Text>
+                  <Text style={[styles.statValue, { color: COLORS.pink }]}>HOT</Text>
+                </View>
+              )}
             </View>
 
-            <Text style={styles.sectionTitle}>Events at this venue</Text>
+            {/* Events list */}
+            <Text style={styles.sectionLabel}>EVENTS AT THIS VENUE</Text>
             {venueEvents.length > 0 ? (
-              venueEvents.map((event) => (
-                <TouchableOpacity
-                  key={event.id}
-                  style={styles.eventItem}
-                  onPress={() => {
-                    onClose();
-                    setTimeout(() => onEventSelect(event.id), 100);
-                  }}
-                >
-                  <View style={[styles.categoryIndicator, { backgroundColor: getCategoryColor(event.category) }]} />
-                  <View style={styles.eventInfo}>
-                    <Text style={styles.eventTitle}>{event.title}</Text>
-                    <Text style={styles.eventTime}>
-                      {dataService.formatTime(event.startTime)} – {dataService.formatTime(event.endTime)}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              ))
+              venueEvents.map((event) => {
+                const color = getCategoryColor(event.category);
+                return (
+                  <TouchableOpacity
+                    key={event.id}
+                    style={styles.eventItem}
+                    onPress={() => { onClose(); setTimeout(() => onEventSelect(event.id), 100); }}
+                    activeOpacity={0.7}
+                  >
+                    <View style={[styles.colorBar, { backgroundColor: color }]} />
+                    <View style={styles.eventInfo}>
+                      <Text style={[styles.eventTitle, { color }]}>{event.title.toUpperCase()}</Text>
+                      <Text style={styles.eventTime}>
+                        {dataService.formatTime(event.startTime)} – {dataService.formatTime(event.endTime)}
+                      </Text>
+                    </View>
+                    <View style={[styles.eventBadge, { borderColor: color + '55' }]}>
+                      <Text style={[styles.eventBadgeText, { color }]}>
+                        {(event.category ?? 'EVENT').toUpperCase()}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              })
             ) : (
-              <Text style={styles.emptyText}>No events scheduled at this venue.</Text>
+              <Text style={styles.emptyText}>NO EVENTS SCHEDULED</Text>
             )}
           </ScrollView>
         </TouchableOpacity>
@@ -70,93 +108,121 @@ const VenueBottomSheet: React.FC<VenueBottomSheetProps> = ({ venueId, onClose, o
   );
 };
 
-const getCategoryColor = (category?: string) => {
-  switch (category) {
-    case 'Afterparty': return COLORS.afterparty;
-    case 'Day Party': return COLORS.dayParty;
-    case 'Sunrise': return COLORS.sunrise;
-    default: return COLORS.festival;
-  }
-};
-
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.88)',
     justifyContent: 'flex-end',
   },
   sheet: {
-    backgroundColor: COLORS.surface,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    maxHeight: '40%',
+    backgroundColor: '#000',
+    borderTopWidth: 2,
+    borderTopColor: COLORS.acid,
+    maxHeight: '65%',
+    shadowColor: COLORS.acid,
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: -4 },
   },
-  handle: {
-    alignSelf: 'center',
-    width: 40,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: COLORS.textSecondary,
-    marginTop: 10,
+  accentBar: { height: 2, backgroundColor: COLORS.acid, width: '100%' },
+  content: { padding: 16, paddingBottom: 40 },
+  closeRow: { marginBottom: 12 },
+  closeText: {
+    color: 'rgba(204,255,0,0.4)',
+    fontSize: 10,
+    fontFamily: monoFont,
+    letterSpacing: 2,
+  },
+  venueName: {
+    fontSize: 36,
+    fontFamily: displayFont,
+    fontWeight: '900',
+    color: COLORS.acid,
+    letterSpacing: 3,
+    lineHeight: 38,
     marginBottom: 6,
   },
-  content: {
-    padding: 16,
-    paddingBottom: 32,
-  },
-  header: {
-    marginBottom: 16,
-  },
-  title: {
-    color: COLORS.textPrimary,
-    fontSize: 20,
-    fontWeight: '800',
-    marginBottom: 2,
-  },
   addressLink: {
-    color: '#60A5FA',
-    fontSize: 14,
-    fontWeight: '500',
+    color: COLORS.pink,
+    fontSize: 10,
+    fontFamily: monoFont,
+    letterSpacing: 0.5,
+    marginBottom: 14,
     textDecorationLine: 'underline',
   },
-  sectionTitle: {
-    color: COLORS.textSecondary,
-    fontSize: 11,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    marginBottom: 12,
+  statsRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 16,
+  },
+  statBox: {
+    borderWidth: 1,
+    borderColor: 'rgba(204,255,0,0.25)',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    backgroundColor: '#0a0a0a',
+  },
+  statLabel: {
+    fontSize: 9,
+    color: 'rgba(204,255,0,0.4)',
+    fontFamily: monoFont,
     letterSpacing: 1,
+    marginBottom: 2,
+  },
+  statValue: {
+    fontSize: 20,
+    fontFamily: displayFont,
+    color: COLORS.acid,
+    letterSpacing: 2,
+  },
+  sectionLabel: {
+    fontSize: 9,
+    color: 'rgba(204,255,0,0.4)',
+    fontFamily: monoFont,
+    letterSpacing: 2,
+    marginBottom: 8,
   },
   eventItem: {
     flexDirection: 'row',
-    backgroundColor: '#2A2A2A',
-    borderRadius: 8,
-    marginBottom: 8,
-    overflow: 'hidden',
+    alignItems: 'stretch',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(204,255,0,0.06)',
   },
-  categoryIndicator: {
-    width: 5,
-  },
-  eventInfo: {
-    flex: 1,
-    padding: 10,
-  },
+  colorBar: { width: 3, flexShrink: 0 },
+  eventInfo: { flex: 1, padding: 10 },
   eventTitle: {
-    color: COLORS.textPrimary,
     fontSize: 14,
-    fontWeight: '700',
+    fontFamily: condensedFont,
+    fontWeight: '900',
+    letterSpacing: 0.5,
     marginBottom: 2,
   },
   eventTime: {
-    color: COLORS.textSecondary,
-    fontSize: 12,
+    color: 'rgba(204,255,0,0.45)',
+    fontSize: 10,
+    fontFamily: monoFont,
+    letterSpacing: 0.5,
+  },
+  eventBadge: {
+    borderWidth: 1,
+    alignSelf: 'center',
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    marginRight: 10,
+  },
+  eventBadgeText: {
+    fontSize: 8,
+    fontFamily: monoFont,
+    fontWeight: '700',
+    letterSpacing: 1,
   },
   emptyText: {
-    color: COLORS.textSecondary,
-    fontSize: 14,
-    fontStyle: 'italic',
+    color: 'rgba(204,255,0,0.25)',
+    fontSize: 13,
+    fontFamily: monoFont,
+    letterSpacing: 2,
     textAlign: 'center',
-    marginTop: 16,
+    marginTop: 20,
   },
 });
 

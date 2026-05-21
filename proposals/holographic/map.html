@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Movement 2026 — Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Syncopate:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #050510;
+    --deep: #080820;
+    --iris-1: #ff00ff;
+    --iris-2: #00ffff;
+    --iris-3: #ff9500;
+    --iris-4: #7b2fff;
+    --iris-5: #00ff88;
+    --text: #e8e8ff;
+    --text-dim: rgba(232,232,255,0.5);
+    --border: rgba(255,255,255,0.08);
+    --shimmer-a: rgba(255,0,255,0.18);
+    --shimmer-b: rgba(0,255,255,0.18);
+    --shimmer-c: rgba(255,149,0,0.14);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--void);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Animated conic gradient background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      conic-gradient(from 0deg at 30% 70%, transparent 0deg, rgba(123,47,255,0.08) 60deg, transparent 120deg),
+      conic-gradient(from 180deg at 70% 30%, transparent 0deg, rgba(0,255,255,0.06) 80deg, transparent 160deg),
+      radial-gradient(ellipse at 20% 80%, rgba(255,0,255,0.07) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(0,255,200,0.06) 0%, transparent 50%);
+    animation: bgRotate 25s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Noise grain */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  @keyframes bgRotate {
+    from { filter: hue-rotate(0deg); }
+    to { filter: hue-rotate(360deg); }
+  }
+
+  /* Header */
+  .header {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    z-index: 100;
+    padding: 16px 20px 12px;
+    background: linear-gradient(180deg, rgba(5,5,16,0.95) 0%, rgba(5,5,16,0.7) 100%);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .logo-text {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    background: linear-gradient(90deg, #ff00ff, #00ffff, #ff9500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+  }
+
+  .date-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+  }
+
+  .nav-tab {
+    flex: 1;
+    padding: 8px 4px;
+    text-align: center;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: transparent;
+    border: 1px solid transparent;
+  }
+
+  .nav-tab.active {
+    color: #00ffff;
+    background: rgba(0,255,255,0.08);
+    border-color: rgba(0,255,255,0.2);
+    text-shadow: 0 0 12px rgba(0,255,255,0.5);
+  }
+
+  /* Map container */
+  .map-container {
+    position: relative;
+    margin-top: 110px;
+    width: 100%;
+    height: calc(100vh - 110px);
+    overflow: hidden;
+    background: #06061a;
+  }
+
+  /* SVG map */
+  #detroit-map {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Route info panel */
+  .route-panel {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    z-index: 90;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .route-panel.hidden {
+    transform: translateX(-50%) translateY(100%);
+  }
+
+  .route-inner {
+    margin: 0 16px 16px;
+    padding: 16px;
+    background: linear-gradient(135deg,
+      rgba(123,47,255,0.15) 0%,
+      rgba(0,255,255,0.12) 50%,
+      rgba(255,0,255,0.15) 100%
+    );
+    border: 1px solid rgba(0,255,255,0.2);
+    border-radius: 20px;
+    backdrop-filter: blur(24px);
+    box-shadow: 0 -4px 40px rgba(0,255,255,0.08), inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+
+  .route-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .route-title {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: #00ffff;
+    text-shadow: 0 0 10px rgba(0,255,255,0.4);
+  }
+
+  .route-close {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .route-venues {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .route-venue-chip {
+    flex: 1;
+    padding: 8px 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+  }
+
+  .route-venue-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .route-venue-addr {
+    font-size: 10px;
+    color: var(--text-dim);
+    font-family: 'Share Tech Mono', monospace;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .route-arrow {
+    font-size: 16px;
+    color: var(--text-dim);
+    flex-shrink: 0;
+  }
+
+  .route-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+
+  .route-stat {
+    text-align: center;
+    padding: 10px 6px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .stat-icon {
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+
+  .stat-value {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .stat-value.walk { color: #00ff88; text-shadow: 0 0 8px rgba(0,255,136,0.4); }
+  .stat-value.drive { color: #ff9500; text-shadow: 0 0 8px rgba(255,149,0,0.4); }
+  .stat-value.dist { color: #00ffff; text-shadow: 0 0 8px rgba(0,255,255,0.4); }
+
+  .stat-label {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    margin-top: 3px;
+  }
+
+  /* Venue tooltip */
+  .venue-tooltip {
+    position: fixed;
+    z-index: 95;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .venue-tooltip.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .tooltip-inner {
+    background: linear-gradient(135deg, rgba(8,8,32,0.96), rgba(20,8,40,0.96));
+    border: 1px solid rgba(123,47,255,0.4);
+    border-radius: 14px;
+    padding: 12px 14px;
+    min-width: 160px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 4px 30px rgba(123,47,255,0.2);
+  }
+
+  .tooltip-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .tooltip-addr {
+    font-size: 10px;
+    color: var(--text-dim);
+    font-family: 'Share Tech Mono', monospace;
+    margin-bottom: 8px;
+  }
+
+  .tooltip-events {
+    font-size: 11px;
+    color: #7b2fff;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .tooltip-actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .tooltip-btn {
+    flex: 1;
+    padding: 6px 4px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid;
+    font-family: 'Rajdhani', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .tooltip-btn.route {
+    background: rgba(0,255,255,0.1);
+    border-color: rgba(0,255,255,0.3);
+    color: #00ffff;
+  }
+
+  .tooltip-btn.details {
+    background: rgba(123,47,255,0.1);
+    border-color: rgba(123,47,255,0.3);
+    color: #b06aff;
+  }
+
+  /* FAB */
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7b2fff, #ff00ff);
+    box-shadow: 0 4px 20px rgba(123,47,255,0.5), 0 0 40px rgba(255,0,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 100;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  .fab:active {
+    transform: scale(0.92);
+  }
+
+  /* Legend */
+  .legend {
+    position: fixed;
+    top: 122px;
+    right: 12px;
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 8px;
+    background: rgba(5,5,16,0.85);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+  }
+
+  .legend-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .legend-text {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* Instruction overlay */
+  .map-instruction {
+    position: fixed;
+    top: 130px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 90;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.5s;
+  }
+
+  .map-instruction.hidden {
+    opacity: 0;
+  }
+
+  .instruction-pill {
+    background: rgba(5,5,16,0.9);
+    border: 1px solid rgba(0,255,255,0.2);
+    border-radius: 20px;
+    padding: 7px 14px;
+    font-size: 10px;
+    color: rgba(0,255,255,0.7);
+    letter-spacing: 0.1em;
+    backdrop-filter: blur(10px);
+    white-space: nowrap;
+  }
+
+  /* Animate pins */
+  @keyframes pinPulse {
+    0%, 100% { r: 7; opacity: 1; }
+    50% { r: 9; opacity: 0.7; }
+  }
+
+  @keyframes ringExpand {
+    0% { r: 10; opacity: 0.6; }
+    100% { r: 22; opacity: 0; }
+  }
+
+  @keyframes shimmerSweep {
+    0% { stop-color: #ff00ff; }
+    25% { stop-color: #00ffff; }
+    50% { stop-color: #ff9500; }
+    75% { stop-color: #7b2fff; }
+    100% { stop-color: #ff00ff; }
+  }
+
+  .pulse-ring {
+    animation: ringExpand 2s ease-out infinite;
+  }
+
+  .venue-pin-dot {
+    animation: pinPulse 3s ease-in-out infinite;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-top">
+    <span class="logo-text">MOVEMENT 2026</span>
+    <span class="date-badge">MAY 22–25 · DETROIT</span>
+  </div>
+  <div class="nav-tabs">
+    <div class="nav-tab">PLAN</div>
+    <div class="nav-tab active">MAP</div>
+    <div class="nav-tab">SCHEDULE</div>
+  </div>
+</div>
+
+<!-- Legend -->
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-dot" style="background:#b06aff; box-shadow:0 0 5px #7b2fff;"></div>
+    <span class="legend-text">AFTERPARTY</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:#00ffff; box-shadow:0 0 5px #00ffff;"></div>
+    <span class="legend-text">SUNRISE</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:#ffa500; box-shadow:0 0 5px #ff9500;"></div>
+    <span class="legend-text">DAY PARTY</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:#00ff88; box-shadow:0 0 5px #00ff88;"></div>
+    <span class="legend-text">FESTIVAL</span>
+  </div>
+</div>
+
+<!-- Instruction pill -->
+<div class="map-instruction" id="instruction">
+  <div class="instruction-pill">TAP A VENUE · TAP ANOTHER TO ROUTE</div>
+</div>
+
+<!-- Map -->
+<div class="map-container">
+  <svg id="detroit-map" viewBox="0 0 430 620" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <!-- Grid pattern -->
+      <pattern id="grid-minor" width="20" height="20" patternUnits="userSpaceOnUse">
+        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(100,100,180,0.06)" stroke-width="0.5"/>
+      </pattern>
+      <pattern id="grid-major" width="100" height="100" patternUnits="userSpaceOnUse">
+        <rect width="100" height="100" fill="url(#grid-minor)"/>
+        <path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(100,100,200,0.1)" stroke-width="1"/>
+      </pattern>
+
+      <!-- Iridescent route gradient -->
+      <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#ff00ff" stop-opacity="0.9"/>
+        <stop offset="50%" stop-color="#00ffff" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#ff9500" stop-opacity="0.9"/>
+      </linearGradient>
+
+      <!-- Glow filter -->
+      <filter id="glow-cyan">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="glow-violet">
+        <feGaussianBlur stdDeviation="4" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="glow-route">
+        <feGaussianBlur stdDeviation="6" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="glow-amber">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="glow-green">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+
+      <!-- Water pattern for Detroit River -->
+      <linearGradient id="riverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="rgba(0,30,80,0.6)"/>
+        <stop offset="100%" stop-color="rgba(0,50,120,0.4)"/>
+      </linearGradient>
+
+      <!-- Venue pin gradients -->
+      <radialGradient id="pinViolet" cx="50%" cy="30%" r="70%">
+        <stop offset="0%" stop-color="#d090ff"/>
+        <stop offset="100%" stop-color="#5000cc"/>
+      </radialGradient>
+      <radialGradient id="pinCyan" cx="50%" cy="30%" r="70%">
+        <stop offset="0%" stop-color="#80ffff"/>
+        <stop offset="100%" stop-color="#006688"/>
+      </radialGradient>
+      <radialGradient id="pinAmber" cx="50%" cy="30%" r="70%">
+        <stop offset="0%" stop-color="#ffcc66"/>
+        <stop offset="100%" stop-color="#884400"/>
+      </radialGradient>
+      <radialGradient id="pinGreen" cx="50%" cy="30%" r="70%">
+        <stop offset="0%" stop-color="#80ffcc"/>
+        <stop offset="100%" stop-color="#006633"/>
+      </radialGradient>
+    </defs>
+
+    <!-- Map base -->
+    <rect width="430" height="620" fill="#06061a"/>
+    <rect width="430" height="620" fill="url(#grid-major)"/>
+
+    <!-- Subtle radial vignette at center -->
+    <radial-gradient/>
+    <ellipse cx="215" cy="310" rx="200" ry="280" fill="none" stroke="rgba(100,80,200,0.04)" stroke-width="80"/>
+
+    <!-- ======================== DETROIT STREET GRID ======================== -->
+    <!-- Detroit River (south) -->
+    <path d="M 0 560 Q 80 545 160 552 Q 240 558 320 548 Q 380 542 430 550 L 430 620 L 0 620 Z"
+          fill="url(#riverGrad)" opacity="0.8"/>
+    <!-- River shimmer -->
+    <path d="M 0 558 Q 100 548 200 555 Q 300 562 430 552"
+          fill="none" stroke="rgba(0,100,200,0.3)" stroke-width="1.5"/>
+    <path d="M 0 570 Q 120 562 240 567 Q 350 572 430 564"
+          fill="none" stroke="rgba(0,150,255,0.15)" stroke-width="1"/>
+    <!-- Windsor, Canada (below river) -->
+    <rect x="0" y="578" width="430" height="42" fill="rgba(0,20,50,0.3)"/>
+    <text x="215" y="596" text-anchor="middle" fill="rgba(100,150,255,0.2)" font-size="9" font-family="Share Tech Mono" letter-spacing="0.2em">WINDSOR, ON</text>
+
+    <!-- MAJOR STREETS - East-West -->
+    <!-- Jefferson Ave (riverfront) -->
+    <line x1="0" y1="520" x2="430" y2="520" stroke="rgba(120,120,200,0.18)" stroke-width="3"/>
+    <text x="20" y="516" fill="rgba(150,150,220,0.35)" font-size="7" font-family="Share Tech Mono" letter-spacing="0.05em">JEFFERSON AVE</text>
+
+    <!-- Atwater -->
+    <line x1="0" y1="490" x2="250" y2="490" stroke="rgba(120,120,200,0.12)" stroke-width="1.5"/>
+
+    <!-- Fort St -->
+    <line x1="0" y1="460" x2="430" y2="460" stroke="rgba(120,120,200,0.14)" stroke-width="2"/>
+    <text x="20" y="456" fill="rgba(150,150,220,0.3)" font-size="7" font-family="Share Tech Mono" letter-spacing="0.05em">FORT ST</text>
+
+    <!-- Congress -->
+    <line x1="0" y1="430" x2="430" y2="430" stroke="rgba(120,120,200,0.1)" stroke-width="1.5"/>
+
+    <!-- Michigan Ave (diagonal-ish) -->
+    <path d="M 0 380 Q 100 375 200 370 Q 300 365 430 380"
+          fill="none" stroke="rgba(120,120,200,0.18)" stroke-width="2.5"/>
+    <text x="20" y="376" fill="rgba(150,150,220,0.35)" font-size="7" font-family="Share Tech Mono" letter-spacing="0.05em">MICHIGAN AVE</text>
+
+    <!-- Grand Blvd -->
+    <path d="M 0 270 Q 150 260 280 255 Q 360 252 430 258"
+          fill="none" stroke="rgba(120,120,200,0.14)" stroke-width="2"/>
+    <text x="20" y="265" fill="rgba(150,150,220,0.3)" font-size="7" font-family="Share Tech Mono" letter-spacing="0.05em">GRAND BLVD</text>
+
+    <!-- Milwaukee Ave -->
+    <line x1="0" y1="310" x2="430" y2="310" stroke="rgba(120,120,200,0.1)" stroke-width="1.5"/>
+
+    <!-- Holden / Warren area -->
+    <line x1="0" y1="340" x2="430" y2="340" stroke="rgba(120,120,200,0.08)" stroke-width="1.5"/>
+
+    <!-- Vernor Hwy (curves southwest) -->
+    <path d="M 0 420 Q 80 415 140 410 Q 200 405 260 395 Q 320 385 380 400 L 430 410"
+          fill="none" stroke="rgba(120,120,200,0.14)" stroke-width="2"/>
+    <text x="200" y="406" fill="rgba(150,150,220,0.3)" font-size="7" font-family="Share Tech Mono" letter-spacing="0.05em">VERNOR HWY</text>
+
+    <!-- MAJOR STREETS - North-South -->
+    <!-- Woodward (main N-S artery) -->
+    <line x1="215" y1="0" x2="215" y2="560" stroke="rgba(130,130,210,0.2)" stroke-width="3"/>
+    <text x="218" y="200" fill="rgba(150,150,220,0.3)" font-size="7" font-family="Share Tech Mono" letter-spacing="0.05em" transform="rotate(90 218 200)">WOODWARD AVE</text>
+
+    <!-- Gratiot -->
+    <path d="M 260 0 Q 270 100 280 200 Q 290 320 310 430 Q 330 500 350 560"
+          fill="none" stroke="rgba(120,120,200,0.12)" stroke-width="1.5"/>
+
+    <!-- Cass -->
+    <line x1="180" y1="0" x2="180" y2="460" stroke="rgba(120,120,200,0.1)" stroke-width="1.5"/>
+    <text x="183" y="350" fill="rgba(150,150,220,0.25)" font-size="7" font-family="Share Tech Mono" letter-spacing="0.05em" transform="rotate(90 183 350)">CASS</text>
+
+    <!-- 3rd St -->
+    <line x1="155" y1="0" x2="155" y2="440" stroke="rgba(120,120,200,0.08)" stroke-width="1.5"/>
+
+    <!-- Rosa Parks Blvd -->
+    <line x1="130" y1="0" x2="130" y2="420" stroke="rgba(120,120,200,0.1)" stroke-width="1.5"/>
+
+    <!-- East Grand -->
+    <line x1="260" y1="0" x2="260" y2="560" stroke="rgba(120,120,200,0.1)" stroke-width="1.5"/>
+
+    <!-- Livernois -->
+    <line x1="80" y1="200" x2="80" y2="560" stroke="rgba(120,120,200,0.08)" stroke-width="1.5"/>
+
+    <!-- Clark / Trumbull -->
+    <line x1="100" y1="300" x2="100" y2="560" stroke="rgba(120,120,200,0.07)" stroke-width="1"/>
+    <line x1="115" y1="300" x2="115" y2="560" stroke="rgba(120,120,200,0.06)" stroke-width="1"/>
+
+    <!-- Mt Elliott -->
+    <line x1="320" y1="100" x2="320" y2="560" stroke="rgba(120,120,200,0.08)" stroke-width="1.5"/>
+
+    <!-- Minor streets grid filler -->
+    <line x1="0" y1="190" x2="430" y2="190" stroke="rgba(120,120,200,0.06)" stroke-width="1"/>
+    <line x1="0" y1="220" x2="430" y2="220" stroke="rgba(120,120,200,0.05)" stroke-width="1"/>
+    <line x1="0" y1="240" x2="430" y2="240" stroke="rgba(120,120,200,0.05)" stroke-width="1"/>
+    <line x1="0" y1="290" x2="430" y2="290" stroke="rgba(120,120,200,0.06)" stroke-width="1"/>
+    <line x1="0" y1="400" x2="430" y2="400" stroke="rgba(120,120,200,0.06)" stroke-width="1"/>
+    <line x1="0" y1="440" x2="430" y2="440" stroke="rgba(120,120,200,0.06)" stroke-width="1"/>
+    <line x1="0" y1="480" x2="430" y2="480" stroke="rgba(120,120,200,0.06)" stroke-width="1"/>
+    <line x1="0" y1="500" x2="430" y2="500" stroke="rgba(120,120,200,0.06)" stroke-width="1"/>
+
+    <line x1="60" y1="0" x2="60" y2="620" stroke="rgba(120,120,200,0.05)" stroke-width="1"/>
+    <line x1="160" y1="0" x2="160" y2="620" stroke="rgba(120,120,200,0.05)" stroke-width="1"/>
+    <line x1="200" y1="0" x2="200" y2="620" stroke="rgba(120,120,200,0.05)" stroke-width="1"/>
+    <line x1="240" y1="0" x2="240" y2="620" stroke="rgba(120,120,200,0.05)" stroke-width="1"/>
+    <line x1="280" y1="0" x2="280" y2="620" stroke="rgba(120,120,200,0.05)" stroke-width="1"/>
+    <line x1="340" y1="0" x2="340" y2="620" stroke="rgba(120,120,200,0.05)" stroke-width="1"/>
+    <line x1="380" y1="0" x2="380" y2="620" stroke="rgba(120,120,200,0.05)" stroke-width="1"/>
+
+    <!-- I-75 / Lodge Freeway indicators -->
+    <path d="M 50 0 L 50 400 Q 60 450 80 500" fill="none" stroke="rgba(200,150,50,0.15)" stroke-width="4" stroke-dasharray="8 4"/>
+    <text x="34" y="150" fill="rgba(200,150,50,0.3)" font-size="7" font-family="Share Tech Mono" letter-spacing="0.05em" transform="rotate(90 34 150)">I-75</text>
+
+    <!-- I-375 -->
+    <path d="M 260" fill="none"/>
+    <line x1="295" y1="420" x2="295" y2="520" stroke="rgba(200,150,50,0.12)" stroke-width="3" stroke-dasharray="6 3"/>
+
+    <!-- Hart Plaza outline -->
+    <rect x="190" y="520" width="60" height="30" rx="4" fill="rgba(0,255,136,0.06)" stroke="rgba(0,255,136,0.2)" stroke-width="1"/>
+    <text x="220" y="539" text-anchor="middle" fill="rgba(0,255,136,0.5)" font-size="6" font-family="Share Tech Mono" letter-spacing="0.05em">HART PLAZA</text>
+
+    <!-- Greektown neighborhood label -->
+    <text x="285" y="470" fill="rgba(150,150,220,0.2)" font-size="7" font-family="Share Tech Mono" letter-spacing="0.08em">GREEKTOWN</text>
+
+    <!-- Corktown label -->
+    <text x="78" y="390" fill="rgba(150,150,220,0.2)" font-size="7" font-family="Share Tech Mono" letter-spacing="0.08em">CORKTOWN</text>
+
+    <!-- Midtown label -->
+    <text x="155" y="285" fill="rgba(150,150,220,0.2)" font-size="7" font-family="Share Tech Mono" letter-spacing="0.08em">MIDTOWN</text>
+
+    <!-- Eastern Market label -->
+    <text x="290" y="330" fill="rgba(150,150,220,0.2)" font-size="7" font-family="Share Tech Mono" letter-spacing="0.08em">E. MARKET</text>
+
+    <!-- ======================== ROUTE LINE (hidden initially) ======================== -->
+    <g id="route-line" opacity="0">
+      <path id="route-path-glow" fill="none" stroke="url(#routeGrad)" stroke-width="10" stroke-opacity="0.3" stroke-linecap="round" filter="url(#glow-route)"/>
+      <path id="route-path" fill="none" stroke="url(#routeGrad)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="8 4">
+        <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="1s" repeatCount="indefinite"/>
+      </path>
+    </g>
+
+    <!-- ======================== VENUE PINS ======================== -->
+
+    <!-- Marble Bar (afterparty) — 1501 Holden St — x:100 y:338 -->
+    <g class="venue-pin" data-venue="0" style="cursor:pointer">
+      <circle class="pulse-ring" cx="100" cy="338" r="10" fill="none" stroke="rgba(176,106,255,0.4)" stroke-width="1.5" style="animation-delay:0s"/>
+      <circle cx="100" cy="338" r="11" fill="rgba(123,47,255,0.15)" stroke="rgba(176,106,255,0.3)" stroke-width="1"/>
+      <circle class="venue-pin-dot" cx="100" cy="338" r="7" fill="url(#pinViolet)" filter="url(#glow-violet)" style="animation-delay:0.2s"/>
+      <text x="100" y="325" text-anchor="middle" font-size="8" font-family="Rajdhani" font-weight="600" fill="rgba(176,106,255,0.9)" letter-spacing="0.05em">MARBLE BAR</text>
+    </g>
+
+    <!-- TV Lounge (sunrise) — 1 Atwater St — x:222 y:492 -->
+    <g class="venue-pin" data-venue="1" style="cursor:pointer">
+      <circle class="pulse-ring" cx="222" cy="492" r="10" fill="none" stroke="rgba(0,255,255,0.4)" stroke-width="1.5" style="animation-delay:0.5s"/>
+      <circle cx="222" cy="492" r="11" fill="rgba(0,255,255,0.1)" stroke="rgba(0,255,255,0.3)" stroke-width="1"/>
+      <circle class="venue-pin-dot" cx="222" cy="492" r="7" fill="url(#pinCyan)" filter="url(#glow-cyan)" style="animation-delay:0.6s"/>
+      <text x="222" y="479" text-anchor="middle" font-size="8" font-family="Rajdhani" font-weight="600" fill="rgba(0,255,255,0.9)" letter-spacing="0.05em">TV LOUNGE</text>
+    </g>
+
+    <!-- Deluxx Fluxx (day party) — 1274 Library St — x:195 y:415 -->
+    <g class="venue-pin" data-venue="2" style="cursor:pointer">
+      <circle class="pulse-ring" cx="195" cy="415" r="10" fill="none" stroke="rgba(255,165,0,0.4)" stroke-width="1.5" style="animation-delay:1s"/>
+      <circle cx="195" cy="415" r="11" fill="rgba(255,149,0,0.1)" stroke="rgba(255,165,0,0.3)" stroke-width="1"/>
+      <circle class="venue-pin-dot" cx="195" cy="415" r="7" fill="url(#pinAmber)" filter="url(#glow-amber)" style="animation-delay:1.1s"/>
+      <text x="195" y="402" text-anchor="middle" font-size="8" font-family="Rajdhani" font-weight="600" fill="rgba(255,165,0,0.9)" letter-spacing="0.05em">DELUXX FLUXX</text>
+    </g>
+
+    <!-- El Club (afterparty) — 4114 Vernor Hwy — x:68 y:398 -->
+    <g class="venue-pin" data-venue="3" style="cursor:pointer">
+      <circle class="pulse-ring" cx="68" cy="398" r="10" fill="none" stroke="rgba(176,106,255,0.4)" stroke-width="1.5" style="animation-delay:1.5s"/>
+      <circle cx="68" cy="398" r="11" fill="rgba(123,47,255,0.15)" stroke="rgba(176,106,255,0.3)" stroke-width="1"/>
+      <circle class="venue-pin-dot" cx="68" cy="398" r="7" fill="url(#pinViolet)" filter="url(#glow-violet)" style="animation-delay:1.6s"/>
+      <text x="68" y="385" text-anchor="middle" font-size="8" font-family="Rajdhani" font-weight="600" fill="rgba(176,106,255,0.9)" letter-spacing="0.05em">EL CLUB</text>
+    </g>
+
+    <!-- Tangent Gallery (afterparty) — 715 E Milwaukee Ave — x:290 y:308 -->
+    <g class="venue-pin" data-venue="4" style="cursor:pointer">
+      <circle class="pulse-ring" cx="290" cy="308" r="10" fill="none" stroke="rgba(176,106,255,0.4)" stroke-width="1.5" style="animation-delay:0.8s"/>
+      <circle cx="290" cy="308" r="11" fill="rgba(123,47,255,0.15)" stroke="rgba(176,106,255,0.3)" stroke-width="1"/>
+      <circle class="venue-pin-dot" cx="290" cy="308" r="7" fill="url(#pinViolet)" filter="url(#glow-violet)" style="animation-delay:0.9s"/>
+      <text x="290" y="295" text-anchor="middle" font-size="8" font-family="Rajdhani" font-weight="600" fill="rgba(176,106,255,0.9)" letter-spacing="0.05em">TANGENT</text>
+    </g>
+
+    <!-- Hart Plaza (festival) — x:220 y:535 -->
+    <g class="venue-pin" data-venue="5" style="cursor:pointer">
+      <circle class="pulse-ring" cx="220" cy="535" r="14" fill="none" stroke="rgba(0,255,136,0.4)" stroke-width="2" style="animation-delay:0.3s"/>
+      <circle class="pulse-ring" cx="220" cy="535" r="14" fill="none" stroke="rgba(0,255,136,0.2)" stroke-width="1" style="animation-delay:1s"/>
+      <circle cx="220" cy="535" r="13" fill="rgba(0,255,136,0.1)" stroke="rgba(0,255,136,0.4)" stroke-width="1.5"/>
+      <circle class="venue-pin-dot" cx="220" cy="535" r="9" fill="url(#pinGreen)" filter="url(#glow-green)" style="animation-delay:0.3s"/>
+      <!-- Star shape for main stage -->
+      <text x="220" y="539" text-anchor="middle" font-size="8" fill="rgba(0,50,30,0.9)" font-weight="700">★</text>
+      <text x="220" y="552" text-anchor="middle" font-size="8" font-family="Rajdhani" font-weight="700" fill="rgba(0,255,136,0.95)" letter-spacing="0.05em">MOVEMENT HQ</text>
+    </g>
+
+    <!-- Compass rose -->
+    <g transform="translate(390, 170)">
+      <circle cx="0" cy="0" r="16" fill="rgba(5,5,20,0.8)" stroke="rgba(150,150,200,0.2)" stroke-width="1"/>
+      <text x="0" y="-6" text-anchor="middle" font-size="8" font-family="Share Tech Mono" fill="rgba(150,150,220,0.8)" font-weight="700">N</text>
+      <line x1="0" y1="-14" x2="0" y2="14" stroke="rgba(150,150,220,0.3)" stroke-width="0.5"/>
+      <line x1="-14" y1="0" x2="14" y2="0" stroke="rgba(150,150,220,0.3)" stroke-width="0.5"/>
+      <polygon points="0,-12 2,-4 -2,-4" fill="rgba(0,255,255,0.7)"/>
+      <polygon points="0,12 2,4 -2,4" fill="rgba(150,150,200,0.3)"/>
+    </g>
+
+    <!-- Scale bar -->
+    <g transform="translate(15, 545)">
+      <line x1="0" y1="0" x2="40" y2="0" stroke="rgba(150,150,220,0.4)" stroke-width="1.5"/>
+      <line x1="0" y1="-4" x2="0" y2="4" stroke="rgba(150,150,220,0.4)" stroke-width="1.5"/>
+      <line x1="40" y1="-4" x2="40" y2="4" stroke="rgba(150,150,220,0.4)" stroke-width="1.5"/>
+      <text x="20" y="-6" text-anchor="middle" font-size="7" font-family="Share Tech Mono" fill="rgba(150,150,220,0.5)" letter-spacing="0.05em">0.5 MI</text>
+    </g>
+
+  </svg>
+</div>
+
+<!-- Venue tooltip -->
+<div class="venue-tooltip" id="venueTooltip">
+  <div class="tooltip-inner">
+    <div class="tooltip-name" id="ttName">Marble Bar</div>
+    <div class="tooltip-addr" id="ttAddr">1501 Holden St</div>
+    <div class="tooltip-events" id="ttEvents">12 events · 3 tonight</div>
+    <div class="tooltip-actions">
+      <div class="tooltip-btn route" onclick="startRoute()">+ ROUTE FROM</div>
+      <div class="tooltip-btn details" onclick="hideTooltip()">VIEW EVENTS</div>
+    </div>
+  </div>
+</div>
+
+<!-- Route info panel -->
+<div class="route-panel hidden" id="routePanel">
+  <div class="route-inner">
+    <div class="route-header">
+      <span class="route-title">ROUTE PLANNER</span>
+      <div class="route-close" onclick="clearRoute()">×</div>
+    </div>
+    <div class="route-venues">
+      <div class="route-venue-chip">
+        <div class="route-venue-name" id="routeFrom">—</div>
+        <div class="route-venue-addr" id="routeFromAddr">Select venue</div>
+      </div>
+      <div class="route-arrow">→</div>
+      <div class="route-venue-chip">
+        <div class="route-venue-name" id="routeTo">—</div>
+        <div class="route-venue-addr" id="routeToAddr">Tap second venue</div>
+      </div>
+    </div>
+    <div class="route-stats">
+      <div class="route-stat">
+        <div class="stat-icon">🚶</div>
+        <div class="stat-value walk" id="walkTime">—</div>
+        <div class="stat-label">WALK</div>
+      </div>
+      <div class="route-stat">
+        <div class="stat-icon">🚗</div>
+        <div class="stat-value drive" id="driveTime">—</div>
+        <div class="stat-label">DRIVE</div>
+      </div>
+      <div class="route-stat">
+        <div class="stat-icon">📍</div>
+        <div class="stat-value dist" id="distVal">—</div>
+        <div class="stat-label">MILES</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FAB -->
+<div class="fab" title="Add custom location">+</div>
+
+<script>
+const venues = [
+  { name: 'Marble Bar', addr: '1501 Holden St', events: '12 events · 3 tonight', type: 'afterparty', x: 100, y: 338 },
+  { name: 'TV Lounge', addr: '1 Atwater St', events: '4 events · 1 sunrise set', type: 'sunrise', x: 222, y: 492 },
+  { name: 'Deluxx Fluxx', addr: '1274 Library St', events: '5 events · 1 today', type: 'dayparty', x: 195, y: 415 },
+  { name: 'El Club', addr: '4114 Vernor Hwy', events: '3 events · 2 afterparties', type: 'afterparty', x: 68, y: 398 },
+  { name: 'Tangent Gallery', addr: '715 E Milwaukee Ave', events: '4 events · 1 tonight', type: 'afterparty', x: 290, y: 308 },
+  { name: 'Hart Plaza', addr: '1 Hart Plaza', events: 'Festival HQ · 4 days', type: 'festival', x: 220, y: 535 },
+];
+
+// Route distance matrix (approx miles between venues)
+const distances = [
+  [0,    2.8,  1.2,  1.9,  3.1,  2.5],
+  [2.8,  0,    1.0,  3.5,  3.8,  0.3],
+  [1.2,  1.0,  0,    2.8,  2.5,  0.9],
+  [1.9,  3.5,  2.8,  0,    4.2,  3.0],
+  [3.1,  3.8,  2.5,  4.2,  0,    3.5],
+  [2.5,  0.3,  0.9,  3.0,  3.5,  0],
+];
+
+let selectedVenue = null;
+let routeFrom = null;
+let routeTo = null;
+
+const tooltip = document.getElementById('venueTooltip');
+const routePanel = document.getElementById('routePanel');
+const instruction = document.getElementById('instruction');
+const svg = document.getElementById('detroit-map');
+const routeLine = document.getElementById('route-line');
+const routePath = document.getElementById('route-path');
+const routePathGlow = document.getElementById('route-path-glow');
+
+function hideTooltip() {
+  tooltip.classList.remove('visible');
+  selectedVenue = null;
+}
+
+function showTooltip(venueIdx, svgX, svgY) {
+  const v = venues[venueIdx];
+  document.getElementById('ttName').textContent = v.name;
+  document.getElementById('ttAddr').textContent = v.addr;
+  document.getElementById('ttEvents').textContent = v.events;
+  selectedVenue = venueIdx;
+
+  // Position tooltip above pin
+  const rect = svg.getBoundingClientRect();
+  const scaleX = rect.width / 430;
+  const scaleY = rect.height / 620;
+  const screenX = rect.left + svgX * scaleX;
+  const screenY = rect.top + svgY * scaleY;
+
+  let left = screenX - 80;
+  let top = screenY - 140;
+  if (left < 10) left = 10;
+  if (left + 180 > window.innerWidth - 10) left = window.innerWidth - 190;
+  if (top < 120) top = screenY + 20;
+
+  tooltip.style.left = left + 'px';
+  tooltip.style.top = top + 'px';
+  tooltip.classList.add('visible');
+}
+
+function startRoute() {
+  if (selectedVenue === null) return;
+  routeFrom = selectedVenue;
+  document.getElementById('routeFrom').textContent = venues[routeFrom].name;
+  document.getElementById('routeFromAddr').textContent = venues[routeFrom].addr;
+  document.getElementById('routeTo').textContent = '—';
+  document.getElementById('routeToAddr').textContent = 'Tap second venue';
+  document.getElementById('walkTime').textContent = '—';
+  document.getElementById('driveTime').textContent = '—';
+  document.getElementById('distVal').textContent = '—';
+
+  routePanel.classList.remove('hidden');
+  hideTooltip();
+  instruction.classList.remove('hidden');
+  routeLine.style.opacity = '0';
+}
+
+function clearRoute() {
+  routeFrom = null;
+  routeTo = null;
+  routePanel.classList.add('hidden');
+  routeLine.style.opacity = '0';
+}
+
+function drawRoute(fromIdx, toIdx) {
+  const from = venues[fromIdx];
+  const to = venues[toIdx];
+  const d = `M ${from.x} ${from.y} C ${from.x + (to.x - from.x) * 0.3} ${from.y - 40}, ${to.x - (to.x - from.x) * 0.3} ${to.y - 40}, ${to.x} ${to.y}`;
+  routePath.setAttribute('d', d);
+  routePathGlow.setAttribute('d', d);
+  routeLine.style.opacity = '1';
+
+  const dist = distances[fromIdx][toIdx];
+  const walkMins = Math.round(dist * 20);
+  const driveMins = Math.round(dist * 4);
+
+  document.getElementById('walkTime').textContent = walkMins + 'm';
+  document.getElementById('driveTime').textContent = driveMins + 'm';
+  document.getElementById('distVal').textContent = dist.toFixed(1);
+  document.getElementById('routeTo').textContent = venues[toIdx].name;
+  document.getElementById('routeToAddr').textContent = venues[toIdx].addr;
+}
+
+// Attach click listeners to venue pins
+document.querySelectorAll('.venue-pin').forEach(pin => {
+  pin.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const idx = parseInt(pin.dataset.venue);
+    const v = venues[idx];
+
+    if (routeFrom !== null && routeFrom !== idx) {
+      // Complete route
+      routeTo = idx;
+      drawRoute(routeFrom, routeTo);
+      instruction.classList.add('hidden');
+    } else {
+      showTooltip(idx, v.x, v.y);
+    }
+  });
+});
+
+// Close tooltip on map click
+document.querySelector('.map-container').addEventListener('click', (e) => {
+  if (!e.target.closest('.venue-pin') && !e.target.closest('.venue-tooltip')) {
+    hideTooltip();
+  }
+});
+</script>
+</body>
+</html>

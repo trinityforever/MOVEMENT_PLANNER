@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Animated } from 'react-native';
-import { COLORS, SPACING, BORDER_RADIUS } from '../constants/Theme';
+import { StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
+import { COLORS } from '../constants/Theme';
 
 interface SegmentedControlProps {
   options: string[];
@@ -17,23 +17,16 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
     <View style={styles.container}>
       {options.map((option, index) => {
         const isSelected = selectedIndex === index;
+        const isLast = index === options.length - 1;
         return (
           <TouchableOpacity
             key={option}
-            style={[
-              styles.segment,
-              isSelected && styles.selectedSegment,
-            ]}
+            style={[styles.segment, isSelected && styles.selectedSegment, !isLast && styles.segmentBorder]}
             onPress={() => onChange(index)}
             activeOpacity={0.7}
           >
-            <Text
-              style={[
-                styles.text,
-                isSelected ? styles.selectedText : styles.unselectedText,
-              ]}
-            >
-              {option}
+            <Text style={[styles.text, isSelected ? styles.selectedText : styles.unselectedText]}>
+              {option.toUpperCase()}
             </Text>
           </TouchableOpacity>
         );
@@ -45,27 +38,32 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: COLORS.surface,
-    borderRadius: BORDER_RADIUS.pill,
-    padding: SPACING.xs,
+    backgroundColor: '#000',
+    borderWidth: 1,
+    borderColor: COLORS.acid,
     alignSelf: 'flex-start',
   },
   segment: {
-    paddingHorizontal: SPACING.lg,
-    paddingVertical: SPACING.sm,
-    borderRadius: BORDER_RADIUS.pill,
+    paddingHorizontal: 18,
+    paddingVertical: 8,
+  },
+  segmentBorder: {
+    borderRightWidth: 1,
+    borderRightColor: 'rgba(204,255,0,0.35)',
   },
   selectedSegment: {
-    backgroundColor: COLORS.afterparty,
+    backgroundColor: COLORS.acid,
   },
   text: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 11,
+    letterSpacing: 2,
+    fontFamily: Platform.OS === 'web' ? "'Share Tech Mono', monospace" : undefined,
+    fontWeight: '700',
   },
   selectedText: {
-    color: COLORS.textPrimary,
+    color: '#000',
   },
   unselectedText: {
-    color: COLORS.textSecondary,
+    color: COLORS.acid,
   },
 });

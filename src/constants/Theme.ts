@@ -1,13 +1,23 @@
 export const COLORS = {
+  // Base
   background: '#000000',
-  surface: '#1A1A1A',
-  afterparty: '#7C3AED', // Deep Violet
-  dayParty: '#F59E0B',   // Amber
-  sunrise: '#F97316',    // Orange/Pink
-  festival: '#0D9488',   // Teal
-  customLocation: '#EC4899', // Hot Pink
-  textPrimary: '#FFFFFF',
-  textSecondary: '#94A3B8',
+  surface: '#111111',
+  grid: '#1A1A1A',
+  // Acid rave core palette
+  acid: '#CCFF00',
+  pink: '#FF0080',
+  green: '#00FF41',
+  amber: '#FF8C00',
+  // Category colors (acid-rave mapping)
+  afterparty: '#FF0080',   // hot pink
+  dayParty: '#CCFF00',     // acid yellow
+  sunrise: '#FF8C00',      // amber
+  festival: '#00FF41',     // matrix green
+  // UI
+  customLocation: '#FF0080',
+  textPrimary: '#CCFF00',
+  textSecondary: 'rgba(204, 255, 0, 0.5)',
+  void: '#000000',
 };
 
 export const SPACING = {
@@ -19,10 +29,10 @@ export const SPACING = {
 };
 
 export const BORDER_RADIUS = {
-  sm: 4,
-  md: 8,
-  lg: 16,
-  pill: 9999,
+  sm: 0,
+  md: 0,
+  lg: 0,
+  pill: 0,
 };
 
 export const THEME = {

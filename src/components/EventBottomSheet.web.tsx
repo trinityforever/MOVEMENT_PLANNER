@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking, Modal } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking, Modal, Platform } from 'react-native';
 import { COLORS } from '../constants/Theme';
 import dataService from '../services/dataService';
 
@@ -8,89 +8,137 @@ interface EventBottomSheetProps {
   onClose: () => void;
 }
 
-const EventBottomSheet: React.FC<EventBottomSheetProps> = ({ eventId, onClose }) => {
-  const event = useMemo(() => {
-    if (!eventId) return null;
-    return dataService.getEvents().find((e) => e.id === eventId);
-  }, [eventId]);
+const monoFont = Platform.OS === 'web' ? "'Share Tech Mono', monospace" : undefined;
+const displayFont = Platform.OS === 'web' ? "'Bebas Neue', sans-serif" : undefined;
+const condensedFont = Platform.OS === 'web' ? "'Barlow Condensed', sans-serif" : undefined;
 
-  const venue = useMemo(() => {
-    if (!event) return null;
-    return dataService.getVenues().find((v) => v.id === event.venueId);
-  }, [event]);
+function getCategoryColor(category?: string) {
+  switch (category) {
+    case 'Afterparty': return COLORS.afterparty;
+    case 'Day Party':  return COLORS.dayParty;
+    case 'Sunrise':    return COLORS.sunrise;
+    default:           return COLORS.festival;
+  }
+}
+
+const EventBottomSheet: React.FC<EventBottomSheetProps> = ({ eventId, onClose }) => {
+  const event = useMemo(
+    () => (!eventId ? null : dataService.getEvents().find((e) => e.id === eventId)),
+    [eventId],
+  );
+  const venue = useMemo(
+    () => (!event ? null : dataService.getVenues().find((v) => v.id === event.venueId)),
+    [event],
+  );
 
   if (!event) return null;
 
+  const color = getCategoryColor(event.category);
   const isFree = event.price === 0 || event.priceNote === 'FREE';
+  const priceDisplay = isFree ? 'FREE' : event.price != null ? `$${event.price}` : '—';
 
   return (
     <Modal visible={!!eventId} transparent animationType="slide" onRequestClose={onClose}>
       <TouchableOpacity style={styles.backdrop} activeOpacity={1} onPress={onClose}>
         <TouchableOpacity style={styles.sheet} activeOpacity={1}>
-          <View style={styles.handle} />
+          {/* Top accent bar */}
+          <View style={[styles.accentBar, { backgroundColor: color }]} />
+
           <ScrollView contentContainerStyle={styles.content}>
-            <View style={styles.header}>
-              <View style={[styles.categoryBadge, { backgroundColor: getCategoryColor(event.category) }]}>
-                <Text style={styles.categoryText}>{event.category}</Text>
-              </View>
-              <Text style={styles.title}>{event.title}</Text>
-              <Text style={styles.venueName}>{venue?.name}</Text>
-              <Text style={styles.time}>
-                {dataService.formatTime(event.startTime)} – {dataService.formatTime(event.endTime)}
+            {/* Close */}
+            <TouchableOpacity onPress={onClose} style={styles.closeRow}>
+              <Text style={styles.closeText}>✕ CLOSE</Text>
+            </TouchableOpacity>
+
+            {/* Artist name — Bebas Neue + glitch vibe */}
+            <Text style={[styles.artistName, { color }]}>{event.title.toUpperCase()}</Text>
+
+            {/* Category tag */}
+            <View style={[styles.categoryTag, { borderColor: color + '66' }]}>
+              <Text style={[styles.categoryTagText, { color }]}>
+                {(event.category ?? 'EVENT').toUpperCase()}
               </Text>
             </View>
 
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Artists</Text>
-              <View style={styles.artistList}>
-                {event.artists?.length ? (() => {
-                  const artists = event.artists;
-                  return artists.map((artist, i) => (
-                    <TouchableOpacity
-                      key={artist}
-                      onPress={() => Linking.openURL(`https://soundcloud.com/search?q=${encodeURIComponent(artist)}`)}
-                    >
-                      <Text style={styles.artistLink}>{artist}{i < artists.length - 1 ? ' · ' : ''}</Text>
-                    </TouchableOpacity>
-                  ));
-                })() : <Text style={styles.bodyText}>Lineup TBA</Text>}
+            {/* Detail grid */}
+            <View style={styles.detailGrid}>
+              <View style={styles.detailCell}>
+                <Text style={styles.detailLabel}>VENUE</Text>
+                <Text style={styles.detailValue}>{(venue?.name ?? '—').toUpperCase()}</Text>
               </View>
-            </View>
-
-            {event.description && (
-              <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Description</Text>
-                <Text style={styles.bodyText}>{event.description}</Text>
+              <View style={styles.detailCell}>
+                <Text style={styles.detailLabel}>PRICE</Text>
+                <Text style={[styles.detailValue, isFree && { color: COLORS.festival }]}>
+                  {priceDisplay}
+                </Text>
               </View>
-            )}
-
-            <View style={styles.infoRow}>
-              <View style={styles.infoBox}>
-                <Text style={styles.infoLabel}>Price</Text>
-                <Text style={[styles.infoValue, isFree && { color: COLORS.festival }]}>
-                  {isFree ? 'FREE' : `$${event.price}`}
+              <View style={styles.detailCell}>
+                <Text style={styles.detailLabel}>TIME</Text>
+                <Text style={styles.detailValue}>
+                  {dataService.formatTime(event.startTime)} – {dataService.formatTime(event.endTime)}
                 </Text>
               </View>
               {event.organizer && (
-                <View style={styles.infoBox}>
-                  <Text style={styles.infoLabel}>Organizer</Text>
-                  <Text style={styles.infoValue}>{event.organizer}</Text>
+                <View style={styles.detailCell}>
+                  <Text style={styles.detailLabel}>ORGANIZER</Text>
+                  <Text style={styles.detailValue}>{event.organizer.toUpperCase()}</Text>
                 </View>
               )}
             </View>
 
-            {event.seriesName && (
-              <View style={styles.seriesBadge}>
-                <Text style={styles.seriesText}>{event.seriesName}</Text>
+            {/* Artists */}
+            {!!event.artists?.length && (
+              <View style={styles.section}>
+                <Text style={styles.sectionLabel}>LINEUP</Text>
+                <View style={styles.artistList}>
+                  {event.artists.map((artist, i) => (
+                    <TouchableOpacity
+                      key={artist}
+                      onPress={() =>
+                        Linking.openURL(`https://soundcloud.com/search?q=${encodeURIComponent(artist)}`)
+                      }
+                    >
+                      <Text style={styles.artistLink}>
+                        {artist.toUpperCase()}
+                        {i < event.artists!.length - 1 ? '  ·  ' : ''}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
               </View>
             )}
 
+            {/* Description */}
+            {!!event.description && (
+              <View style={styles.section}>
+                <Text style={styles.sectionLabel}>INFO</Text>
+                <Text style={styles.bodyText}>{event.description}</Text>
+              </View>
+            )}
+
+            {/* Series badge */}
+            {!!event.seriesName && (
+              <View style={[styles.seriesBadge, { borderColor: color + '55' }]}>
+                <Text style={[styles.seriesText, { color }]}>{event.seriesName.toUpperCase()}</Text>
+              </View>
+            )}
+
+            {/* Actions */}
+            <View style={styles.actions}>
+              <TouchableOpacity style={[styles.btnPrimary, { backgroundColor: color, shadowColor: color }]}>
+                <Text style={styles.btnPrimaryText}>+ MY PLAN</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.btnSecondary, { borderColor: color + '55' }]}>
+                <Text style={[styles.btnSecondaryText, { color }]}>WANT TO GO</Text>
+              </TouchableOpacity>
+            </View>
+
             {event.raUrl && (
               <TouchableOpacity
-                style={styles.button}
+                style={styles.btnRa}
                 onPress={() => Linking.openURL(event.raUrl!)}
               >
-                <Text style={styles.buttonText}>View on Resident Advisor</Text>
+                <Text style={styles.btnRaText}>↗ VIEW ON RESIDENT ADVISOR</Text>
               </TouchableOpacity>
             )}
           </ScrollView>
@@ -100,144 +148,154 @@ const EventBottomSheet: React.FC<EventBottomSheetProps> = ({ eventId, onClose })
   );
 };
 
-const getCategoryColor = (category?: string) => {
-  switch (category) {
-    case 'Afterparty': return COLORS.afterparty;
-    case 'Day Party': return COLORS.dayParty;
-    case 'Sunrise': return COLORS.sunrise;
-    default: return COLORS.festival;
-  }
-};
-
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.88)',
     justifyContent: 'flex-end',
   },
   sheet: {
-    backgroundColor: COLORS.surface,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    maxHeight: '40%',
+    backgroundColor: '#000',
+    borderTopWidth: 2,
+    borderTopColor: COLORS.acid,
+    maxHeight: '75%',
+    shadowColor: COLORS.acid,
+    shadowOpacity: 0.25,
+    shadowRadius: 24,
+    shadowOffset: { width: 0, height: -4 },
   },
-  handle: {
-    alignSelf: 'center',
-    width: 40,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: COLORS.textSecondary,
-    marginTop: 10,
-    marginBottom: 6,
+  accentBar: { height: 2, width: '100%' },
+  content: { padding: 16, paddingBottom: 40 },
+  closeRow: { marginBottom: 12 },
+  closeText: {
+    color: 'rgba(204,255,0,0.4)',
+    fontSize: 10,
+    fontFamily: monoFont,
+    letterSpacing: 2,
   },
-  content: {
-    padding: 16,
-    paddingBottom: 32,
+  artistName: {
+    fontSize: 40,
+    fontFamily: displayFont,
+    fontWeight: '900',
+    letterSpacing: 3,
+    lineHeight: 42,
+    marginBottom: 8,
   },
-  header: {
-    marginBottom: 16,
-  },
-  categoryBadge: {
+  categoryTag: {
     alignSelf: 'flex-start',
+    borderWidth: 1,
     paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: 4,
-    marginBottom: 6,
-  },
-  categoryText: {
-    color: '#FFF',
-    fontSize: 11,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-  },
-  title: {
-    color: COLORS.textPrimary,
-    fontSize: 20,
-    fontWeight: '800',
-    marginBottom: 2,
-  },
-  venueName: {
-    color: COLORS.textSecondary,
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 2,
-  },
-  time: {
-    color: COLORS.textSecondary,
-    fontSize: 14,
-  },
-  section: {
     marginBottom: 14,
   },
-  sectionTitle: {
-    color: COLORS.textSecondary,
-    fontSize: 11,
+  categoryTagText: {
+    fontSize: 9,
+    fontFamily: monoFont,
     fontWeight: '700',
-    textTransform: 'uppercase',
-    marginBottom: 6,
-    letterSpacing: 1,
+    letterSpacing: 2,
   },
-  bodyText: {
-    color: COLORS.textPrimary,
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  artistList: {
+  detailGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    borderWidth: 1,
+    borderColor: 'rgba(204,255,0,0.15)',
+    marginBottom: 14,
   },
+  detailCell: {
+    width: '50%',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(204,255,0,0.1)',
+    borderRightWidth: 1,
+    borderRightColor: 'rgba(204,255,0,0.1)',
+    backgroundColor: '#0a0a0a',
+  },
+  detailLabel: {
+    fontSize: 9,
+    color: 'rgba(204,255,0,0.4)',
+    fontFamily: monoFont,
+    letterSpacing: 1,
+    marginBottom: 3,
+  },
+  detailValue: {
+    fontSize: 13,
+    color: '#fff',
+    fontFamily: condensedFont,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  section: { marginBottom: 14 },
+  sectionLabel: {
+    fontSize: 9,
+    color: 'rgba(204,255,0,0.4)',
+    fontFamily: monoFont,
+    letterSpacing: 2,
+    marginBottom: 6,
+  },
+  artistList: { flexDirection: 'row', flexWrap: 'wrap' },
   artistLink: {
-    color: '#60A5FA',
-    fontSize: 14,
+    color: COLORS.acid,
+    fontSize: 13,
+    fontFamily: monoFont,
     lineHeight: 22,
   },
-  infoRow: {
-    flexDirection: 'row',
-    gap: 16,
-    marginBottom: 20,
-  },
-  infoBox: {
-    flex: 1,
-    backgroundColor: '#2A2A2A',
-    padding: 12,
-    borderRadius: 8,
-  },
-  infoLabel: {
-    color: COLORS.textSecondary,
-    fontSize: 10,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    marginBottom: 4,
-  },
-  infoValue: {
-    color: COLORS.textPrimary,
-    fontSize: 16,
-    fontWeight: '600',
+  bodyText: {
+    color: 'rgba(204,255,0,0.7)',
+    fontSize: 12,
+    fontFamily: monoFont,
+    lineHeight: 18,
   },
   seriesBadge: {
-    backgroundColor: COLORS.afterparty + '33',
-    borderColor: COLORS.afterparty,
     borderWidth: 1,
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 20,
-  },
-  seriesText: {
-    color: COLORS.afterparty,
-    fontSize: 14,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  button: {
-    backgroundColor: COLORS.textPrimary,
-    padding: 16,
-    borderRadius: 8,
+    padding: 10,
+    marginBottom: 14,
     alignItems: 'center',
   },
-  buttonText: {
-    color: COLORS.background,
-    fontSize: 16,
+  seriesText: {
+    fontSize: 11,
+    fontFamily: monoFont,
     fontWeight: '700',
+    letterSpacing: 2,
+  },
+  actions: { flexDirection: 'row', gap: 8, marginBottom: 8 },
+  btnPrimary: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 13,
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 0 },
+  },
+  btnPrimaryText: {
+    color: '#000',
+    fontSize: 13,
+    fontFamily: displayFont,
+    fontWeight: '900',
+    letterSpacing: 2,
+  },
+  btnSecondary: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 13,
+    borderWidth: 1,
+  },
+  btnSecondaryText: {
+    fontSize: 13,
+    fontFamily: displayFont,
+    fontWeight: '900',
+    letterSpacing: 2,
+  },
+  btnRa: {
+    borderWidth: 1,
+    borderColor: 'rgba(204,255,0,0.2)',
+    padding: 13,
+    alignItems: 'center',
+  },
+  btnRaText: {
+    color: 'rgba(204,255,0,0.5)',
+    fontSize: 11,
+    fontFamily: monoFont,
+    letterSpacing: 1.5,
   },
 });
 

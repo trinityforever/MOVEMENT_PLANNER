@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>MOVEMENT 2026 — MY PLAN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --acid: #CCFF00;
+    --pink: #FF0080;
+    --void: #000000;
+    --white: #FFFFFF;
+    --green: #00FF41;
+    --amber: #FF8C00;
+    --teal: #00FFD4;
+    --dim: #0a0a0a;
+  }
+
+  html, body {
+    background: var(--void);
+    color: var(--acid);
+    font-family: 'Share Tech Mono', monospace;
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.12) 2px,
+      rgba(0,0,0,0.12) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+    animation: scanroll 10s linear infinite;
+  }
+
+  @keyframes scanroll {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100px; }
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.65) 100%);
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 12px 16px 8px;
+    border-bottom: 1px solid var(--acid);
+    background: var(--void);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 4px;
+    color: var(--acid);
+    text-shadow: 0 0 20px var(--acid), 0 0 40px rgba(204,255,0,0.5);
+    animation: glitch-logo 4s infinite;
+  }
+
+  @keyframes glitch-logo {
+    0%, 88%, 100% { text-shadow: 0 0 20px var(--acid), 0 0 40px rgba(204,255,0,0.5); transform: none; }
+    90% { text-shadow: 3px 0 var(--pink), -3px 0 var(--teal); transform: skewX(-2deg); }
+    93% { text-shadow: none; transform: none; }
+  }
+
+  .header-meta {
+    text-align: right;
+    font-size: 10px;
+    color: rgba(204,255,0,0.6);
+    line-height: 1.4;
+  }
+
+  .header-meta span {
+    display: block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    color: var(--pink);
+  }
+
+  .nav-tabs {
+    display: flex;
+    border-bottom: 1px solid rgba(204,255,0,0.3);
+    background: var(--void);
+  }
+
+  .nav-tab {
+    flex: 1;
+    padding: 10px 4px;
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: rgba(204,255,0,0.4);
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+  }
+
+  .nav-tab.active {
+    color: var(--acid);
+    border-bottom-color: var(--acid);
+    text-shadow: 0 0 10px var(--acid);
+  }
+
+  /* IDENTITY BAR */
+  .identity-bar {
+    background: #050505;
+    border-bottom: 1px solid rgba(204,255,0,0.2);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .avatar {
+    width: 36px;
+    height: 36px;
+    background: var(--acid);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    color: var(--void);
+    flex-shrink: 0;
+    box-shadow: 0 0 15px rgba(204,255,0,0.4);
+  }
+
+  .identity-info { flex: 1; }
+
+  .identity-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: var(--white);
+  }
+
+  .identity-sub {
+    font-size: 10px;
+    color: rgba(204,255,0,0.5);
+  }
+
+  .share-btn {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    padding: 6px 10px;
+    border: 1px solid rgba(204,255,0,0.3);
+    color: rgba(204,255,0,0.6);
+    background: transparent;
+    cursor: pointer;
+  }
+
+  /* PLAN TABS */
+  .plan-tabs {
+    display: flex;
+    border-bottom: 1px solid rgba(204,255,0,0.2);
+    background: #050505;
+  }
+
+  .plan-tab {
+    flex: 1;
+    padding: 8px 4px;
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: rgba(204,255,0,0.4);
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+  }
+
+  .plan-tab.active {
+    color: var(--acid);
+    border-bottom-color: var(--acid);
+    text-shadow: 0 0 8px var(--acid);
+  }
+
+  /* TICKET TRACKER */
+  .ticket-panel {
+    background: #050505;
+    padding: 16px;
+    border-bottom: 1px solid rgba(204,255,0,0.2);
+  }
+
+  .ticket-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 3px;
+    color: var(--acid);
+    text-shadow: 0 0 10px var(--acid);
+  }
+
+  .ticket-total-chip {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    background: var(--acid);
+    color: var(--void);
+    box-shadow: 0 0 12px rgba(204,255,0,0.4);
+  }
+
+  /* Budget progress bar */
+  .budget-bar-wrap {
+    margin-bottom: 14px;
+  }
+
+  .budget-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: rgba(204,255,0,0.5);
+    margin-bottom: 4px;
+  }
+
+  .budget-labels strong {
+    color: var(--acid);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 12px;
+  }
+
+  .budget-bar {
+    height: 6px;
+    background: rgba(204,255,0,0.1);
+    border: 1px solid rgba(204,255,0,0.2);
+    overflow: hidden;
+  }
+
+  .budget-fill {
+    height: 100%;
+    background: var(--acid);
+    box-shadow: 0 0 8px var(--acid);
+    transition: width 1s ease-out;
+    animation: bar-load 1.2s ease-out;
+  }
+
+  @keyframes bar-load {
+    from { width: 0; }
+  }
+
+  .budget-est-line {
+    height: 6px;
+    margin-top: 2px;
+    position: relative;
+    background: rgba(255,0,128,0.1);
+    border: 1px solid rgba(255,0,128,0.2);
+  }
+
+  .budget-est-fill {
+    height: 100%;
+    background: var(--pink);
+    opacity: 0.6;
+    box-shadow: 0 0 6px var(--pink);
+    animation: bar-load 1.4s ease-out;
+  }
+
+  /* Ticket line items */
+  .ticket-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(204,255,0,0.08);
+  }
+
+  .ticket-item:last-child { border-bottom: none; }
+
+  .ticket-status {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .ticket-status.confirmed {
+    color: var(--acid);
+    text-shadow: 0 0 8px var(--acid);
+  }
+
+  .ticket-status.pending {
+    color: var(--pink);
+    border: 1px solid rgba(255,0,128,0.4);
+    font-size: 8px;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 1px;
+  }
+
+  .ticket-info { flex: 1; min-width: 0; }
+
+  .ticket-event {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 14px;
+    color: var(--white);
+    letter-spacing: 1px;
+  }
+
+  .ticket-meta {
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    margin-top: 1px;
+  }
+
+  .ticket-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+  }
+
+  .ticket-price.paid { color: var(--acid); text-shadow: 0 0 8px var(--acid); }
+  .ticket-price.unpaid { color: var(--pink); }
+
+  .ticket-add-btn {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(204,255,0,0.3);
+    color: rgba(204,255,0,0.5);
+    font-size: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  /* RSVP SUMMARY */
+  .rsvp-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: rgba(204,255,0,0.15);
+    border: 1px solid rgba(204,255,0,0.15);
+    margin-bottom: 14px;
+  }
+
+  .rsvp-summary-cell {
+    background: #050505;
+    padding: 10px 8px;
+    text-align: center;
+  }
+
+  .rsvp-summary-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    display: block;
+    line-height: 1;
+  }
+
+  .rsvp-summary-val.going { color: var(--acid); text-shadow: 0 0 12px var(--acid); }
+  .rsvp-summary-val.want { color: var(--pink); text-shadow: 0 0 8px var(--pink); }
+  .rsvp-summary-val.spent { color: var(--amber); text-shadow: 0 0 8px var(--amber); }
+
+  .rsvp-summary-label {
+    font-size: 9px;
+    color: rgba(204,255,0,0.5);
+    letter-spacing: 1px;
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* DAY SCHEDULE */
+  .schedule-panel { }
+
+  .day-block {
+    border-bottom: 1px solid rgba(204,255,0,0.15);
+  }
+
+  .day-block-header {
+    padding: 10px 16px;
+    background: #050505;
+    border-bottom: 1px solid rgba(204,255,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+  }
+
+  .day-block-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 3px;
+  }
+
+  .day-block-title.fri { color: var(--acid); text-shadow: 0 0 12px var(--acid); }
+  .day-block-title.sat { color: var(--pink); text-shadow: 0 0 12px var(--pink); }
+  .day-block-title.sun { color: var(--amber); text-shadow: 0 0 12px var(--amber); }
+  .day-block-title.mon { color: var(--teal); text-shadow: 0 0 12px var(--teal); }
+
+  .day-block-meta {
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    text-align: right;
+    line-height: 1.4;
+  }
+
+  /* Timeline within day */
+  .day-timeline {
+    padding: 0;
+  }
+
+  .timeline-event {
+    display: flex;
+    gap: 0;
+    padding: 0;
+    border-bottom: 1px solid rgba(204,255,0,0.06);
+    position: relative;
+    cursor: pointer;
+  }
+
+  .timeline-event:active { background: rgba(204,255,0,0.04); }
+
+  .timeline-time-col {
+    width: 60px;
+    flex-shrink: 0;
+    padding: 10px 8px 10px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+
+  .timeline-time-start {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--acid);
+    line-height: 1;
+  }
+
+  .timeline-time-end {
+    font-size: 9px;
+    color: rgba(204,255,0,0.4);
+  }
+
+  .timeline-connector {
+    width: 18px;
+    flex-shrink: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .timeline-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-top: 14px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .timeline-dot.afterparty { background: #FF0080; box-shadow: 0 0 8px #FF0080; }
+  .timeline-dot.sunrise { background: #FF8C00; box-shadow: 0 0 8px #FF8C00; }
+  .timeline-dot.dayparty { background: #CCFF00; box-shadow: 0 0 8px #CCFF00; }
+  .timeline-dot.festival { background: #00FF41; box-shadow: 0 0 8px #00FF41; }
+
+  .timeline-line {
+    width: 1px;
+    flex: 1;
+    background: rgba(204,255,0,0.15);
+    margin-top: 2px;
+  }
+
+  .timeline-content {
+    flex: 1;
+    padding: 10px 16px 10px 6px;
+  }
+
+  .timeline-artist {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 16px;
+    letter-spacing: 1px;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+
+  .timeline-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .timeline-venue {
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+  }
+
+  .timeline-type-badge {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 9px;
+    padding: 1px 5px;
+    border: 1px solid;
+    letter-spacing: 1px;
+  }
+
+  .timeline-type-badge.afterparty { color: #FF0080; border-color: rgba(255,0,128,0.4); }
+  .timeline-type-badge.sunrise { color: #FF8C00; border-color: rgba(255,140,0,0.4); }
+  .timeline-type-badge.dayparty { color: #CCFF00; border-color: rgba(204,255,0,0.4); }
+  .timeline-type-badge.festival { color: #00FF41; border-color: rgba(0,255,65,0.4); }
+
+  .timeline-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 12px;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  .timeline-price.paid { color: var(--acid); }
+  .timeline-price.unpaid { color: var(--pink); }
+
+  .timeline-rsvp-flag {
+    font-size: 10px;
+    color: var(--pink);
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* EMPTY SLOT / ADD CTA */
+  .add-event-slot {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(204,255,0,0.06);
+    opacity: 0.4;
+    transition: opacity 0.1s;
+  }
+
+  .add-event-slot:active { opacity: 0.7; }
+
+  .add-event-slot .plus-icon {
+    width: 18px;
+    height: 18px;
+    border: 1px dashed rgba(204,255,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: var(--acid);
+    flex-shrink: 0;
+    margin-left: 60px;
+  }
+
+  .add-event-slot span {
+    font-size: 11px;
+    color: rgba(204,255,0,0.5);
+    letter-spacing: 1px;
+  }
+
+  /* Conflict warning */
+  .conflict-warn {
+    background: rgba(255,0,128,0.1);
+    border: 1px solid rgba(255,0,128,0.3);
+    border-left: 3px solid var(--pink);
+    padding: 8px 12px;
+    margin: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .conflict-warn-icon {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    color: var(--pink);
+    text-shadow: 0 0 6px var(--pink);
+    flex-shrink: 0;
+  }
+
+  .conflict-warn-text {
+    font-size: 10px;
+    color: rgba(255,0,128,0.8);
+    line-height: 1.4;
+  }
+
+  /* FRIENDS PANEL */
+  .friends-panel {
+    padding: 16px;
+    border-bottom: 1px solid rgba(204,255,0,0.2);
+  }
+
+  .friends-panel .section-title {
+    margin-bottom: 12px;
+  }
+
+  .friend-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(204,255,0,0.08);
+  }
+
+  .friend-row:last-child { border-bottom: none; }
+
+  .friend-avatar {
+    width: 28px;
+    height: 28px;
+    background: rgba(204,255,0,0.15);
+    border: 1px solid rgba(204,255,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    color: var(--acid);
+    flex-shrink: 0;
+  }
+
+  .friend-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--white);
+    flex: 1;
+  }
+
+  .friend-overlap {
+    font-size: 10px;
+    color: rgba(204,255,0,0.6);
+  }
+
+  .friend-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+    flex-shrink: 0;
+  }
+
+  /* SECTION CONTAINER */
+  .section-container {
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(204,255,0,0.3) transparent;
+  }
+
+  .section-container::-webkit-scrollbar { width: 3px; }
+  .section-container::-webkit-scrollbar-thumb { background: rgba(204,255,0,0.3); }
+
+  /* Load animation */
+  @keyframes load-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .day-block:nth-child(1) { animation: load-in 0.3s ease-out 0.1s both; }
+  .day-block:nth-child(2) { animation: load-in 0.3s ease-out 0.2s both; }
+  .day-block:nth-child(3) { animation: load-in 0.3s ease-out 0.3s both; }
+  .day-block:nth-child(4) { animation: load-in 0.3s ease-out 0.4s both; }
+
+  /* Glitch shift on ticket confirm */
+  @keyframes confirm-flash {
+    0% { background: var(--acid); color: var(--void); }
+    100% { background: transparent; }
+  }
+
+  .ticket-item.just-confirmed {
+    animation: confirm-flash 0.4s ease-out;
+  }
+
+  /* Separator diagonal */
+  .diagonal-sep {
+    height: 2px;
+    background: linear-gradient(90deg, var(--acid), transparent);
+    margin: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .diagonal-sep::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: rgba(255,255,255,0.5);
+    animation: sweep 3s linear infinite;
+  }
+
+  @keyframes sweep {
+    to { left: 200%; }
+  }
+
+  /* PLAN SECTIONS */
+  .plan-section { display: none; }
+  .plan-section.active { display: block; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo">MOVEMENT</div>
+    <div class="header-meta">
+      <span>MY PLAN</span>
+      MAY 22–25 / DETROIT
+    </div>
+  </div>
+</div>
+
+<div class="nav-tabs">
+  <div class="nav-tab">MAP</div>
+  <div class="nav-tab">SCHEDULE</div>
+  <div class="nav-tab active">PLAN</div>
+</div>
+
+<!-- IDENTITY -->
+<div class="identity-bar">
+  <div class="avatar">T</div>
+  <div class="identity-info">
+    <div class="identity-name">TRINITY</div>
+    <div class="identity-sub">GROUP: DETROIT 2026 · 20 PEOPLE</div>
+  </div>
+  <button class="share-btn">SHARE</button>
+</div>
+
+<!-- PLAN SECTION TABS -->
+<div class="plan-tabs">
+  <div class="plan-tab active" onclick="setPlanTab('itinerary')">ITINERARY</div>
+  <div class="plan-tab" onclick="setPlanTab('tickets')">TICKETS</div>
+  <div class="plan-tab" onclick="setPlanTab('friends')">FRIENDS</div>
+</div>
+
+<div class="diagonal-sep"></div>
+
+<div class="section-container">
+
+  <!-- ===== ITINERARY SECTION ===== -->
+  <div class="plan-section active" id="section-itinerary">
+
+    <!-- RSVP Summary -->
+    <div style="padding: 12px 16px; background: #050505; border-bottom: 1px solid rgba(204,255,0,0.15);">
+      <div class="rsvp-summary">
+        <div class="rsvp-summary-cell">
+          <span class="rsvp-summary-val going">3</span>
+          <span class="rsvp-summary-label">GOING</span>
+        </div>
+        <div class="rsvp-summary-cell">
+          <span class="rsvp-summary-val want">1</span>
+          <span class="rsvp-summary-label">WANT</span>
+        </div>
+        <div class="rsvp-summary-cell">
+          <span class="rsvp-summary-val spent">$65</span>
+          <span class="rsvp-summary-label">SPENT</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conflict warning -->
+    <div class="conflict-warn" style="margin-top:12px">
+      <div class="conflict-warn-icon">⚠ CONFLICT</div>
+      <div class="conflict-warn-text">
+        BLAWAN (1AM–5AM) overlaps with SKEE MASK (5AM–9AM) — back-to-back is tight. 30 MIN travel Marble Bar → TV Lounge.
+      </div>
+    </div>
+
+    <!-- FRI -->
+    <div class="day-block">
+      <div class="day-block-header">
+        <div class="day-block-title fri">FRI MAY 22</div>
+        <div class="day-block-meta">1 EVENT<br><span style="font-size:9px;color:var(--acid)">$25 SPENT</span></div>
+      </div>
+      <div class="day-timeline">
+        <div class="timeline-event">
+          <div class="timeline-time-col">
+            <div class="timeline-time-start">11PM</div>
+            <div class="timeline-time-end">→5AM</div>
+          </div>
+          <div class="timeline-connector">
+            <div class="timeline-dot afterparty"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-artist">SETH TROXLER</div>
+            <div class="timeline-meta">
+              <span class="timeline-venue">MARBLE BAR</span>
+              <span class="timeline-type-badge afterparty">AFTER</span>
+              <span class="timeline-price paid">$25</span>
+            </div>
+            <span style="font-size:9px;color:var(--acid);display:block;margin-top:3px;">★ TICKET CONFIRMED</span>
+          </div>
+        </div>
+        <div class="add-event-slot" onclick="addEvent('fri')">
+          <div class="plus-icon">+</div>
+          <span>ADD EVENT TO FRIDAY</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SAT -->
+    <div class="day-block">
+      <div class="day-block-header">
+        <div class="day-block-title sat">SAT MAY 23</div>
+        <div class="day-block-meta">2 EVENTS<br><span style="font-size:9px;color:var(--pink)">$20 SPENT · $30 PENDING</span></div>
+      </div>
+      <div class="day-timeline">
+        <div class="timeline-event">
+          <div class="timeline-time-col">
+            <div class="timeline-time-start">01AM</div>
+            <div class="timeline-time-end">→5AM</div>
+          </div>
+          <div class="timeline-connector">
+            <div class="timeline-dot afterparty"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-artist">BLAWAN</div>
+            <div class="timeline-meta">
+              <span class="timeline-venue">MARBLE BAR</span>
+              <span class="timeline-type-badge afterparty">AFTER</span>
+              <span class="timeline-price unpaid">$30</span>
+            </div>
+            <span class="timeline-rsvp-flag">◎ WANT TO GO — NO TICKET YET</span>
+          </div>
+        </div>
+        <div class="timeline-event">
+          <div class="timeline-time-col">
+            <div class="timeline-time-start">05AM</div>
+            <div class="timeline-time-end">→9AM</div>
+          </div>
+          <div class="timeline-connector">
+            <div class="timeline-dot sunrise"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-artist">SKEE MASK</div>
+            <div class="timeline-meta">
+              <span class="timeline-venue">TV LOUNGE</span>
+              <span class="timeline-type-badge sunrise">SUNRS</span>
+              <span class="timeline-price paid">$20</span>
+            </div>
+            <span style="font-size:9px;color:var(--acid);display:block;margin-top:3px;">★ TICKET CONFIRMED</span>
+          </div>
+        </div>
+        <div class="add-event-slot" onclick="addEvent('sat')">
+          <div class="plus-icon">+</div>
+          <span>ADD EVENT TO SATURDAY</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUN -->
+    <div class="day-block">
+      <div class="day-block-header">
+        <div class="day-block-title sun">SUN MAY 24</div>
+        <div class="day-block-meta">0 EVENTS<br><span style="font-size:9px;color:rgba(204,255,0,0.4)">WIDE OPEN</span></div>
+      </div>
+      <div class="day-timeline">
+        <div class="add-event-slot" onclick="addEvent('sun')" style="opacity:0.6">
+          <div class="plus-icon" style="margin-left:60px">+</div>
+          <span>NOTHING PLANNED — ADD EVENTS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MON -->
+    <div class="day-block">
+      <div class="day-block-header">
+        <div class="day-block-title mon">MON MAY 25</div>
+        <div class="day-block-meta">1 EVENT<br><span style="font-size:9px;color:var(--acid)">$20 SPENT</span></div>
+      </div>
+      <div class="day-timeline">
+        <div class="timeline-event">
+          <div class="timeline-time-col">
+            <div class="timeline-time-start">12AM</div>
+            <div class="timeline-time-end">→4AM</div>
+          </div>
+          <div class="timeline-connector">
+            <div class="timeline-dot afterparty"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-artist">MATHEW JONSON</div>
+            <div class="timeline-meta">
+              <span class="timeline-venue">TANGENT GALLERY</span>
+              <span class="timeline-type-badge afterparty">AFTER</span>
+              <span class="timeline-price paid">$20</span>
+            </div>
+            <span style="font-size:9px;color:var(--acid);display:block;margin-top:3px;">★ TICKET CONFIRMED</span>
+          </div>
+        </div>
+        <div class="add-event-slot" onclick="addEvent('mon')">
+          <div class="plus-icon">+</div>
+          <span>ADD EVENT TO MONDAY</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:80px"></div>
+  </div>
+
+  <!-- ===== TICKETS SECTION ===== -->
+  <div class="plan-section" id="section-tickets">
+    <div class="ticket-panel">
+      <div class="ticket-panel-header">
+        <div class="section-title">// TICKET TRACKER</div>
+        <div class="ticket-total-chip">$65 SPENT</div>
+      </div>
+
+      <div class="budget-bar-wrap">
+        <div class="budget-labels">
+          <span>SPENT</span>
+          <strong>$65 / $100 BUDGET</strong>
+        </div>
+        <div class="budget-bar">
+          <div class="budget-fill" style="width:65%"></div>
+        </div>
+        <div style="margin-top:6px;">
+          <div class="budget-labels">
+            <span>ESTIMATED (INCL. PENDING)</span>
+            <strong style="color:var(--pink)">$85</strong>
+          </div>
+          <div class="budget-est-line">
+            <div class="budget-est-fill" style="width:85%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ticket items -->
+      <div class="ticket-item">
+        <div class="ticket-status confirmed">★</div>
+        <div class="ticket-info">
+          <div class="ticket-event">SETH TROXLER</div>
+          <div class="ticket-meta">MARBLE BAR · FRI MAY 22 · 11PM–5AM</div>
+        </div>
+        <div class="ticket-price paid">$25</div>
+      </div>
+
+      <div class="ticket-item">
+        <div class="ticket-status confirmed">★</div>
+        <div class="ticket-info">
+          <div class="ticket-event">SKEE MASK</div>
+          <div class="ticket-meta">TV LOUNGE · SAT MAY 23 · 5AM–9AM</div>
+        </div>
+        <div class="ticket-price paid">$20</div>
+      </div>
+
+      <div class="ticket-item">
+        <div class="ticket-status confirmed">★</div>
+        <div class="ticket-info">
+          <div class="ticket-event">MATHEW JONSON</div>
+          <div class="ticket-meta">TANGENT GALLERY · MON MAY 25 · 12AM–4AM</div>
+        </div>
+        <div class="ticket-price paid">$20</div>
+      </div>
+
+      <div class="ticket-item">
+        <div class="ticket-status pending">NO TICKET</div>
+        <div class="ticket-info">
+          <div class="ticket-event">BLAWAN</div>
+          <div class="ticket-meta">MARBLE BAR · SAT MAY 23 · 1AM–5AM</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+          <div class="ticket-price unpaid">$30</div>
+          <button style="font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:1px;padding:3px 8px;background:var(--pink);border:none;color:var(--void);cursor:pointer;" onclick="confirmTicket(this)">GET TIX</button>
+        </div>
+      </div>
+
+      <!-- Totals -->
+      <div style="margin-top:14px;border-top:1px solid rgba(204,255,0,0.2);padding-top:10px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+          <span style="font-size:11px;color:rgba(204,255,0,0.5);">CONFIRMED</span>
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--acid);">$65</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+          <span style="font-size:11px;color:rgba(255,0,128,0.6);">PENDING</span>
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--pink);">$30</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-top:1px solid rgba(204,255,0,0.2);padding-top:8px;margin-top:6px;">
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;color:rgba(204,255,0,0.7);">TOTAL ESTIMATE</span>
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--acid);text-shadow:0 0 12px var(--acid);">$85</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:80px"></div>
+  </div>
+
+  <!-- ===== FRIENDS SECTION ===== -->
+  <div class="plan-section" id="section-friends">
+    <div class="friends-panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div class="section-title">// CREW</div>
+        <span style="font-size:10px;color:var(--pink);">20 PEOPLE</span>
+      </div>
+
+      <!-- Group overlap summary -->
+      <div style="background:#080808;border:1px solid rgba(204,255,0,0.15);padding:10px 12px;margin-bottom:14px;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:2px;color:rgba(204,255,0,0.5);margin-bottom:6px;">// MOST-ATTENDED EVENTS</div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="flex:1;font-size:11px;color:var(--white);font-family:'Barlow Condensed',sans-serif;font-weight:700;">SETH TROXLER</div>
+            <div style="font-size:10px;color:var(--acid);">14 GOING</div>
+            <div style="width:60px;height:4px;background:rgba(204,255,0,0.1);"><div style="width:70%;height:100%;background:var(--acid);"></div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="flex:1;font-size:11px;color:var(--white);font-family:'Barlow Condensed',sans-serif;font-weight:700;">BLAWAN</div>
+            <div style="font-size:10px;color:var(--acid);">11 GOING</div>
+            <div style="width:60px;height:4px;background:rgba(204,255,0,0.1);"><div style="width:55%;height:100%;background:var(--acid);"></div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="flex:1;font-size:11px;color:var(--white);font-family:'Barlow Condensed',sans-serif;font-weight:700;">SKEE MASK</div>
+            <div style="font-size:10px;color:var(--acid);">8 GOING</div>
+            <div style="width:60px;height:4px;background:rgba(204,255,0,0.1);"><div style="width:40%;height:100%;background:var(--acid);"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Friend list -->
+      <div class="friend-row">
+        <div class="friend-avatar">J</div>
+        <div class="friend-info" style="flex:1;">
+          <div class="friend-name">JADE</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.4);">4 events planned</div>
+        </div>
+        <div class="friend-overlap">2 OVERLAP</div>
+        <div class="friend-status"></div>
+      </div>
+      <div class="friend-row">
+        <div class="friend-avatar">M</div>
+        <div class="friend-info" style="flex:1;">
+          <div class="friend-name">MARCUS</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.4);">6 events planned</div>
+        </div>
+        <div class="friend-overlap">3 OVERLAP</div>
+        <div class="friend-status"></div>
+      </div>
+      <div class="friend-row">
+        <div class="friend-avatar">S</div>
+        <div class="friend-info" style="flex:1;">
+          <div class="friend-name">SAM</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.4);">3 events planned</div>
+        </div>
+        <div class="friend-overlap">1 OVERLAP</div>
+        <div style="width:8px;height:8px;border-radius:50%;background:#444;flex-shrink:0;"></div>
+      </div>
+      <div class="friend-row">
+        <div class="friend-avatar">K</div>
+        <div class="friend-info" style="flex:1;">
+          <div class="friend-name">KIRA</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.4);">5 events planned</div>
+        </div>
+        <div class="friend-overlap">2 OVERLAP</div>
+        <div class="friend-status"></div>
+      </div>
+      <div class="friend-row">
+        <div class="friend-avatar">D</div>
+        <div class="friend-info" style="flex:1;">
+          <div class="friend-name">DIEGO</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.4);">2 events planned</div>
+        </div>
+        <div class="friend-overlap">1 OVERLAP</div>
+        <div style="width:8px;height:8px;border-radius:50%;background:#444;flex-shrink:0;"></div>
+      </div>
+
+      <!-- Invite -->
+      <div style="margin-top:14px;border-top:1px solid rgba(204,255,0,0.1);padding-top:12px;">
+        <button style="width:100%;padding:12px;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:3px;border:1px dashed rgba(204,255,0,0.3);color:rgba(204,255,0,0.5);background:transparent;cursor:pointer;">
+          + INVITE TO GROUP
+        </button>
+      </div>
+    </div>
+
+    <div style="height:80px"></div>
+  </div>
+
+</div>
+
+<script>
+function setPlanTab(tab) {
+  document.querySelectorAll('.plan-tab').forEach((t, i) => {
+    const tabs = ['itinerary','tickets','friends'];
+    t.classList.toggle('active', tabs[i] === tab);
+  });
+  document.querySelectorAll('.plan-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('section-' + tab).classList.add('active');
+}
+
+function addEvent(day) {
+  const btn = event.currentTarget;
+  btn.style.opacity = '1';
+  btn.querySelector('span').textContent = 'OPENING SCHEDULE...';
+  setTimeout(() => {
+    btn.querySelector('span').textContent = 'ADD EVENT TO ' + day.toUpperCase();
+    btn.style.opacity = '0.4';
+  }, 1000);
+}
+
+function confirmTicket(btn) {
+  const item = btn.closest('.ticket-item');
+  const statusEl = item.querySelector('.ticket-status');
+  btn.remove();
+  statusEl.textContent = '★';
+  statusEl.className = 'ticket-status confirmed';
+  item.classList.add('just-confirmed');
+  const priceEl = item.querySelector('.ticket-price');
+  priceEl.className = 'ticket-price paid';
+}
+</script>
+</body>
+</html>

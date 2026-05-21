@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>MOVEMENT 2026 / MY PLAN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+    border-radius: 0 !important;
+    margin: 0; padding: 0;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  :root {
+    --black: #0D0D0D;
+    --white: #FFFFFF;
+    --amber: #FF8C00;
+    --violet: #7B5EA7;
+    --gold: #D4A017;
+    --teal: #2D8A6E;
+    --dim: rgba(255,255,255,0.08);
+    --grid: rgba(255,255,255,0.07);
+  }
+  html, body {
+    background: var(--black);
+    color: var(--white);
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  .header {
+    border-bottom: 3px solid var(--white);
+    padding: 12px 16px 10px;
+    background: var(--black);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+  }
+  .app-name {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .screen-title {
+    font-size: 28px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 1.0;
+  }
+  .header-right { text-align: right; }
+  .user-handle {
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .user-meta {
+    font-size: 8px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.25);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* SPEND TICKER */
+  .spend-ticker {
+    border-bottom: 3px solid var(--white);
+    background: #111;
+  }
+  .spend-ticker-top {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .spend-cell {
+    padding: 12px 14px;
+    outline: 1px solid var(--grid);
+  }
+  .spend-cell-label {
+    font-size: 7px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.25);
+    margin-bottom: 5px;
+  }
+  .spend-cell-value {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    color: var(--white);
+  }
+  .spend-cell.primary .spend-cell-value { color: var(--amber); }
+  .spend-cell.projected .spend-cell-value { color: rgba(255,255,255,0.45); }
+  .spend-cell-unit {
+    font-size: 9px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.3);
+    vertical-align: super;
+    font-size: 12px;
+    margin-right: 1px;
+  }
+
+  /* Progress bar */
+  .spend-progress-wrap {
+    padding: 10px 14px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 12px;
+  }
+  .spend-bar-track {
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    position: relative;
+    flex: 1;
+  }
+  .spend-bar-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: var(--amber);
+    width: 76.5%; /* 65/85 */
+  }
+  .spend-bar-projected {
+    position: absolute;
+    left: 76.5%; top: -2px; bottom: -2px;
+    width: 23.5%;
+    background: rgba(255,140,0,0.2);
+    border: 1px dashed rgba(255,140,0,0.4);
+  }
+  .spend-progress-label {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--amber);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* SECTION HEADERS */
+  .section-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 9px 16px;
+    background: #111;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-top: 2px solid var(--white);
+  }
+  .section-title {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .section-meta {
+    font-size: 8px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* RSVP TABLE */
+  .rsvp-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .rsvp-table thead tr {
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+  }
+  .rsvp-table th {
+    font-size: 7px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.25);
+    padding: 7px 14px;
+    text-align: left;
+    background: rgba(255,255,255,0.02);
+  }
+  .rsvp-table th.right { text-align: right; }
+  .rsvp-table td {
+    padding: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .rsvp-row {
+    display: contents;
+  }
+  .rsvp-row td { vertical-align: middle; }
+
+  .rsvp-status-col {
+    padding: 0 0 0 14px;
+    width: 24px;
+  }
+  .rsvp-dot {
+    width: 8px;
+    height: 8px;
+    display: inline-block;
+  }
+  .dot-confirmed { background: var(--amber); }
+  .dot-pending { background: rgba(255,140,0,0.25); border: 1px solid rgba(255,140,0,0.5); }
+
+  .rsvp-event-col { padding: 11px 10px 11px 0; }
+  .rsvp-event-name {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+    margin-bottom: 2px;
+  }
+  .rsvp-event-meta {
+    font-size: 8px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+  .rsvp-event-meta span {
+    color: rgba(255,255,255,0.45);
+  }
+
+  .rsvp-type-col {
+    padding: 11px 8px;
+    width: 60px;
+  }
+  .mini-badge {
+    font-size: 6px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 2px 4px;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+  .mini-v { border-color: var(--violet); color: var(--violet); }
+  .mini-a { border-color: var(--amber); color: var(--amber); }
+  .mini-t { border-color: var(--teal); color: var(--teal); }
+
+  .rsvp-price-col {
+    padding: 11px 14px;
+    text-align: right;
+    width: 60px;
+  }
+  .rsvp-price {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+    color: var(--white);
+  }
+  .rsvp-price.pending { color: rgba(255,255,255,0.25); }
+  .rsvp-status-label {
+    font-size: 7px;
+    font-weight: 400;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.2);
+    margin-top: 1px;
+  }
+  .rsvp-status-label.pending-label { color: rgba(255,140,0,0.5); }
+
+  /* RSVP TOTALS ROW */
+  .rsvp-totals {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    padding: 12px 14px;
+    background: rgba(255,140,0,0.04);
+    border-top: 2px solid var(--amber);
+    gap: 16px;
+  }
+  .rsvp-totals-label {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+  }
+  .rsvp-totals-paid {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--amber);
+    font-variant-numeric: tabular-nums;
+  }
+  .rsvp-totals-projected {
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.25);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ADD EVENT ROW */
+  .add-event-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 11px 14px;
+    border-top: 1px dashed rgba(255,255,255,0.1);
+    cursor: pointer;
+  }
+  .add-event-row:hover { background: rgba(255,255,255,0.02); }
+  .add-event-label {
+    font-size: 10px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.25);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+  .add-event-icon {
+    font-size: 18px;
+    color: rgba(255,140,0,0.5);
+  }
+
+  /* ITINERARY / DAY AGENDA */
+  .agenda-day {
+    border-top: 2px solid var(--white);
+  }
+  .agenda-day-header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: #111;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+  }
+  .agenda-day-num {
+    font-size: 40px;
+    font-weight: 100;
+    line-height: 1;
+    color: rgba(255,255,255,0.15);
+    letter-spacing: -0.02em;
+  }
+  .agenda-day-name {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+  .agenda-day-sub {
+    font-size: 8px;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.3);
+    margin-top: 3px;
+  }
+  .agenda-day-badge {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--amber);
+    text-align: right;
+  }
+  .agenda-day-badge-sub {
+    font-size: 7px;
+    color: rgba(255,255,255,0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-align: right;
+  }
+
+  .agenda-day-body {
+    display: none;
+  }
+  .agenda-day-body.open {
+    display: block;
+  }
+
+  /* Timeline entries */
+  .timeline-entry {
+    display: grid;
+    grid-template-columns: 56px 3px 1fr;
+    gap: 0;
+    min-height: 60px;
+    position: relative;
+  }
+  .timeline-entry:last-child .timeline-line { display: none; }
+
+  .timeline-time {
+    padding: 14px 10px 14px 16px;
+    font-size: 10px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.35);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+    text-align: right;
+    border-right: none;
+  }
+  .timeline-gutter {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .timeline-dot {
+    width: 10px;
+    height: 10px;
+    margin-top: 17px;
+    flex-shrink: 0;
+    z-index: 2;
+    position: relative;
+  }
+  .timeline-line {
+    position: absolute;
+    top: 27px;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    background: rgba(255,255,255,0.1);
+  }
+
+  .timeline-content {
+    padding: 12px 16px 12px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .timeline-event-name {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+    margin-bottom: 3px;
+  }
+  .timeline-venue {
+    font-size: 9px;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 6px;
+  }
+  .timeline-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .timeline-tag {
+    font-size: 7px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.35);
+  }
+  .timeline-tag.confirmed {
+    border-color: var(--amber);
+    color: var(--amber);
+  }
+  .timeline-tag.pending {
+    border-color: rgba(255,140,0,0.35);
+    color: rgba(255,140,0,0.5);
+  }
+
+  /* Travel entry */
+  .timeline-travel {
+    display: grid;
+    grid-template-columns: 56px 3px 1fr;
+    min-height: 40px;
+  }
+  .timeline-travel-time { padding: 10px 10px 10px 16px; text-align: right; font-size: 9px; color: rgba(255,255,255,0.2); }
+  .timeline-travel-gutter {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .travel-dot {
+    width: 4px;
+    height: 4px;
+    background: rgba(255,255,255,0.15);
+    margin-top: 19px;
+    flex-shrink: 0;
+  }
+  .timeline-travel-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    background: rgba(255,255,255,0.07);
+    border-left: 1px dashed rgba(255,255,255,0.1);
+  }
+  .timeline-travel-content {
+    padding: 10px 16px 10px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .travel-label {
+    font-size: 8px;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.2);
+  }
+  .travel-duration {
+    font-size: 8px;
+    color: rgba(255,255,255,0.15);
+    margin-top: 1px;
+  }
+
+  /* Empty slot */
+  .agenda-empty-slot {
+    padding: 14px 16px;
+    border-bottom: 1px dashed rgba(255,255,255,0.06);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    cursor: pointer;
+  }
+  .agenda-empty-slot:hover { background: rgba(255,255,255,0.02); }
+  .agenda-empty-label {
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.12);
+  }
+  .agenda-empty-time {
+    font-size: 9px;
+    color: rgba(255,255,255,0.1);
+  }
+  .agenda-add-icon { font-size: 16px; color: rgba(255,140,0,0.3); }
+
+  /* GROUP SECTION */
+  .group-section {
+    border-top: 2px solid var(--white);
+  }
+  .group-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .group-member {
+    padding: 10px 12px;
+    outline: 1px solid var(--grid);
+    cursor: pointer;
+  }
+  .group-member:hover { background: rgba(255,255,255,0.02); }
+  .member-handle {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--white);
+    margin-bottom: 2px;
+  }
+  .member-count {
+    font-size: 8px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .member-status {
+    width: 5px;
+    height: 5px;
+    background: var(--amber);
+    display: inline-block;
+    margin-right: 4px;
+  }
+  .member-status.offline { background: rgba(255,255,255,0.2); }
+
+  .nav-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: var(--black);
+    border-top: 2px solid var(--white);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    z-index: 150;
+  }
+  .nav-item {
+    padding: 10px 0 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    text-decoration: none;
+  }
+  .nav-icon { font-size: 18px; line-height: 1; }
+  .nav-label {
+    font-size: 7px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+  }
+  .nav-item.active .nav-label { color: var(--amber); }
+  .nav-item.active .nav-icon { color: var(--amber); }
+
+  .spacer-bottom { height: 80px; }
+
+  /* Tabs */
+  .plan-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-bottom: 2px solid var(--white);
+  }
+  .plan-tab {
+    padding: 9px 0;
+    text-align: center;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-right: 1px solid rgba(255,255,255,0.08);
+  }
+  .plan-tab.active {
+    color: var(--amber);
+    background: rgba(255,140,0,0.04);
+    border-bottom: 3px solid var(--amber);
+    margin-bottom: -2px;
+  }
+
+  /* NOTES section */
+  .notes-section { border-top: 2px solid var(--white); }
+  .note-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .note-num {
+    padding: 10px 12px;
+    font-size: 10px;
+    font-weight: 100;
+    color: rgba(255,255,255,0.15);
+    border-right: 1px solid rgba(255,255,255,0.07);
+    min-width: 36px;
+    text-align: right;
+  }
+  .note-text {
+    padding: 10px 14px;
+    font-size: 10px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .note-text strong {
+    font-weight: 600;
+    color: rgba(255,255,255,0.8);
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="app-name">MOVEMENT 2026 · DETROIT</div>
+      <div class="screen-title">MY<br>PLAN</div>
+    </div>
+    <div class="header-right">
+      <div class="user-handle">@TRINITY</div>
+      <div class="user-meta">GROUP · 20 MEMBERS</div>
+      <div class="user-meta" style="margin-top:2px;">MAY 22–25</div>
+    </div>
+  </div>
+</div>
+
+<!-- PLAN TABS -->
+<div class="plan-tabs">
+  <button class="plan-tab active" onclick="switchTab('rsvp', this)">RSVP</button>
+  <button class="plan-tab" onclick="switchTab('agenda', this)">AGENDA</button>
+  <button class="plan-tab" onclick="switchTab('group', this)">GROUP</button>
+</div>
+
+<!-- ======================== RSVP TAB ======================== -->
+<div id="tab-rsvp">
+
+  <!-- SPEND TRACKER -->
+  <div class="spend-ticker">
+    <div class="spend-ticker-top">
+      <div class="spend-cell primary">
+        <div class="spend-cell-label">PAID</div>
+        <div class="spend-cell-value"><span class="spend-cell-unit">$</span>65</div>
+      </div>
+      <div class="spend-cell projected">
+        <div class="spend-cell-label">PROJECTED</div>
+        <div class="spend-cell-value"><span class="spend-cell-unit">$</span>85</div>
+      </div>
+      <div class="spend-cell">
+        <div class="spend-cell-label">REMAINING</div>
+        <div class="spend-cell-value" style="font-size:18px;color:rgba(255,140,0,0.6)"><span class="spend-cell-unit" style="font-size:10px;">$</span>20</div>
+      </div>
+    </div>
+    <div class="spend-progress-wrap">
+      <div style="flex:1; position:relative;">
+        <div class="spend-bar-track">
+          <div class="spend-bar-fill"></div>
+          <div class="spend-bar-projected"></div>
+        </div>
+      </div>
+      <div class="spend-progress-label">76% COMMITTED</div>
+    </div>
+  </div>
+
+  <!-- RSVP TABLE -->
+  <div class="section-header" style="border-top: none;">
+    <span class="section-title">RSVP MANIFEST</span>
+    <span class="section-meta">4 EVENTS</span>
+  </div>
+
+  <table class="rsvp-table">
+    <thead>
+      <tr>
+        <th style="width:24px;"></th>
+        <th>EVENT / VENUE</th>
+        <th style="width:60px;">TYPE</th>
+        <th class="right" style="width:70px;">TICKET</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Seth Troxler -->
+      <tr>
+        <td class="rsvp-status-col"><div class="rsvp-dot dot-confirmed"></div></td>
+        <td class="rsvp-event-col">
+          <div class="rsvp-event-name">SETH TROXLER</div>
+          <div class="rsvp-event-meta"><span>MARBLE BAR</span> · FRI 23:00</div>
+        </td>
+        <td class="rsvp-type-col"><span class="mini-badge mini-v">AFTRP</span></td>
+        <td class="rsvp-price-col">
+          <div class="rsvp-price">$25</div>
+          <div class="rsvp-status-label">CONFIRMED</div>
+        </td>
+      </tr>
+      <!-- Skee Mask -->
+      <tr>
+        <td class="rsvp-status-col"><div class="rsvp-dot dot-confirmed"></div></td>
+        <td class="rsvp-event-col">
+          <div class="rsvp-event-name">SKEE MASK</div>
+          <div class="rsvp-event-meta"><span>TV LOUNGE</span> · SAT 05:00</div>
+        </td>
+        <td class="rsvp-type-col"><span class="mini-badge mini-a">SUNRS</span></td>
+        <td class="rsvp-price-col">
+          <div class="rsvp-price">$20</div>
+          <div class="rsvp-status-label">CONFIRMED</div>
+        </td>
+      </tr>
+      <!-- Mathew Jonson -->
+      <tr>
+        <td class="rsvp-status-col"><div class="rsvp-dot dot-confirmed"></div></td>
+        <td class="rsvp-event-col">
+          <div class="rsvp-event-name">MATHEW JONSON</div>
+          <div class="rsvp-event-meta"><span>TANGENT GALLERY</span> · MON 00:00</div>
+        </td>
+        <td class="rsvp-type-col"><span class="mini-badge mini-v">AFTRP</span></td>
+        <td class="rsvp-price-col">
+          <div class="rsvp-price">$20</div>
+          <div class="rsvp-status-label">CONFIRMED</div>
+        </td>
+      </tr>
+      <!-- Blawan (PENDING) -->
+      <tr>
+        <td class="rsvp-status-col"><div class="rsvp-dot dot-pending"></div></td>
+        <td class="rsvp-event-col">
+          <div class="rsvp-event-name" style="color:rgba(255,255,255,0.55)">BLAWAN</div>
+          <div class="rsvp-event-meta"><span>MARBLE BAR</span> · SAT 01:00</div>
+        </td>
+        <td class="rsvp-type-col"><span class="mini-badge mini-v" style="opacity:0.5;">AFTRP</span></td>
+        <td class="rsvp-price-col">
+          <div class="rsvp-price pending">—</div>
+          <div class="rsvp-status-label pending-label">NO TICKET</div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- TOTALS ROW -->
+  <div class="rsvp-totals">
+    <span class="rsvp-totals-label">TOTAL SPEND</span>
+    <span class="rsvp-totals-paid">$65.00</span>
+    <span class="rsvp-totals-projected">/ $85.00</span>
+  </div>
+
+  <!-- ADD EVENT -->
+  <div class="add-event-row" onclick="alert('Open schedule to add event')">
+    <span class="add-event-label">ADD EVENT TO PLAN</span>
+    <span class="add-event-icon">+</span>
+  </div>
+
+  <!-- TICKET STATUS BREAKDOWN -->
+  <div class="section-header">
+    <span class="section-title">TICKET STATUS</span>
+    <span class="section-meta">BREAKDOWN</span>
+  </div>
+
+  <table class="rsvp-table">
+    <thead>
+      <tr>
+        <th>STATUS</th>
+        <th class="right">COUNT</th>
+        <th class="right">AMOUNT</th>
+        <th class="right">% TOTAL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="rsvp-event-col" style="padding:10px 14px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="rsvp-dot dot-confirmed"></div>
+            <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">CONFIRMED</div>
+          </div>
+        </td>
+        <td class="rsvp-price-col"><div class="rsvp-price">3</div></td>
+        <td class="rsvp-price-col"><div class="rsvp-price">$65</div></td>
+        <td class="rsvp-price-col"><div class="rsvp-price" style="color:var(--amber)">76%</div></td>
+      </tr>
+      <tr>
+        <td class="rsvp-event-col" style="padding:10px 14px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="rsvp-dot dot-pending"></div>
+            <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:rgba(255,255,255,0.45)">PENDING</div>
+          </div>
+        </td>
+        <td class="rsvp-price-col"><div class="rsvp-price pending">1</div></td>
+        <td class="rsvp-price-col"><div class="rsvp-price pending">$0</div></td>
+        <td class="rsvp-price-col"><div class="rsvp-price pending">24%</div></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- NOTES -->
+  <div class="notes-section">
+    <div class="section-header">
+      <span class="section-title">NOTES</span>
+      <span class="section-meta">3 ITEMS</span>
+    </div>
+    <div class="note-row">
+      <div class="note-num">01</div>
+      <div class="note-text"><strong>BLAWAN TIX</strong> — Still available on RA. Get before Sat or drop from plan.</div>
+    </div>
+    <div class="note-row">
+      <div class="note-num">02</div>
+      <div class="note-text">MARBLE BAR has <strong>strict coat check</strong> — add 10 min to arrival window.</div>
+    </div>
+    <div class="note-row">
+      <div class="note-num">03</div>
+      <div class="note-text">SKEE MASK sunrise directly after BLAWAN — <strong>no sleep window</strong>. Pack accordingly.</div>
+    </div>
+  </div>
+
+</div><!-- /tab-rsvp -->
+
+<!-- ======================== AGENDA TAB ======================== -->
+<div id="tab-agenda" style="display:none;">
+
+  <!-- FRIDAY -->
+  <div class="agenda-day">
+    <div class="agenda-day-header" onclick="toggleAgendaDay(this)">
+      <div class="agenda-day-num">22</div>
+      <div>
+        <div class="agenda-day-name">FRIDAY</div>
+        <div class="agenda-day-sub">MAY 22 · DAY 1 OF 4</div>
+      </div>
+      <div>
+        <div class="agenda-day-badge">2</div>
+        <div class="agenda-day-badge-sub">EVENTS</div>
+      </div>
+    </div>
+    <div class="agenda-day-body open">
+
+      <!-- Arrive / setup -->
+      <div class="timeline-travel">
+        <div class="timeline-travel-time">—</div>
+        <div class="timeline-travel-gutter">
+          <div class="travel-dot"></div>
+          <div class="timeline-travel-line"></div>
+        </div>
+        <div class="timeline-travel-content">
+          <div class="travel-label">ARRIVE DETROIT · CHECK IN</div>
+          <div class="travel-duration">AirBnB · Corktown</div>
+        </div>
+      </div>
+
+      <!-- Call Super -->
+      <div class="timeline-entry">
+        <div class="timeline-time">14:00<br>→<br>18:00</div>
+        <div class="timeline-gutter">
+          <div class="timeline-dot" style="background:var(--gold);"></div>
+          <div class="timeline-line"></div>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-event-name">CALL SUPER</div>
+          <div class="timeline-venue">DELUXX FLUXX · LIBRARY ST</div>
+          <div class="timeline-tags">
+            <span class="timeline-tag" style="border-color:var(--gold);color:var(--gold);">DAY PARTY</span>
+            <span class="timeline-tag">$15</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Travel -->
+      <div class="timeline-travel">
+        <div class="timeline-travel-time">~20<br>min</div>
+        <div class="timeline-travel-gutter">
+          <div class="travel-dot"></div>
+          <div class="timeline-travel-line"></div>
+        </div>
+        <div class="timeline-travel-content">
+          <div class="travel-label">TRAVEL → MARBLE BAR</div>
+          <div class="travel-duration">HOLDEN ST · 3.1 MI · UBER</div>
+        </div>
+      </div>
+
+      <!-- Seth Troxler -->
+      <div class="timeline-entry">
+        <div class="timeline-time">23:00<br>→<br>05:00</div>
+        <div class="timeline-gutter">
+          <div class="timeline-dot" style="background:var(--violet);"></div>
+          <div class="timeline-line"></div>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-event-name">SETH TROXLER</div>
+          <div class="timeline-venue">MARBLE BAR · HOLDEN ST</div>
+          <div class="timeline-tags">
+            <span class="timeline-tag" style="border-color:var(--violet);color:var(--violet);">AFTERPARTY</span>
+            <span class="timeline-tag confirmed">TICKET ✓</span>
+            <span class="timeline-tag">$25</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="agenda-empty-slot" onclick="alert('Open schedule')">
+        <span class="agenda-empty-label">ADD TO FRIDAY PLAN</span>
+        <span class="agenda-add-icon">+</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SATURDAY -->
+  <div class="agenda-day">
+    <div class="agenda-day-header" onclick="toggleAgendaDay(this)">
+      <div class="agenda-day-num">23</div>
+      <div>
+        <div class="agenda-day-name">SATURDAY</div>
+        <div class="agenda-day-sub">MAY 23 · DAY 2 OF 4</div>
+      </div>
+      <div>
+        <div class="agenda-day-badge">2</div>
+        <div class="agenda-day-badge-sub">EVENTS</div>
+      </div>
+    </div>
+    <div class="agenda-day-body">
+
+      <!-- Blawan -->
+      <div class="timeline-entry">
+        <div class="timeline-time">01:00<br>→<br>05:00</div>
+        <div class="timeline-gutter">
+          <div class="timeline-dot" style="background:rgba(123,94,167,0.4); border:1px solid var(--violet);"></div>
+          <div class="timeline-line"></div>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-event-name" style="color:rgba(255,255,255,0.6)">BLAWAN</div>
+          <div class="timeline-venue">MARBLE BAR · HOLDEN ST</div>
+          <div class="timeline-tags">
+            <span class="timeline-tag" style="border-color:var(--violet);color:var(--violet);">AFTERPARTY</span>
+            <span class="timeline-tag pending">NO TICKET</span>
+            <span class="timeline-tag">$30</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Travel -->
+      <div class="timeline-travel">
+        <div class="timeline-travel-time">~15<br>min</div>
+        <div class="timeline-travel-gutter">
+          <div class="travel-dot"></div>
+          <div class="timeline-travel-line"></div>
+        </div>
+        <div class="timeline-travel-content">
+          <div class="travel-label">TRAVEL → TV LOUNGE</div>
+          <div class="travel-duration">ATWATER ST · 2.8 MI</div>
+        </div>
+      </div>
+
+      <!-- Skee Mask -->
+      <div class="timeline-entry">
+        <div class="timeline-time">05:00<br>→<br>09:00</div>
+        <div class="timeline-gutter">
+          <div class="timeline-dot" style="background:var(--amber);"></div>
+          <div class="timeline-line"></div>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-event-name">SKEE MASK</div>
+          <div class="timeline-venue">TV LOUNGE · ATWATER ST</div>
+          <div class="timeline-tags">
+            <span class="timeline-tag" style="border-color:var(--amber);color:var(--amber);">SUNRISE</span>
+            <span class="timeline-tag confirmed">TICKET ✓</span>
+            <span class="timeline-tag">$20</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="agenda-empty-slot" onclick="alert('Open schedule')">
+        <span class="agenda-empty-label">ADD TO SATURDAY PLAN</span>
+        <span class="agenda-add-icon">+</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SUNDAY -->
+  <div class="agenda-day">
+    <div class="agenda-day-header" onclick="toggleAgendaDay(this)">
+      <div class="agenda-day-num">24</div>
+      <div>
+        <div class="agenda-day-name">SUNDAY</div>
+        <div class="agenda-day-sub">MAY 24 · DAY 3 OF 4</div>
+      </div>
+      <div>
+        <div class="agenda-day-badge" style="color:rgba(255,255,255,0.2)">0</div>
+        <div class="agenda-day-badge-sub">EVENTS</div>
+      </div>
+    </div>
+    <div class="agenda-day-body">
+      <div class="agenda-empty-slot" onclick="alert('Open schedule')">
+        <span class="agenda-empty-label">RECOVERY DAY — ADD EVENTS</span>
+        <span class="agenda-add-icon">+</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MONDAY -->
+  <div class="agenda-day">
+    <div class="agenda-day-header" onclick="toggleAgendaDay(this)">
+      <div class="agenda-day-num">25</div>
+      <div>
+        <div class="agenda-day-name">MONDAY</div>
+        <div class="agenda-day-sub">MAY 25 · FINAL DAY</div>
+      </div>
+      <div>
+        <div class="agenda-day-badge">1</div>
+        <div class="agenda-day-badge-sub">EVENTS</div>
+      </div>
+    </div>
+    <div class="agenda-day-body">
+
+      <!-- Mathew Jonson -->
+      <div class="timeline-entry">
+        <div class="timeline-time">00:00<br>→<br>04:00</div>
+        <div class="timeline-gutter">
+          <div class="timeline-dot" style="background:var(--violet);"></div>
+          <div class="timeline-line"></div>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-event-name">MATHEW JONSON</div>
+          <div class="timeline-venue">TANGENT GALLERY · E MILWAUKEE</div>
+          <div class="timeline-tags">
+            <span class="timeline-tag" style="border-color:var(--violet);color:var(--violet);">AFTERPARTY</span>
+            <span class="timeline-tag confirmed">TICKET ✓</span>
+            <span class="timeline-tag">$20</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Travel home -->
+      <div class="timeline-travel">
+        <div class="timeline-travel-time">—</div>
+        <div class="timeline-travel-gutter">
+          <div class="travel-dot"></div>
+          <div class="timeline-travel-line"></div>
+        </div>
+        <div class="timeline-travel-content">
+          <div class="travel-label">DEPART DETROIT</div>
+          <div class="travel-duration">FLIGHT / DRIVE HOME</div>
+        </div>
+      </div>
+
+      <div class="agenda-empty-slot" onclick="alert('Open schedule')">
+        <span class="agenda-empty-label">ADD FINALE EVENT</span>
+        <span class="agenda-add-icon">+</span>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /tab-agenda -->
+
+<!-- ======================== GROUP TAB ======================== -->
+<div id="tab-group" style="display:none;">
+
+  <div class="section-header" style="border-top:none;">
+    <span class="section-title">THE CREW</span>
+    <span class="section-meta">20 MEMBERS</span>
+  </div>
+
+  <!-- Stats bar -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid rgba(255,255,255,0.08);">
+    <div style="padding:12px 14px;outline:1px solid var(--grid);">
+      <div style="font-size:7px;font-weight:400;text-transform:uppercase;letter-spacing:0.2em;color:rgba(255,255,255,0.25);margin-bottom:4px;">ATTENDING</div>
+      <div style="font-size:24px;font-weight:700;color:var(--amber);line-height:1;">20</div>
+    </div>
+    <div style="padding:12px 14px;outline:1px solid var(--grid);">
+      <div style="font-size:7px;font-weight:400;text-transform:uppercase;letter-spacing:0.2em;color:rgba(255,255,255,0.25);margin-bottom:4px;">ONLINE NOW</div>
+      <div style="font-size:24px;font-weight:700;color:var(--white);line-height:1;">7</div>
+    </div>
+    <div style="padding:12px 14px;outline:1px solid var(--grid);">
+      <div style="font-size:7px;font-weight:400;text-transform:uppercase;letter-spacing:0.2em;color:rgba(255,255,255,0.25);margin-bottom:4px;">EVENTS SHARED</div>
+      <div style="font-size:24px;font-weight:700;color:rgba(255,255,255,0.4);line-height:1;">12</div>
+    </div>
+  </div>
+
+  <div class="group-grid">
+    <div class="group-member">
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:2px;">
+        <div class="member-status"></div>
+        <div class="member-handle">TRINITY</div>
+      </div>
+      <div class="member-count">4 EVT · $65 PAID</div>
+    </div>
+    <div class="group-member">
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:2px;">
+        <div class="member-status"></div>
+        <div class="member-handle">YUKI</div>
+      </div>
+      <div class="member-count">6 EVT · $110 PAID</div>
+    </div>
+    <div class="group-member">
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:2px;">
+        <div class="member-status"></div>
+        <div class="member-handle">MARCUS</div>
+      </div>
+      <div class="member-count">5 EVT · $95 PAID</div>
+    </div>
+    <div class="group-member">
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:2px;">
+        <div class="member-status offline"></div>
+        <div class="member-handle">DANA</div>
+      </div>
+      <div class="member-count">3 EVT · $55 PAID</div>
+    </div>
+    <div class="group-member">
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:2px;">
+        <div class="member-status"></div>
+        <div class="member-handle">PRIYA</div>
+      </div>
+      <div class="member-count">7 EVT · $140 PAID</div>
+    </div>
+    <div class="group-member">
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:2px;">
+        <div class="member-status offline"></div>
+        <div class="member-handle">SVEN</div>
+      </div>
+      <div class="member-count">4 EVT · $75 PAID</div>
+    </div>
+    <div class="group-member">
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:2px;">
+        <div class="member-status"></div>
+        <div class="member-handle">ALEX</div>
+      </div>
+      <div class="member-count">5 EVT · $85 PAID</div>
+    </div>
+    <div class="group-member">
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:2px;">
+        <div class="member-status offline"></div>
+        <div class="member-handle">CLAIRE</div>
+      </div>
+      <div class="member-count">3 EVT · $50 PAID</div>
+    </div>
+    <div class="group-member">
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:2px;">
+        <div class="member-status"></div>
+        <div class="member-handle">OMAR</div>
+      </div>
+      <div class="member-count">6 EVT · $115 PAID</div>
+    </div>
+    <div class="group-member">
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:2px;">
+        <div class="member-status offline"></div>
+        <div class="member-handle">LEAH</div>
+      </div>
+      <div class="member-count">4 EVT · $70 PAID</div>
+    </div>
+    <div class="group-member">
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:2px;">
+        <div class="member-status"></div>
+        <div class="member-handle">JIN</div>
+      </div>
+      <div class="member-count">5 EVT · $90 PAID</div>
+    </div>
+    <div class="group-member">
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:2px;">
+        <div class="member-status offline"></div>
+        <div class="member-handle">MARA</div>
+      </div>
+      <div class="member-count">2 EVT · $35 PAID</div>
+    </div>
+  </div>
+
+  <!-- Group shared events matrix -->
+  <div class="section-header">
+    <span class="section-title">SHARED EVENTS</span>
+    <span class="section-meta">OVERLAP VIEW</span>
+  </div>
+
+  <!-- Simple overlap table -->
+  <table class="rsvp-table">
+    <thead>
+      <tr>
+        <th>EVENT</th>
+        <th class="right">CREW</th>
+        <th class="right">STATUS</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="rsvp-event-col" style="padding:10px 14px;">
+          <div class="rsvp-event-name">SETH TROXLER</div>
+          <div class="rsvp-event-meta">FRI 23:00 · MARBLE BAR</div>
+        </td>
+        <td class="rsvp-price-col"><div class="rsvp-price" style="color:var(--amber)">14</div></td>
+        <td class="rsvp-price-col"><div class="rsvp-status-label" style="color:var(--amber);font-size:8px;">GROUP GO</div></td>
+      </tr>
+      <tr>
+        <td class="rsvp-event-col" style="padding:10px 14px;">
+          <div class="rsvp-event-name">SKEE MASK</div>
+          <div class="rsvp-event-meta">SAT 05:00 · TV LOUNGE</div>
+        </td>
+        <td class="rsvp-price-col"><div class="rsvp-price" style="color:var(--amber)">9</div></td>
+        <td class="rsvp-price-col"><div class="rsvp-status-label" style="color:var(--amber);font-size:8px;">GROUP GO</div></td>
+      </tr>
+      <tr>
+        <td class="rsvp-event-col" style="padding:10px 14px;">
+          <div class="rsvp-event-name">BLAWAN</div>
+          <div class="rsvp-event-meta">SAT 01:00 · MARBLE BAR</div>
+        </td>
+        <td class="rsvp-price-col"><div class="rsvp-price">11</div></td>
+        <td class="rsvp-price-col"><div class="rsvp-status-label">SPLIT</div></td>
+      </tr>
+      <tr>
+        <td class="rsvp-event-col" style="padding:10px 14px;">
+          <div class="rsvp-event-name">MATHEW JONSON</div>
+          <div class="rsvp-event-meta">MON 00:00 · TANGENT</div>
+        </td>
+        <td class="rsvp-price-col"><div class="rsvp-price">7</div></td>
+        <td class="rsvp-price-col"><div class="rsvp-status-label">SPLIT</div></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="border-top:2px solid rgba(255,255,255,0.08);padding:12px 16px;display:grid;grid-template-columns:1fr auto;align-items:center;cursor:pointer;" onclick="alert('invite')">
+    <span style="font-size:10px;font-weight:300;text-transform:uppercase;letter-spacing:0.15em;color:rgba(255,255,255,0.25)">INVITE TO GROUP</span>
+    <span style="font-size:16px;color:rgba(255,140,0,0.5)">+</span>
+  </div>
+
+</div><!-- /tab-group -->
+
+<div class="spacer-bottom"></div>
+
+<nav class="nav-bar">
+  <a class="nav-item" href="map.html">
+    <span class="nav-icon">⊞</span>
+    <span class="nav-label">MAP</span>
+  </a>
+  <a class="nav-item" href="schedule.html">
+    <span class="nav-icon">≡</span>
+    <span class="nav-label">SCHEDULE</span>
+  </a>
+  <a class="nav-item active" href="#">
+    <span class="nav-icon">◈</span>
+    <span class="nav-label">MY PLAN</span>
+  </a>
+</nav>
+
+<script>
+  function switchTab(tab, btn) {
+    ['rsvp','agenda','group'].forEach(t => {
+      document.getElementById('tab-' + t).style.display = (t === tab) ? 'block' : 'none';
+    });
+    document.querySelectorAll('.plan-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function toggleAgendaDay(header) {
+    const body = header.nextElementSibling;
+    body.classList.toggle('open');
+  }
+</script>
+</body>
+</html>

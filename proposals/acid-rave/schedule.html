@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>MOVEMENT 2026 — SCHEDULE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --acid: #CCFF00;
+    --pink: #FF0080;
+    --void: #000000;
+    --white: #FFFFFF;
+    --green: #00FF41;
+    --amber: #FF8C00;
+    --violet: #BF00FF;
+    --teal: #00FFD4;
+    --dim: #0a0a0a;
+  }
+
+  html, body {
+    background: var(--void);
+    color: var(--acid);
+    font-family: 'Share Tech Mono', monospace;
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.12) 2px,
+      rgba(0,0,0,0.12) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+    animation: scanroll 10s linear infinite;
+  }
+
+  @keyframes scanroll {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100px; }
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.65) 100%);
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 12px 16px 8px;
+    border-bottom: 1px solid var(--acid);
+    background: var(--void);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 4px;
+    color: var(--acid);
+    text-shadow: 0 0 20px var(--acid), 0 0 40px rgba(204,255,0,0.5);
+    animation: glitch-logo 5s infinite;
+  }
+
+  @keyframes glitch-logo {
+    0%, 88%, 100% { text-shadow: 0 0 20px var(--acid), 0 0 40px rgba(204,255,0,0.5); transform: none; }
+    90% { text-shadow: 3px 0 var(--pink), -3px 0 var(--teal); transform: skewX(-3deg); clip-path: inset(20% 0 60% 0); }
+    92% { clip-path: inset(60% 0 20% 0); text-shadow: -3px 0 var(--pink), 3px 0 var(--teal); transform: skewX(3deg); }
+    94% { clip-path: none; text-shadow: 0 0 20px var(--acid); transform: none; }
+  }
+
+  .header-meta {
+    text-align: right;
+    font-size: 10px;
+    color: rgba(204,255,0,0.6);
+    line-height: 1.4;
+  }
+
+  .header-meta span {
+    display: block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    color: var(--pink);
+  }
+
+  .nav-tabs {
+    display: flex;
+    border-bottom: 1px solid rgba(204,255,0,0.3);
+    background: var(--void);
+  }
+
+  .nav-tab {
+    flex: 1;
+    padding: 10px 4px;
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: rgba(204,255,0,0.4);
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+  }
+
+  .nav-tab.active {
+    color: var(--acid);
+    border-bottom-color: var(--acid);
+    text-shadow: 0 0 10px var(--acid);
+  }
+
+  /* VIEW TOGGLE */
+  .view-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background: #050505;
+    border-bottom: 1px solid rgba(204,255,0,0.2);
+  }
+
+  .view-toggle {
+    display: flex;
+    gap: 0;
+    border: 1px solid rgba(204,255,0,0.3);
+  }
+
+  .view-btn {
+    padding: 5px 12px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: rgba(204,255,0,0.5);
+    cursor: pointer;
+    border-right: 1px solid rgba(204,255,0,0.3);
+    background: transparent;
+    border-top: none;
+    border-bottom: none;
+    border-left: none;
+  }
+
+  .view-btn:last-child { border-right: none; }
+
+  .view-btn.active {
+    background: var(--acid);
+    color: var(--void);
+  }
+
+  .event-total {
+    font-size: 10px;
+    color: rgba(204,255,0,0.5);
+  }
+
+  /* DAY TABS */
+  .day-tabs {
+    display: flex;
+    background: #050505;
+    border-bottom: 1px solid rgba(204,255,0,0.2);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .day-tabs::-webkit-scrollbar { display: none; }
+
+  .day-tab {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: rgba(204,255,0,0.4);
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .day-tab.active {
+    color: var(--acid);
+    border-bottom-color: var(--acid);
+    text-shadow: 0 0 8px var(--acid);
+  }
+
+  .day-tab-count {
+    font-size: 9px;
+    margin-left: 4px;
+    color: var(--pink);
+  }
+
+  /* ===== GANTT VIEW ===== */
+  .gantt-view { overflow: hidden; }
+  .gantt-view.hidden { display: none; }
+
+  .gantt-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: calc(100vh - 240px);
+    background: var(--void);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(204,255,0,0.3) transparent;
+  }
+
+  .gantt-wrapper::-webkit-scrollbar { height: 4px; width: 4px; }
+  .gantt-wrapper::-webkit-scrollbar-thumb { background: rgba(204,255,0,0.3); }
+
+  .gantt-inner {
+    min-width: 680px;
+    position: relative;
+  }
+
+  /* Time header */
+  .gantt-time-header {
+    display: flex;
+    position: sticky;
+    top: 0;
+    background: #050505;
+    border-bottom: 1px solid rgba(204,255,0,0.3);
+    z-index: 20;
+    padding-left: 90px;
+  }
+
+  .gantt-hour {
+    flex-shrink: 0;
+    width: 50px;
+    padding: 6px 2px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: rgba(204,255,0,0.5);
+    text-align: center;
+    border-left: 1px solid rgba(204,255,0,0.1);
+  }
+
+  .gantt-hour.midnight {
+    color: var(--pink);
+    border-left-color: rgba(255,0,128,0.4);
+  }
+
+  /* Venue row */
+  .gantt-row {
+    display: flex;
+    border-bottom: 1px solid rgba(204,255,0,0.08);
+    min-height: 52px;
+    align-items: center;
+    position: relative;
+  }
+
+  .gantt-row:hover { background: rgba(204,255,0,0.02); }
+
+  .gantt-venue-label {
+    width: 90px;
+    flex-shrink: 0;
+    padding: 4px 8px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+    position: sticky;
+    left: 0;
+    background: #050505;
+    z-index: 10;
+    border-right: 1px solid rgba(204,255,0,0.2);
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .gantt-track {
+    flex: 1;
+    position: relative;
+    height: 52px;
+  }
+
+  /* Hour grid lines */
+  .gantt-grid-lines {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    display: flex;
+  }
+
+  .gantt-grid-cell {
+    flex-shrink: 0;
+    width: 50px;
+    height: 100%;
+    border-left: 1px solid rgba(204,255,0,0.06);
+  }
+
+  .gantt-grid-cell.midnight { border-left-color: rgba(255,0,128,0.15); }
+
+  /* Event bar */
+  .gantt-event {
+    position: absolute;
+    top: 8px;
+    height: 36px;
+    border: 1px solid;
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: filter 0.1s, transform 0.1s;
+    z-index: 5;
+  }
+
+  .gantt-event:active {
+    transform: scaleY(1.05);
+    filter: brightness(1.3);
+  }
+
+  .gantt-event-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 11px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .gantt-event.afterparty {
+    background: rgba(255,0,128,0.2);
+    border-color: #FF0080;
+    color: #FF0080;
+    box-shadow: 0 0 8px rgba(255,0,128,0.3);
+  }
+
+  .gantt-event.sunrise {
+    background: rgba(255,140,0,0.2);
+    border-color: #FF8C00;
+    color: #FF8C00;
+    box-shadow: 0 0 8px rgba(255,140,0,0.3);
+  }
+
+  .gantt-event.dayparty {
+    background: rgba(204,255,0,0.15);
+    border-color: #CCFF00;
+    color: #CCFF00;
+    box-shadow: 0 0 8px rgba(204,255,0,0.3);
+  }
+
+  .gantt-event.festival {
+    background: rgba(0,255,65,0.15);
+    border-color: #00FF41;
+    color: #00FF41;
+    box-shadow: 0 0 8px rgba(0,255,65,0.3);
+  }
+
+  /* Current time indicator */
+  .time-now {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: var(--pink);
+    box-shadow: 0 0 8px var(--pink);
+    z-index: 15;
+    pointer-events: none;
+  }
+
+  /* ===== LIST VIEW ===== */
+  .list-view { }
+  .list-view.hidden { display: none; }
+
+  .list-scroller {
+    overflow-y: auto;
+    max-height: calc(100vh - 240px);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(204,255,0,0.3) transparent;
+  }
+
+  .list-day-header {
+    padding: 8px 16px;
+    background: #050505;
+    border-bottom: 1px solid rgba(204,255,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .list-day-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 3px;
+    color: var(--acid);
+    text-shadow: 0 0 15px var(--acid);
+  }
+
+  .list-day-sub {
+    font-size: 10px;
+    color: rgba(204,255,0,0.5);
+  }
+
+  .event-card {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(204,255,0,0.08);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.1s;
+  }
+
+  .event-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0;
+    width: 3px;
+    height: 100%;
+  }
+
+  .event-card.afterparty::before { background: #FF0080; box-shadow: 0 0 8px #FF0080; }
+  .event-card.sunrise::before { background: #FF8C00; box-shadow: 0 0 8px #FF8C00; }
+  .event-card.dayparty::before { background: #CCFF00; box-shadow: 0 0 8px #CCFF00; }
+  .event-card.festival::before { background: #00FF41; box-shadow: 0 0 8px #00FF41; }
+
+  .event-card:active { background: rgba(204,255,0,0.04); }
+
+  .event-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 5px;
+  }
+
+  .event-artist {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .event-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+    margin-left: 8px;
+  }
+
+  .event-price.afterparty { color: #FF0080; }
+  .event-price.sunrise { color: #FF8C00; }
+  .event-price.dayparty { color: #CCFF00; }
+  .event-price.festival { color: #00FF41; }
+
+  .event-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .event-time {
+    font-size: 11px;
+    color: var(--acid);
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .event-venue {
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .event-type-badge {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 10px;
+    padding: 1px 5px;
+    border: 1px solid;
+    letter-spacing: 1px;
+  }
+
+  .event-type-badge.afterparty { color: #FF0080; border-color: rgba(255,0,128,0.4); }
+  .event-type-badge.sunrise { color: #FF8C00; border-color: rgba(255,140,0,0.4); }
+  .event-type-badge.dayparty { color: #CCFF00; border-color: rgba(204,255,0,0.4); }
+  .event-type-badge.festival { color: #00FF41; border-color: rgba(0,255,65,0.4); }
+
+  .rsvp-indicator {
+    font-size: 9px;
+    color: var(--acid);
+    font-family: 'Share Tech Mono', monospace;
+    margin-left: auto;
+  }
+
+  .rsvp-indicator.yes {
+    color: var(--acid);
+  }
+
+  .rsvp-indicator.want {
+    color: var(--pink);
+  }
+
+  /* EVENT DETAIL MODAL */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    z-index: 500;
+    display: none;
+    align-items: flex-end;
+  }
+
+  .modal-overlay.show { display: flex; }
+
+  .modal-sheet {
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    background: #080808;
+    border-top: 2px solid var(--acid);
+    padding: 20px 20px 40px;
+    animation: slide-up 0.25s ease-out;
+  }
+
+  @keyframes slide-up {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .modal-close {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: rgba(204,255,0,0.5);
+    cursor: pointer;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .modal-artist {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 4px;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 4px;
+    animation: glitch-text 6s infinite;
+  }
+
+  @keyframes glitch-text {
+    0%, 85%, 100% { text-shadow: none; transform: none; }
+    87% { text-shadow: 2px 0 var(--pink), -2px 0 var(--teal); }
+    89% { text-shadow: -2px 0 var(--pink), 2px 0 var(--teal); transform: skewX(1deg); }
+    91% { text-shadow: none; transform: none; }
+  }
+
+  .modal-type {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+  }
+
+  .modal-type.afterparty { color: #FF0080; }
+  .modal-type.sunrise { color: #FF8C00; }
+  .modal-type.dayparty { color: #CCFF00; }
+  .modal-type.festival { color: #00FF41; }
+
+  .modal-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: rgba(204,255,0,0.2);
+    margin-bottom: 16px;
+    border: 1px solid rgba(204,255,0,0.2);
+  }
+
+  .modal-detail-cell {
+    background: #0a0a0a;
+    padding: 10px 12px;
+  }
+
+  .modal-detail-label {
+    font-size: 9px;
+    color: rgba(204,255,0,0.5);
+    letter-spacing: 1px;
+    margin-bottom: 3px;
+  }
+
+  .modal-detail-val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--white);
+  }
+
+  .modal-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .modal-action-btn {
+    padding: 12px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    border: 1px solid;
+    cursor: pointer;
+    text-align: center;
+    background: transparent;
+  }
+
+  .btn-primary {
+    background: var(--acid);
+    border-color: var(--acid);
+    color: var(--void);
+    box-shadow: 0 0 15px rgba(204,255,0,0.4);
+  }
+
+  .btn-secondary {
+    border-color: rgba(255,0,128,0.5);
+    color: var(--pink);
+  }
+
+  .btn-ra {
+    grid-column: 1 / -1;
+    border-color: rgba(204,255,0,0.3);
+    color: rgba(204,255,0,0.6);
+    font-size: 12px;
+  }
+
+  /* category legend bar */
+  .legend-bar {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    background: #050505;
+    border-bottom: 1px solid rgba(204,255,0,0.15);
+  }
+  .legend-bar::-webkit-scrollbar { display: none; }
+
+  .legend-item {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 10px;
+    letter-spacing: 1px;
+    border-right: 1px solid rgba(204,255,0,0.1);
+  }
+
+  .legend-swatch {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+  }
+
+  .legend-item.afterparty { color: #FF0080; }
+  .legend-item.afterparty .legend-swatch { background: #FF0080; box-shadow: 0 0 4px #FF0080; }
+  .legend-item.sunrise { color: #FF8C00; }
+  .legend-item.sunrise .legend-swatch { background: #FF8C00; box-shadow: 0 0 4px #FF8C00; }
+  .legend-item.dayparty { color: #CCFF00; }
+  .legend-item.dayparty .legend-swatch { background: #CCFF00; box-shadow: 0 0 4px #CCFF00; }
+  .legend-item.festival { color: #00FF41; }
+  .legend-item.festival .legend-swatch { background: #00FF41; box-shadow: 0 0 4px #00FF41; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo">MOVEMENT</div>
+    <div class="header-meta">
+      <span>DETROIT 2026</span>
+      28 EVENTS · 12 VENUES
+    </div>
+  </div>
+</div>
+
+<div class="nav-tabs">
+  <div class="nav-tab">MAP</div>
+  <div class="nav-tab active">SCHEDULE</div>
+  <div class="nav-tab">PLAN</div>
+</div>
+
+<div class="view-controls">
+  <div class="view-toggle">
+    <button class="view-btn active" id="ganttBtn" onclick="setView('gantt')">GANTT</button>
+    <button class="view-btn" id="listBtn" onclick="setView('list')">LIST</button>
+  </div>
+  <div class="event-total">28 EVENTS LOADED</div>
+</div>
+
+<div class="day-tabs">
+  <div class="day-tab active" onclick="setDay('fri')">FRI 22<span class="day-tab-count">·8</span></div>
+  <div class="day-tab" onclick="setDay('sat')">SAT 23<span class="day-tab-count">·9</span></div>
+  <div class="day-tab" onclick="setDay('sun')">SUN 24<span class="day-tab-count">·6</span></div>
+  <div class="day-tab" onclick="setDay('mon')">MON 25<span class="day-tab-count">·5</span></div>
+</div>
+
+<div class="legend-bar">
+  <div class="legend-item afterparty"><div class="legend-swatch"></div>AFTERPARTY</div>
+  <div class="legend-item dayparty"><div class="legend-swatch"></div>DAY PARTY</div>
+  <div class="legend-item sunrise"><div class="legend-swatch"></div>SUNRISE</div>
+  <div class="legend-item festival"><div class="legend-swatch"></div>FESTIVAL</div>
+</div>
+
+<!-- GANTT VIEW -->
+<div class="gantt-view" id="ganttView">
+  <div class="gantt-wrapper" id="ganttWrapper">
+    <div class="gantt-inner" id="ganttInner">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- LIST VIEW -->
+<div class="list-view hidden" id="listView">
+  <div class="list-scroller" id="listScroller">
+    <!-- Rendered by JS -->
+  </div>
+</div>
+
+<!-- EVENT DETAIL MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal-sheet" id="modalSheet">
+    <div class="modal-close" onclick="closeModalDirect()">✕ CLOSE</div>
+    <div class="modal-artist" id="modalArtist">—</div>
+    <div class="modal-type" id="modalType">—</div>
+    <div class="modal-detail-grid">
+      <div class="modal-detail-cell">
+        <div class="modal-detail-label">VENUE</div>
+        <div class="modal-detail-val" id="modalVenue">—</div>
+      </div>
+      <div class="modal-detail-cell">
+        <div class="modal-detail-label">DATE</div>
+        <div class="modal-detail-val" id="modalDate">—</div>
+      </div>
+      <div class="modal-detail-cell">
+        <div class="modal-detail-label">TIME</div>
+        <div class="modal-detail-val" id="modalTime">—</div>
+      </div>
+      <div class="modal-detail-cell">
+        <div class="modal-detail-label">PRICE</div>
+        <div class="modal-detail-val" id="modalPrice">—</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-action-btn btn-primary" id="modalRsvpBtn">+ MY PLAN</button>
+      <button class="modal-action-btn btn-secondary">WANT TO GO</button>
+      <button class="modal-action-btn btn-ra">↗ VIEW ON RESIDENT ADVISOR</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===================== DATA =====================
+const events = [
+  // FRI MAY 22
+  { id: 1, artist: 'SETH TROXLER', venue: 'MARBLE BAR', day: 'fri', start: 23, end: 29, type: 'afterparty', price: '$25', rsvp: 'yes', date: 'FRI MAY 22' },
+  { id: 2, artist: 'TRUNCATE', venue: 'MARBLE BAR', day: 'fri', start: 20, end: 23, type: 'afterparty', price: '$20', rsvp: null, date: 'FRI MAY 22' },
+  { id: 3, artist: 'MOVEMENT OPENING', venue: 'HART PLAZA', day: 'fri', start: 12, end: 22, type: 'festival', price: 'INCL', rsvp: null, date: 'FRI MAY 22' },
+  { id: 4, artist: 'SKRILLEX B2B', venue: 'EL CLUB', day: 'fri', start: 22, end: 26, type: 'afterparty', price: '$35', rsvp: null, date: 'FRI MAY 22' },
+  { id: 5, artist: 'FUNCTION', venue: 'TANGENT GALLERY', day: 'fri', start: 21, end: 26, type: 'afterparty', price: '$20', rsvp: null, date: 'FRI MAY 22' },
+  { id: 6, artist: 'CALL SUPER', venue: 'DELUXX FLUXX', day: 'fri', start: 14, end: 19, type: 'dayparty', price: '$15', rsvp: null, date: 'FRI MAY 22' },
+  { id: 7, artist: 'NINA KRAVIZ', venue: 'TV LOUNGE', day: 'fri', start: 5, end: 9, type: 'sunrise', price: '$20', rsvp: null, date: 'FRI MAY 22' },
+  { id: 8, artist: 'ANDY STOTT', venue: 'TANGENT GALLERY', day: 'fri', start: 17, end: 21, type: 'afterparty', price: '$18', rsvp: null, date: 'FRI MAY 22' },
+
+  // SAT MAY 23
+  { id: 9, artist: 'BLAWAN', venue: 'MARBLE BAR', day: 'sat', start: 25, end: 29, type: 'afterparty', price: '$30', rsvp: 'want', date: 'SAT MAY 23' },
+  { id: 10, artist: 'SKEE MASK', venue: 'TV LOUNGE', day: 'sat', start: 29, end: 33, type: 'sunrise', price: '$20', rsvp: 'yes', date: 'SAT MAY 23' },
+  { id: 11, artist: 'MOVEMENT DAY 2', venue: 'HART PLAZA', day: 'sat', start: 12, end: 22, type: 'festival', price: 'INCL', rsvp: null, date: 'SAT MAY 23' },
+  { id: 12, artist: 'CALL SUPER', venue: 'DELUXX FLUXX', day: 'sat', start: 14, end: 18, type: 'dayparty', price: '$15', rsvp: null, date: 'SAT MAY 23' },
+  { id: 13, artist: 'SURGEON', venue: 'MARBLE BAR', day: 'sat', start: 22, end: 25, type: 'afterparty', price: '$25', rsvp: null, date: 'SAT MAY 23' },
+  { id: 14, artist: 'KARENN', venue: 'EL CLUB', day: 'sat', start: 23, end: 27, type: 'afterparty', price: '$25', rsvp: null, date: 'SAT MAY 23' },
+  { id: 15, artist: 'UNION JACK', venue: 'DELUXX FLUXX', day: 'sat', start: 20, end: 24, type: 'dayparty', price: '$15', rsvp: null, date: 'SAT MAY 23' },
+  { id: 16, artist: 'CENTURY OF FLIES', venue: 'TANGENT GALLERY', day: 'sat', start: 22, end: 26, type: 'afterparty', price: '$15', rsvp: null, date: 'SAT MAY 23' },
+  { id: 17, artist: 'DJ STINGRAY', venue: 'TV LOUNGE', day: 'sat', start: 5, end: 9, type: 'sunrise', price: '$18', rsvp: null, date: 'SAT MAY 23' },
+
+  // SUN MAY 24
+  { id: 18, artist: 'OCTAVE ONE', venue: 'HART PLAZA', day: 'sun', start: 16, end: 18, type: 'festival', price: 'INCL', rsvp: null, date: 'SUN MAY 24' },
+  { id: 19, artist: 'ROBERT HOOD', venue: 'HART PLAZA', day: 'sun', start: 14, end: 16, type: 'festival', price: 'INCL', rsvp: null, date: 'SUN MAY 24' },
+  { id: 20, artist: 'DAFT PUNK DJ', venue: 'MARBLE BAR', day: 'sun', start: 23, end: 27, type: 'afterparty', price: '$40', rsvp: null, date: 'SUN MAY 24' },
+  { id: 21, artist: 'MIKE BANKS', venue: 'TANGENT GALLERY', day: 'sun', start: 22, end: 26, type: 'afterparty', price: '$15', rsvp: null, date: 'SUN MAY 24' },
+  { id: 22, artist: 'MOVEMENT DAY 3', venue: 'HART PLAZA', day: 'sun', start: 12, end: 22, type: 'festival', price: 'INCL', rsvp: null, date: 'SUN MAY 24' },
+  { id: 23, artist: 'RØDHÅD', venue: 'EL CLUB', day: 'sun', start: 21, end: 25, type: 'afterparty', price: '$30', rsvp: null, date: 'SUN MAY 24' },
+
+  // MON MAY 25
+  { id: 24, artist: 'MATHEW JONSON', venue: 'TANGENT GALLERY', day: 'mon', start: 24, end: 28, type: 'afterparty', price: '$20', rsvp: 'yes', date: 'MON MAY 25' },
+  { id: 25, artist: 'MOVEMENT CLOSING', venue: 'HART PLAZA', day: 'mon', start: 12, end: 20, type: 'festival', price: 'INCL', rsvp: null, date: 'MON MAY 25' },
+  { id: 26, artist: 'BEN UFO', venue: 'MARBLE BAR', day: 'mon', start: 22, end: 26, type: 'afterparty', price: '$25', rsvp: null, date: 'MON MAY 25' },
+  { id: 27, artist: 'KERRI CHANDLER', venue: 'DELUXX FLUXX', day: 'mon', start: 14, end: 18, type: 'dayparty', price: '$20', rsvp: null, date: 'MON MAY 25' },
+  { id: 28, artist: 'ALAN FITZPATRICK', venue: 'TV LOUNGE', day: 'mon', start: 29, end: 33, type: 'sunrise', price: '$20', rsvp: null, date: 'MON MAY 25' },
+];
+
+const venues = ['HART PLAZA','MARBLE BAR','TV LOUNGE','DELUXX FLUXX','EL CLUB','TANGENT GALLERY'];
+const dayLabels = { fri:'FRI MAY 22', sat:'SAT MAY 23', sun:'SUN MAY 24', mon:'MON MAY 25' };
+
+let currentDay = 'fri';
+let currentView = 'gantt';
+let selectedEvent = null;
+
+// ===================== GANTT =====================
+function renderGantt(day) {
+  const dayEvents = events.filter(e => e.day === day);
+  const hourStart = 5;  // 5AM
+  const hourEnd = 34;   // 10AM next day (24+10)
+  const hourCount = hourEnd - hourStart;
+  const hourW = 50;
+  const totalW = 90 + hourCount * hourW;
+
+  let html = `<div style="min-width:${totalW}px">`;
+
+  // Time header
+  html += `<div class="gantt-time-header" style="padding-left:90px">`;
+  for (let h = hourStart; h <= hourEnd; h++) {
+    const dispH = h % 24;
+    const label = dispH === 0 ? 'MDNGHT' : (dispH < 10 ? '0'+dispH : dispH)+':00';
+    const isMidnight = dispH === 0;
+    html += `<div class="gantt-hour${isMidnight?' midnight':''}">${label}</div>`;
+  }
+  html += `</div>`;
+
+  // Rows per venue
+  venues.forEach(venue => {
+    const vEvents = dayEvents.filter(e => e.venue === venue);
+
+    html += `<div class="gantt-row">`;
+    html += `<div class="gantt-venue-label">${venue}</div>`;
+    html += `<div class="gantt-track" style="width:${hourCount*hourW}px">`;
+
+    // Grid lines
+    html += `<div class="gantt-grid-lines">`;
+    for (let h = hourStart; h <= hourEnd; h++) {
+      const isMidnight = (h % 24) === 0;
+      html += `<div class="gantt-grid-cell${isMidnight?' midnight':''}"></div>`;
+    }
+    html += `</div>`;
+
+    vEvents.forEach(evt => {
+      const left = (evt.start - hourStart) * hourW;
+      const width = Math.max((evt.end - evt.start) * hourW, 40);
+      const rsvpMark = evt.rsvp === 'yes' ? '★' : evt.rsvp === 'want' ? '◎' : '';
+      html += `<div class="gantt-event ${evt.type}" style="left:${left}px;width:${width}px"
+               onclick="openModal(${evt.id})">
+               <span class="gantt-event-name">${rsvpMark} ${evt.artist}</span>
+             </div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  html += `</div>`;
+  document.getElementById('ganttInner').innerHTML = html;
+}
+
+// ===================== LIST =====================
+function renderList(day) {
+  const dayEvents = events.filter(e => e.day === day).sort((a,b) => a.start - b.start);
+
+  let html = `<div class="list-day-header">
+    <div class="list-day-title">${dayLabels[day]}</div>
+    <div class="list-day-sub">${dayEvents.length} EVENTS</div>
+  </div>`;
+
+  dayEvents.forEach(evt => {
+    const startH = evt.start % 24;
+    const endH = evt.end % 24;
+    const fmt = h => (h < 10 ? '0'+h : h)+':00';
+    const timeLabel = fmt(startH) + '–' + fmt(endH) + (evt.end > 24 ? '+1' : '');
+    const rsvpLabel = evt.rsvp === 'yes' ? '<span class="rsvp-indicator yes">★ GOING</span>'
+                    : evt.rsvp === 'want' ? '<span class="rsvp-indicator want">◎ WANT</span>'
+                    : '';
+
+    html += `<div class="event-card ${evt.type}" onclick="openModal(${evt.id})">
+      <div class="event-card-top">
+        <div class="event-artist">${evt.artist}</div>
+        <div class="event-price ${evt.type}">${evt.price}</div>
+      </div>
+      <div class="event-meta">
+        <span class="event-time">${timeLabel}</span>
+        <span class="event-venue">/ ${evt.venue}</span>
+        <span class="event-type-badge ${evt.type}">${evt.type.toUpperCase()}</span>
+        ${rsvpLabel}
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('listScroller').innerHTML = html;
+}
+
+// ===================== MODAL =====================
+function openModal(id) {
+  const evt = events.find(e => e.id === id);
+  if (!evt) return;
+  selectedEvent = evt;
+
+  document.getElementById('modalArtist').textContent = evt.artist;
+  const typeEl = document.getElementById('modalType');
+  typeEl.textContent = evt.type.toUpperCase();
+  typeEl.className = `modal-type ${evt.type}`;
+  document.getElementById('modalVenue').textContent = evt.venue;
+  document.getElementById('modalDate').textContent = evt.date;
+  const startH = evt.start % 24;
+  const endH = evt.end % 24;
+  const fmt = h => (h < 10 ? '0'+h : h)+':00';
+  document.getElementById('modalTime').textContent = fmt(startH) + ' – ' + fmt(endH);
+  document.getElementById('modalPrice').textContent = evt.price;
+
+  const rsvpBtn = document.getElementById('modalRsvpBtn');
+  if (evt.rsvp === 'yes') {
+    rsvpBtn.textContent = '★ IN MY PLAN';
+    rsvpBtn.style.background = '#CCFF00';
+  } else {
+    rsvpBtn.textContent = '+ MY PLAN';
+    rsvpBtn.style.background = '#CCFF00';
+  }
+
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModalDirect();
+}
+
+function closeModalDirect() {
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+
+// ===================== CONTROLS =====================
+function setView(v) {
+  currentView = v;
+  document.getElementById('ganttView').classList.toggle('hidden', v !== 'gantt');
+  document.getElementById('listView').classList.toggle('hidden', v !== 'list');
+  document.getElementById('ganttBtn').classList.toggle('active', v === 'gantt');
+  document.getElementById('listBtn').classList.toggle('active', v === 'list');
+  render();
+}
+
+function setDay(day) {
+  currentDay = day;
+  document.querySelectorAll('.day-tab').forEach((t,i) => {
+    t.classList.toggle('active', ['fri','sat','sun','mon'][i] === day);
+  });
+  render();
+}
+
+function render() {
+  if (currentView === 'gantt') renderGantt(currentDay);
+  else renderList(currentDay);
+}
+
+// Init
+render();
+</script>
+</body>
+</html>

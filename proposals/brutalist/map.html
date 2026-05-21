@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>MOVEMENT 2026 / MAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+    border-radius: 0 !important;
+    margin: 0;
+    padding: 0;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  :root {
+    --black: #0D0D0D;
+    --white: #FFFFFF;
+    --amber: #FF8C00;
+    --dim: rgba(255,255,255,0.08);
+    --grid: rgba(255,255,255,0.07);
+  }
+  html, body {
+    background: var(--black);
+    color: var(--white);
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  .header {
+    border-bottom: 3px solid var(--white);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    padding: 12px 16px 10px;
+    position: sticky;
+    top: 0;
+    background: var(--black);
+    z-index: 100;
+  }
+  .header-left .app-name {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .header-left .screen-title {
+    font-size: 28px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 1.0;
+  }
+  .header-right {
+    text-align: right;
+  }
+  .header-right .date-range {
+    font-size: 9px;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+  .header-right .venue-count {
+    font-size: 32px;
+    font-weight: 100;
+    line-height: 1;
+    color: var(--amber);
+  }
+  .header-right .venue-label {
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.3);
+  }
+
+  /* TAB BAR */
+  .tab-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+  }
+  .tab {
+    padding: 10px 0;
+    text-align: center;
+    font-size: 9px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: rgba(255,255,255,0.35);
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: rgba(255,255,255,0.35);
+  }
+  .tab.active {
+    color: var(--amber);
+    border-bottom: 3px solid var(--amber);
+    margin-bottom: -1px;
+  }
+
+  /* MAP SECTION */
+  .map-container {
+    position: relative;
+    border-bottom: 2px solid var(--white);
+    background: #080808;
+    overflow: hidden;
+  }
+  .map-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .map-label {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+  }
+  .map-label span {
+    color: var(--amber);
+  }
+  .map-svg-wrap {
+    width: 100%;
+    position: relative;
+  }
+  .map-svg-wrap svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* ROUTE PLANNER */
+  .route-section {
+    border-bottom: 2px solid var(--white);
+  }
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    background: #111;
+  }
+  .section-title {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .section-badge {
+    font-size: 8px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    color: var(--amber);
+    text-transform: uppercase;
+  }
+
+  .route-selectors {
+    display: grid;
+    grid-template-columns: 1fr 32px 1fr;
+    align-items: center;
+    gap: 0;
+    padding: 0;
+  }
+  .route-selector {
+    padding: 12px 16px;
+    outline: 1px solid var(--grid);
+  }
+  .route-selector-label {
+    font-size: 8px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 4px;
+  }
+  .route-selector-value {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+    color: var(--white);
+  }
+  .route-selector.active .route-selector-value {
+    color: var(--amber);
+  }
+  .route-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 100;
+    color: rgba(255,255,255,0.3);
+    background: #111;
+  }
+
+  .route-result {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .route-metric {
+    padding: 14px 16px;
+    outline: 1px solid var(--grid);
+  }
+  .route-metric-label {
+    font-size: 7px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 5px;
+  }
+  .route-metric-value {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--white);
+    letter-spacing: -0.02em;
+  }
+  .route-metric-unit {
+    font-size: 9px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.4);
+  }
+  .route-metric.highlight .route-metric-value {
+    color: var(--amber);
+  }
+
+  /* VENUE TABLE */
+  .venue-section {}
+  .venue-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .venue-table thead tr {
+    border-bottom: 2px solid var(--white);
+  }
+  .venue-table th {
+    font-size: 7px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.35);
+    padding: 8px 12px;
+    text-align: left;
+    background: #111;
+  }
+  .venue-table th:last-child { text-align: right; }
+  .venue-table td {
+    padding: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    vertical-align: middle;
+  }
+  .venue-row {
+    cursor: pointer;
+    transition: background 0.05s;
+  }
+  .venue-row:hover { background: rgba(255,255,255,0.03); }
+  .venue-row.selected { background: rgba(255,140,0,0.07); }
+  .venue-row.selected .venue-name { color: var(--amber); }
+
+  .venue-index {
+    padding: 12px 10px 12px 16px;
+    font-size: 10px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.2);
+    width: 28px;
+  }
+  .venue-name-cell { padding: 12px 8px; }
+  .venue-name {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+  }
+  .venue-address {
+    font-size: 9px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.35);
+    margin-top: 2px;
+    letter-spacing: 0.03em;
+  }
+  .venue-type-cell {
+    padding: 12px 8px;
+    width: 80px;
+  }
+  .venue-type-badge {
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 3px 6px;
+    border: 1px solid;
+    display: inline-block;
+    white-space: nowrap;
+  }
+  .badge-afterparty { border-color: #7B5EA7; color: #7B5EA7; }
+  .badge-sunrise { border-color: #FF8C00; color: #FF8C00; }
+  .badge-dayparty { border-color: #D4A017; color: #D4A017; }
+  .badge-festival { border-color: #2D8A6E; color: #2D8A6E; }
+
+  .venue-events-cell {
+    padding: 12px 16px 12px 8px;
+    text-align: right;
+    width: 40px;
+  }
+  .venue-events-num {
+    font-size: 18px;
+    font-weight: 100;
+    color: var(--white);
+    line-height: 1;
+  }
+  .venue-events-label {
+    font-size: 7px;
+    color: rgba(255,255,255,0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* FAB */
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    right: calc(50% - 200px);
+    width: 52px;
+    height: 52px;
+    background: var(--amber);
+    color: var(--black);
+    border: none;
+    font-size: 24px;
+    font-weight: 300;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    box-shadow: none;
+  }
+  @media (max-width: 430px) {
+    .fab { right: 16px; }
+  }
+
+  /* NAV BAR */
+  .nav-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: var(--black);
+    border-top: 2px solid var(--white);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    z-index: 150;
+  }
+  .nav-item {
+    padding: 10px 0 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    text-decoration: none;
+  }
+  .nav-icon {
+    font-size: 18px;
+    line-height: 1;
+  }
+  .nav-label {
+    font-size: 7px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+  }
+  .nav-item.active .nav-label { color: var(--amber); }
+  .nav-item.active .nav-icon { color: var(--amber); }
+
+  .spacer-bottom { height: 80px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="app-name">MOVEMENT 2026 · DETROIT</div>
+    <div class="screen-title">VENUES<br>/ MAP</div>
+  </div>
+  <div class="header-right">
+    <div class="date-range">MAY 22–25</div>
+    <div class="venue-count">12</div>
+    <div class="venue-label">VENUES</div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab active">SCHEMATIC</button>
+  <button class="tab">SATELLITE</button>
+  <button class="tab">LIST ONLY</button>
+</div>
+
+<!-- SVG MAP -->
+<div class="map-container">
+  <div class="map-header">
+    <span class="map-label">DETROIT · SCHEMATIC GRID · <span>12 PINS ACTIVE</span></span>
+    <span class="map-label" style="color:rgba(255,255,255,0.2)">TAP PIN TO ROUTE</span>
+  </div>
+  <div class="map-svg-wrap">
+    <svg viewBox="0 0 375 320" xmlns="http://www.w3.org/2000/svg" style="background:#080808;">
+
+      <!-- Grid lines -->
+      <g stroke="rgba(255,255,255,0.06)" stroke-width="0.5">
+        <line x1="0" y1="53" x2="375" y2="53"/>
+        <line x1="0" y1="106" x2="375" y2="106"/>
+        <line x1="0" y1="159" x2="375" y2="159"/>
+        <line x1="0" y1="213" x2="375" y2="213"/>
+        <line x1="0" y1="266" x2="375" y2="266"/>
+        <line x1="62" y1="0" x2="62" y2="320"/>
+        <line x1="125" y1="0" x2="125" y2="320"/>
+        <line x1="187" y1="0" x2="187" y2="320"/>
+        <line x1="250" y1="0" x2="250" y2="320"/>
+        <line x1="312" y1="0" x2="312" y2="320"/>
+      </g>
+
+      <!-- Detroit River (bottom) -->
+      <rect x="0" y="286" width="375" height="34" fill="rgba(255,255,255,0.04)"/>
+      <text x="187" y="307" fill="rgba(255,255,255,0.15)" font-family="'IBM Plex Mono'" font-size="8" font-weight="300" letter-spacing="6" text-anchor="middle" text-transform="uppercase">DETROIT RIVER</text>
+
+      <!-- Major roads -->
+      <!-- I-75 vertical -->
+      <line x1="230" y1="0" x2="230" y2="285" stroke="rgba(255,255,255,0.12)" stroke-width="2" stroke-dasharray="4,3"/>
+      <text x="233" y="20" fill="rgba(255,255,255,0.18)" font-family="'IBM Plex Mono'" font-size="7" font-weight="500">I-75</text>
+
+      <!-- Woodward Ave diagonal-ish horizontal road -->
+      <line x1="0" y1="160" x2="375" y2="160" stroke="rgba(255,255,255,0.1)" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <text x="6" y="156" fill="rgba(255,255,255,0.18)" font-family="'IBM Plex Mono'" font-size="7" font-weight="400">WOODWARD AVE</text>
+
+      <!-- Jefferson Ave (near river) -->
+      <line x1="0" y1="270" x2="375" y2="270" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="6" y="266" fill="rgba(255,255,255,0.15)" font-family="'IBM Plex Mono'" font-size="6" font-weight="300">JEFFERSON AVE</text>
+
+      <!-- Vernor Hwy -->
+      <line x1="0" y1="200" x2="375" y2="210" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="3,4"/>
+      <text x="6" y="198" fill="rgba(255,255,255,0.15)" font-family="'IBM Plex Mono'" font-size="6" font-weight="300">VERNOR HWY</text>
+
+      <!-- Holden St -->
+      <line x1="0" y1="110" x2="200" y2="110" stroke="rgba(255,255,255,0.07)" stroke-width="0.8"/>
+
+      <!-- Route line (active) -->
+      <line x1="100" y1="105" x2="190" y2="268" stroke="#FF8C00" stroke-width="2" stroke-dasharray="5,3" opacity="0.7"/>
+      <!-- Route arrow head -->
+      <polygon points="187,263 193,263 190,271" fill="#FF8C00" opacity="0.9"/>
+
+      <!-- VENUE PINS -->
+      <!-- 1. Marble Bar (Holden St - NW area) -->
+      <g id="pin-marble" style="cursor:pointer">
+        <rect x="86" y="94" width="28" height="22" fill="#FF8C00"/>
+        <text x="100" y="109" fill="#0D0D0D" font-family="'IBM Plex Mono'" font-size="9" font-weight="700" text-anchor="middle">MB</text>
+        <line x1="100" y1="116" x2="100" y2="122" stroke="#FF8C00" stroke-width="2"/>
+      </g>
+      <text x="72" y="88" fill="rgba(255,255,255,0.8)" font-family="'IBM Plex Mono'" font-size="7" font-weight="500" letter-spacing="0.05em">MARBLE BAR</text>
+      <text x="72" y="80" fill="rgba(255,255,255,0.3)" font-family="'IBM Plex Mono'" font-size="6" font-weight="300">12 EVT</text>
+
+      <!-- 2. TV Lounge (Atwater - near river) -->
+      <g id="pin-tv" style="cursor:pointer">
+        <rect x="178" y="256" width="24" height="20" fill="rgba(255,255,255,0.1)" stroke="#FFFFFF" stroke-width="1.5"/>
+        <text x="190" y="270" fill="#FFFFFF" font-family="'IBM Plex Mono'" font-size="8" font-weight="700" text-anchor="middle">TV</text>
+        <line x1="190" y1="276" x2="190" y2="281" stroke="#FFFFFF" stroke-width="1.5"/>
+      </g>
+      <text x="204" y="265" fill="rgba(255,255,255,0.8)" font-family="'IBM Plex Mono'" font-size="7" font-weight="500">TV LOUNGE</text>
+      <text x="204" y="274" fill="rgba(255,255,255,0.3)" font-family="'IBM Plex Mono'" font-size="6" font-weight="300">4 EVT</text>
+
+      <!-- 3. Deluxx Fluxx (Library St - downtown) -->
+      <g id="pin-deluxx" style="cursor:pointer">
+        <rect x="196" y="178" width="28" height="20" fill="rgba(255,255,255,0.08)" stroke="#D4A017" stroke-width="1.5"/>
+        <text x="210" y="192" fill="#D4A017" font-family="'IBM Plex Mono'" font-size="8" font-weight="700" text-anchor="middle">DX</text>
+        <line x1="210" y1="198" x2="210" y2="204" stroke="#D4A017" stroke-width="1.5"/>
+      </g>
+      <text x="196" y="172" fill="rgba(255,255,255,0.7)" font-family="'IBM Plex Mono'" font-size="7" font-weight="500">DELUXX FLUXX</text>
+      <text x="196" y="165" fill="rgba(255,255,255,0.3)" font-family="'IBM Plex Mono'" font-size="6" font-weight="300">5 EVT</text>
+
+      <!-- 4. El Club (Vernor - SW) -->
+      <g id="pin-elclub" style="cursor:pointer">
+        <rect x="46" y="194" width="26" height="20" fill="rgba(255,255,255,0.06)" stroke="#7B5EA7" stroke-width="1.5"/>
+        <text x="59" y="208" fill="#7B5EA7" font-family="'IBM Plex Mono'" font-size="8" font-weight="700" text-anchor="middle">EC</text>
+        <line x1="59" y1="214" x2="59" y2="220" stroke="#7B5EA7" stroke-width="1.5"/>
+      </g>
+      <text x="12" y="190" fill="rgba(255,255,255,0.7)" font-family="'IBM Plex Mono'" font-size="7" font-weight="500">EL CLUB</text>
+      <text x="12" y="224" fill="rgba(255,255,255,0.3)" font-family="'IBM Plex Mono'" font-size="6" font-weight="300">3 EVT</text>
+
+      <!-- 5. Tangent Gallery (E Milwaukee - NE area) -->
+      <g id="pin-tangent" style="cursor:pointer">
+        <rect x="284" y="126" width="26" height="20" fill="rgba(255,255,255,0.06)" stroke="#7B5EA7" stroke-width="1.5"/>
+        <text x="297" y="140" fill="#7B5EA7" font-family="'IBM Plex Mono'" font-size="8" font-weight="700" text-anchor="middle">TG</text>
+        <line x1="297" y1="146" x2="297" y2="152" stroke="#7B5EA7" stroke-width="1.5"/>
+      </g>
+      <text x="274" y="120" fill="rgba(255,255,255,0.7)" font-family="'IBM Plex Mono'" font-size="7" font-weight="500">TANGENT</text>
+      <text x="274" y="113" fill="rgba(255,255,255,0.3)" font-family="'IBM Plex Mono'" font-size="6" font-weight="300">4 EVT</text>
+
+      <!-- 6. Hart Plaza (riverfront, center) -->
+      <g id="pin-hart" style="cursor:pointer">
+        <rect x="160" y="256" width="24" height="20" fill="rgba(255,255,255,0.06)" stroke="#2D8A6E" stroke-width="1.5"/>
+        <text x="172" y="270" fill="#2D8A6E" font-family="'IBM Plex Mono'" font-size="8" font-weight="700" text-anchor="middle">HP</text>
+        <line x1="172" y1="276" x2="172" y2="281" stroke="#2D8A6E" stroke-width="1.5"/>
+      </g>
+      <text x="142" y="253" fill="rgba(255,255,255,0.7)" font-family="'IBM Plex Mono'" font-size="7" font-weight="500">HART PLAZA</text>
+      <text x="142" y="245" fill="rgba(255,255,255,0.3)" font-family="'IBM Plex Mono'" font-size="6" font-weight="300">MAIN STAGE</text>
+
+      <!-- Additional venue pins (smaller, placeholder) -->
+      <!-- Populux -->
+      <g><rect x="150" y="80" width="20" height="16" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.25)" stroke-width="1"/><text x="160" y="92" fill="rgba(255,255,255,0.4)" font-family="'IBM Plex Mono'" font-size="7" font-weight="500" text-anchor="middle">PX</text></g>
+      <!-- The Works -->
+      <g><rect x="248" y="155" width="20" height="16" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.25)" stroke-width="1"/><text x="258" y="167" fill="rgba(255,255,255,0.4)" font-family="'IBM Plex Mono'" font-size="7" font-weight="500" text-anchor="middle">WK</text></g>
+      <!-- Spot Lite -->
+      <g><rect x="118" y="148" width="20" height="16" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.25)" stroke-width="1"/><text x="128" y="160" fill="rgba(255,255,255,0.4)" font-family="'IBM Plex Mono'" font-size="7" font-weight="500" text-anchor="middle">SL</text></g>
+      <!-- UFO Factory -->
+      <g><rect x="60" y="135" width="20" height="16" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.25)" stroke-width="1"/><text x="70" y="147" fill="rgba(255,255,255,0.4)" font-family="'IBM Plex Mono'" font-size="7" font-weight="500" text-anchor="middle">UF</text></g>
+      <!-- Grasshopper -->
+      <g><rect x="305" y="200" width="20" height="16" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.25)" stroke-width="1"/><text x="315" y="212" fill="rgba(255,255,255,0.4)" font-family="'IBM Plex Mono'" font-size="7" font-weight="500" text-anchor="middle">GH</text></g>
+      <!-- PJ's -->
+      <g><rect x="330" y="78" width="20" height="16" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.25)" stroke-width="1"/><text x="340" y="90" fill="rgba(255,255,255,0.4)" font-family="'IBM Plex Mono'" font-size="7" font-weight="500" text-anchor="middle">PJ</text></g>
+
+      <!-- Compass rose -->
+      <g transform="translate(345, 28)">
+        <text x="0" y="-8" fill="rgba(255,255,255,0.2)" font-family="'IBM Plex Mono'" font-size="7" font-weight="300" text-anchor="middle">N</text>
+        <line x1="0" y1="-6" x2="0" y2="6" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+        <line x1="-6" y1="0" x2="6" y2="0" stroke="rgba(255,255,255,0.1)" stroke-width="0.8"/>
+        <polygon points="0,-6 -2,0 2,0" fill="rgba(255,255,255,0.3)"/>
+      </g>
+
+      <!-- Scale indicator -->
+      <g transform="translate(14, 300)">
+        <line x1="0" y1="0" x2="40" y2="0" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        <line x1="0" y1="-3" x2="0" y2="3" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        <line x1="40" y1="-3" x2="40" y2="3" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        <text x="20" y="-5" fill="rgba(255,255,255,0.25)" font-family="'IBM Plex Mono'" font-size="6" font-weight="300" text-anchor="middle">1 MI</text>
+      </g>
+
+    </svg>
+  </div>
+</div>
+
+<!-- ROUTE PLANNER -->
+<div class="route-section">
+  <div class="section-header">
+    <span class="section-title">ROUTE PLANNER</span>
+    <span class="section-badge">ACTIVE ROUTE</span>
+  </div>
+
+  <div class="route-selectors">
+    <div class="route-selector active" onclick="selectVenue(this, 'FROM')">
+      <div class="route-selector-label">FROM</div>
+      <div class="route-selector-value">MARBLE BAR</div>
+    </div>
+    <div class="route-arrow">→</div>
+    <div class="route-selector" onclick="selectVenue(this, 'TO')">
+      <div class="route-selector-label">TO</div>
+      <div class="route-selector-value">TV LOUNGE</div>
+    </div>
+  </div>
+
+  <div class="route-result">
+    <div class="route-metric">
+      <div class="route-metric-label">DISTANCE</div>
+      <div class="route-metric-value">3.2<span class="route-metric-unit"> MI</span></div>
+    </div>
+    <div class="route-metric highlight">
+      <div class="route-metric-label">WALK</div>
+      <div class="route-metric-value">58<span class="route-metric-unit"> MIN</span></div>
+    </div>
+    <div class="route-metric">
+      <div class="route-metric-label">DRIVE</div>
+      <div class="route-metric-value">11<span class="route-metric-unit"> MIN</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- VENUE TABLE -->
+<div class="venue-section">
+  <div class="section-header">
+    <span class="section-title">ALL VENUES</span>
+    <span class="section-badge">12 TOTAL</span>
+  </div>
+  <table class="venue-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th colspan="2">VENUE / ADDRESS</th>
+        <th>TYPE</th>
+        <th>EVT</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="venue-row selected" onclick="selectRow(this)">
+        <td class="venue-index">01</td>
+        <td colspan="2" class="venue-name-cell">
+          <div class="venue-name">MARBLE BAR</div>
+          <div class="venue-address">1501 HOLDEN ST</div>
+        </td>
+        <td class="venue-type-cell"><span class="venue-type-badge badge-afterparty">AFTRP</span></td>
+        <td class="venue-events-cell">
+          <div class="venue-events-num">12</div>
+        </td>
+      </tr>
+      <tr class="venue-row" onclick="selectRow(this)">
+        <td class="venue-index">02</td>
+        <td colspan="2" class="venue-name-cell">
+          <div class="venue-name">TV LOUNGE</div>
+          <div class="venue-address">1 ATWATER ST</div>
+        </td>
+        <td class="venue-type-cell"><span class="venue-type-badge badge-sunrise">SUNRS</span></td>
+        <td class="venue-events-cell">
+          <div class="venue-events-num">4</div>
+        </td>
+      </tr>
+      <tr class="venue-row" onclick="selectRow(this)">
+        <td class="venue-index">03</td>
+        <td colspan="2" class="venue-name-cell">
+          <div class="venue-name">DELUXX FLUXX</div>
+          <div class="venue-address">1274 LIBRARY ST</div>
+        </td>
+        <td class="venue-type-cell"><span class="venue-type-badge badge-dayparty">DAY</span></td>
+        <td class="venue-events-cell">
+          <div class="venue-events-num">5</div>
+        </td>
+      </tr>
+      <tr class="venue-row" onclick="selectRow(this)">
+        <td class="venue-index">04</td>
+        <td colspan="2" class="venue-name-cell">
+          <div class="venue-name">EL CLUB</div>
+          <div class="venue-address">4114 VERNOR HWY</div>
+        </td>
+        <td class="venue-type-cell"><span class="venue-type-badge badge-afterparty">AFTRP</span></td>
+        <td class="venue-events-cell">
+          <div class="venue-events-num">3</div>
+        </td>
+      </tr>
+      <tr class="venue-row" onclick="selectRow(this)">
+        <td class="venue-index">05</td>
+        <td colspan="2" class="venue-name-cell">
+          <div class="venue-name">TANGENT GALLERY</div>
+          <div class="venue-address">715 E MILWAUKEE AVE</div>
+        </td>
+        <td class="venue-type-cell"><span class="venue-type-badge badge-afterparty">AFTRP</span></td>
+        <td class="venue-events-cell">
+          <div class="venue-events-num">4</div>
+        </td>
+      </tr>
+      <tr class="venue-row" onclick="selectRow(this)">
+        <td class="venue-index">06</td>
+        <td colspan="2" class="venue-name-cell">
+          <div class="venue-name">HART PLAZA</div>
+          <div class="venue-address">1 HART PLAZA</div>
+        </td>
+        <td class="venue-type-cell"><span class="venue-type-badge badge-festival">FEST</span></td>
+        <td class="venue-events-cell">
+          <div class="venue-events-num">4</div>
+        </td>
+      </tr>
+      <tr class="venue-row" onclick="selectRow(this)">
+        <td class="venue-index">07</td>
+        <td colspan="2" class="venue-name-cell">
+          <div class="venue-name">POPULUX</div>
+          <div class="venue-address">2925 E GRAND BLVD</div>
+        </td>
+        <td class="venue-type-cell"><span class="venue-type-badge badge-afterparty">AFTRP</span></td>
+        <td class="venue-events-cell">
+          <div class="venue-events-num">2</div>
+        </td>
+      </tr>
+      <tr class="venue-row" onclick="selectRow(this)">
+        <td class="venue-index">08</td>
+        <td colspan="2" class="venue-name-cell">
+          <div class="venue-name">THE WORKS</div>
+          <div class="venue-address">CASS AVE</div>
+        </td>
+        <td class="venue-type-cell"><span class="venue-type-badge badge-afterparty">AFTRP</span></td>
+        <td class="venue-events-cell">
+          <div class="venue-events-num">1</div>
+        </td>
+      </tr>
+      <tr class="venue-row" onclick="selectRow(this)">
+        <td class="venue-index">09</td>
+        <td colspan="2" class="venue-name-cell">
+          <div class="venue-name">SPOT LITE</div>
+          <div class="venue-address">1251 GRISWOLD ST</div>
+        </td>
+        <td class="venue-type-cell"><span class="venue-type-badge badge-dayparty">DAY</span></td>
+        <td class="venue-events-cell">
+          <div class="venue-events-num">1</div>
+        </td>
+      </tr>
+      <tr class="venue-row" onclick="selectRow(this)">
+        <td class="venue-index">10</td>
+        <td colspan="2" class="venue-name-cell">
+          <div class="venue-name">UFO FACTORY</div>
+          <div class="venue-address">2110 TRUMBULL AVE</div>
+        </td>
+        <td class="venue-type-cell"><span class="venue-type-badge badge-afterparty">AFTRP</span></td>
+        <td class="venue-events-cell">
+          <div class="venue-events-num">1</div>
+        </td>
+      </tr>
+      <tr class="venue-row" onclick="selectRow(this)">
+        <td class="venue-index">11</td>
+        <td colspan="2" class="venue-name-cell">
+          <div class="venue-name">GRASSHOPPER</div>
+          <div class="venue-address">346 WATSON ST</div>
+        </td>
+        <td class="venue-type-cell"><span class="venue-type-badge badge-sunrise">SUNRS</span></td>
+        <td class="venue-events-cell">
+          <div class="venue-events-num">1</div>
+        </td>
+      </tr>
+      <tr class="venue-row" onclick="selectRow(this)">
+        <td class="venue-index">12</td>
+        <td colspan="2" class="venue-name-cell">
+          <div class="venue-name">PJ'S LAGER HOUSE</div>
+          <div class="venue-address">1254 MICHIGAN AVE</div>
+        </td>
+        <td class="venue-type-cell"><span class="venue-type-badge badge-dayparty">DAY</span></td>
+        <td class="venue-events-cell">
+          <div class="venue-events-num">1</div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="spacer-bottom"></div>
+
+<!-- FAB -->
+<button class="fab" title="Add custom location">+</button>
+
+<!-- NAV BAR -->
+<nav class="nav-bar">
+  <a class="nav-item active" href="#">
+    <span class="nav-icon">⊞</span>
+    <span class="nav-label">MAP</span>
+  </a>
+  <a class="nav-item" href="schedule.html">
+    <span class="nav-icon">≡</span>
+    <span class="nav-label">SCHEDULE</span>
+  </a>
+  <a class="nav-item" href="plan.html">
+    <span class="nav-icon">◈</span>
+    <span class="nav-label">MY PLAN</span>
+  </a>
+</nav>
+
+<script>
+  function selectRow(row) {
+    document.querySelectorAll('.venue-row').forEach(r => r.classList.remove('selected'));
+    row.classList.add('selected');
+  }
+
+  function selectVenue(el, direction) {
+    document.querySelectorAll('.route-selector').forEach(s => s.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // Tab switching
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

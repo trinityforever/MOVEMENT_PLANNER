@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Movement 2026 — My Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Syncopate:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #050510;
+    --deep: #080820;
+    --text: #e8e8ff;
+    --text-dim: rgba(232,232,255,0.45);
+    --border: rgba(255,255,255,0.07);
+    --afterparty: #b06aff;
+    --afterparty-bg: rgba(123,47,255,0.15);
+    --afterparty-border: rgba(176,106,255,0.25);
+    --sunrise: #ff6b35;
+    --sunrise-bg: rgba(255,107,53,0.13);
+    --sunrise-border: rgba(255,107,53,0.25);
+    --dayparty: #ffb800;
+    --dayparty-bg: rgba(255,184,0,0.12);
+    --dayparty-border: rgba(255,184,0,0.25);
+    --festival: #00ff88;
+    --festival-bg: rgba(0,255,136,0.1);
+    --festival-border: rgba(0,255,136,0.22);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--void);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding-bottom: 40px;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      conic-gradient(from 120deg at 60% 10%, transparent 0deg, rgba(255,0,255,0.07) 60deg, transparent 120deg),
+      conic-gradient(from 300deg at 40% 90%, transparent 0deg, rgba(0,255,200,0.06) 80deg, transparent 160deg),
+      radial-gradient(ellipse at 50% 50%, rgba(123,47,255,0.04) 0%, transparent 60%);
+    animation: aura 28s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @keyframes aura {
+    0% { filter: hue-rotate(0deg) brightness(1); }
+    50% { filter: hue-rotate(180deg) brightness(1.05); }
+    100% { filter: hue-rotate(360deg) brightness(1); }
+  }
+
+  /* Header */
+  .header {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    z-index: 100;
+    padding: 16px 20px 10px;
+    background: linear-gradient(180deg, rgba(5,5,16,0.97) 0%, rgba(5,5,16,0.75) 100%);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .logo-text {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    background: linear-gradient(90deg, #ff00ff, #00ffff, #ff9500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .sync-indicator {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: rgba(0,255,136,0.7);
+    letter-spacing: 0.08em;
+  }
+
+  .sync-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #00ff88;
+    box-shadow: 0 0 6px #00ff88;
+    animation: syncPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes syncPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 0;
+  }
+
+  .nav-tab {
+    flex: 1;
+    padding: 8px 4px;
+    text-align: center;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: transparent;
+    border: 1px solid transparent;
+  }
+
+  .nav-tab.active {
+    color: #ff00ff;
+    background: rgba(255,0,255,0.08);
+    border-color: rgba(255,0,255,0.2);
+    text-shadow: 0 0 12px rgba(255,0,255,0.4);
+  }
+
+  /* Main scroll content */
+  .scroll-content {
+    margin-top: 108px;
+    padding: 16px 16px 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Section headers */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    margin-top: 24px;
+  }
+
+  .section-header:first-child { margin-top: 0; }
+
+  .section-label {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  /* ======= BUDGET CARD ======= */
+  .budget-card {
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: linear-gradient(135deg,
+      rgba(123,47,255,0.12) 0%,
+      rgba(0,255,255,0.08) 40%,
+      rgba(255,0,255,0.1) 100%
+    );
+    backdrop-filter: blur(16px);
+  }
+
+  /* Animated shimmer background */
+  .budget-card::before {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background: conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.04) 40deg, transparent 80deg);
+    animation: shimmerRotate 8s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes shimmerRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Holographic foil effect overlay */
+  .budget-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg,
+      transparent 0%,
+      rgba(255,255,255,0.03) 30%,
+      rgba(200,100,255,0.05) 45%,
+      rgba(0,255,255,0.04) 55%,
+      rgba(255,200,0,0.03) 70%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+
+  .budget-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .budget-label {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+
+  .budget-amount {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    background: linear-gradient(135deg, #ffffff 0%, #b06aff 50%, #00ffff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    /* Chromatic aberration */
+    filter: drop-shadow(0px 0px 1px rgba(255,0,255,0.3));
+  }
+
+  .budget-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    letter-spacing: 0.08em;
+  }
+
+  .budget-right {
+    text-align: right;
+  }
+
+  .budget-target {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .budget-remaining {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffb800;
+    text-shadow: 0 0 10px rgba(255,184,0,0.3);
+    margin-top: 2px;
+  }
+
+  /* Progress bar */
+  .budget-progress {
+    position: relative;
+    height: 6px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+
+  .budget-progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #7b2fff, #ff00ff, #ff9500);
+    position: relative;
+    transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .budget-progress-fill::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: -1px;
+    width: 6px;
+    height: 8px;
+    border-radius: 2px;
+    background: white;
+    box-shadow: 0 0 8px rgba(255,255,255,0.8);
+  }
+
+  /* Budget breakdown */
+  .budget-breakdown {
+    display: flex;
+    gap: 8px;
+    position: relative;
+  }
+
+  .budget-item {
+    flex: 1;
+    text-align: center;
+    padding: 8px 4px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+
+  .bi-amount {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .bi-label {
+    font-size: 8px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    margin-top: 2px;
+  }
+
+  /* ======= TICKET STUBS ======= */
+  .ticket-stub {
+    margin-bottom: 10px;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.25s, box-shadow 0.25s;
+    animation: fadeScaleIn 0.5s ease both;
+  }
+
+  .ticket-stub:active { transform: scale(0.97); }
+
+  @keyframes fadeScaleIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .ticket-stub:nth-child(1) { animation-delay: 0.05s; }
+  .ticket-stub:nth-child(2) { animation-delay: 0.1s; }
+  .ticket-stub:nth-child(3) { animation-delay: 0.15s; }
+  .ticket-stub:nth-child(4) { animation-delay: 0.2s; }
+
+  .ticket-inner {
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid;
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+  }
+
+  /* Holographic foil sweep on ticket */
+  .ticket-inner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg,
+      transparent 0%,
+      rgba(255,255,255,0.06) 30%,
+      rgba(255,0,255,0.05) 45%,
+      rgba(0,255,255,0.05) 55%,
+      rgba(255,200,0,0.04) 70%,
+      transparent 100%
+    );
+    transform: translateX(-100%);
+    transition: transform 0.7s ease;
+    pointer-events: none;
+  }
+
+  .ticket-stub:hover .ticket-inner::before {
+    transform: translateX(100%);
+  }
+
+  /* Tear perforations on right edge */
+  .ticket-inner::after {
+    content: '';
+    position: absolute;
+    right: 60px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 5px,
+      rgba(255,255,255,0.08) 5px,
+      rgba(255,255,255,0.08) 9px
+    );
+  }
+
+  .ticket-status {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+    border: 1px solid;
+    font-weight: 700;
+  }
+
+  .ts-going {
+    background: rgba(0,255,136,0.15);
+    border-color: rgba(0,255,136,0.3);
+    color: #00ff88;
+    box-shadow: 0 0 12px rgba(0,255,136,0.2), inset 0 0 8px rgba(0,255,136,0.1);
+  }
+
+  .ts-want {
+    background: rgba(255,184,0,0.12);
+    border-color: rgba(255,184,0,0.3);
+    color: #ffb800;
+    box-shadow: 0 0 10px rgba(255,184,0,0.15);
+  }
+
+  .ticket-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ticket-artist {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ticket-detail {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    margin-top: 3px;
+    letter-spacing: 0.06em;
+  }
+
+  .ticket-tags {
+    display: flex;
+    gap: 5px;
+    margin-top: 6px;
+    align-items: center;
+  }
+
+  .ticket-cat {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 2px 7px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .ticket-right {
+    min-width: 54px;
+    text-align: right;
+    flex-shrink: 0;
+    padding-left: 12px;
+  }
+
+  .ticket-price {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .ticket-price-label {
+    font-size: 8px;
+    color: var(--text-dim);
+    margin-top: 2px;
+    letter-spacing: 0.08em;
+  }
+
+  .ticket-confirmed {
+    font-size: 8px;
+    color: #00ff88;
+    margin-top: 4px;
+    letter-spacing: 0.08em;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .ticket-unconfirmed {
+    font-size: 8px;
+    color: #ffb800;
+    margin-top: 4px;
+    letter-spacing: 0.08em;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  /* ======= DAY SCHEDULE VIEW ======= */
+  .day-tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 14px;
+  }
+
+  .day-tab {
+    flex: 1;
+    padding: 8px 4px;
+    text-align: center;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+  }
+
+  .day-tab.active {
+    background: linear-gradient(135deg, rgba(255,0,255,0.12), rgba(123,47,255,0.15));
+    border-color: rgba(255,0,255,0.25);
+  }
+
+  .dt-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .day-tab.active .dt-num {
+    background: linear-gradient(90deg, #ff00ff, #b06aff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .dt-name {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    margin-top: 2px;
+  }
+
+  /* Day plan timeline */
+  .day-plan {
+    position: relative;
+    padding-left: 20px;
+  }
+
+  .day-plan-line {
+    position: absolute;
+    left: 7px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: linear-gradient(180deg, #ff00ff, #7b2fff, #00ffff, transparent);
+    border-radius: 1px;
+  }
+
+  .plan-event {
+    position: relative;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .plan-event:active { transform: scale(0.98); }
+
+  .plan-event-dot {
+    position: absolute;
+    left: -16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid;
+    background: var(--void);
+    z-index: 1;
+  }
+
+  .plan-event-inner {
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .plan-event-inner::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+  }
+
+  .pei-afterparty { background: var(--afterparty-bg); border-color: var(--afterparty-border); }
+  .pei-afterparty::before { background: linear-gradient(180deg, #b06aff, #7b2fff); }
+  .pei-sunrise { background: var(--sunrise-bg); border-color: var(--sunrise-border); }
+  .pei-sunrise::before { background: linear-gradient(180deg, #ff6b35, #ff9500); }
+  .pei-dayparty { background: var(--dayparty-bg); border-color: var(--dayparty-border); }
+  .pei-dayparty::before { background: linear-gradient(180deg, #ffb800, #ff9500); }
+  .pei-festival { background: var(--festival-bg); border-color: var(--festival-border); }
+  .pei-festival::before { background: linear-gradient(180deg, #00ff88, #00cc66); }
+
+  .plan-event-body { flex: 1; min-width: 0; }
+
+  .plan-artist {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .plan-venue-time {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    margin-top: 2px;
+    letter-spacing: 0.05em;
+  }
+
+  .plan-event-time {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .plan-remove-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .empty-day-card {
+    padding: 24px;
+    text-align: center;
+    border-radius: 14px;
+    border: 1px dashed rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.02);
+  }
+
+  .empty-day-icon {
+    font-size: 28px;
+    margin-bottom: 8px;
+    opacity: 0.4;
+  }
+
+  .empty-day-text {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    font-family: 'Share Tech Mono', monospace;
+    margin-bottom: 12px;
+  }
+
+  .empty-day-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(123,47,255,0.2), rgba(255,0,255,0.15));
+    border: 1px solid rgba(176,106,255,0.3);
+    color: #b06aff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+  }
+
+  /* ======= GROUP PANEL ======= */
+  .group-panel {
+    border-radius: 18px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    background: linear-gradient(135deg, rgba(0,255,255,0.07), rgba(123,47,255,0.07));
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .group-panel::before {
+    content: '';
+    position: absolute;
+    inset: -30%;
+    background: conic-gradient(from 45deg, transparent 0deg, rgba(0,255,255,0.04) 30deg, transparent 60deg);
+    animation: shimmerRotate 12s linear infinite;
+    pointer-events: none;
+  }
+
+  .group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .group-title {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: #00ffff;
+    text-shadow: 0 0 8px rgba(0,255,255,0.3);
+    position: relative;
+  }
+
+  .group-count {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+
+  .member-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    position: relative;
+  }
+
+  .member-row:last-child { border-bottom: none; }
+
+  .member-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid;
+    flex-shrink: 0;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+  }
+
+  .member-name {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .member-count {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+
+  .member-dots {
+    display: flex;
+    gap: 2px;
+  }
+
+  .member-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    opacity: 0.7;
+  }
+
+  /* ======= SPEND TOTAL BAR ======= */
+  .spend-bar {
+    border-radius: 16px;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .spend-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+  }
+
+  .spend-value {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  /* Conflict warning */
+  .conflict-card {
+    border-radius: 12px;
+    padding: 10px 14px;
+    background: rgba(255,60,60,0.08);
+    border: 1px solid rgba(255,80,80,0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .conflict-icon { font-size: 16px; flex-shrink: 0; }
+
+  .conflict-text {
+    font-size: 11px;
+    color: rgba(255,120,120,0.85);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    flex: 1;
+  }
+
+  .conflict-resolve {
+    font-size: 9px;
+    color: rgba(255,120,120,0.6);
+    font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  /* Category breakdown ring */
+  .cat-breakdown {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin-bottom: 8px;
+  }
+
+  .cat-ring {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+  }
+
+  .cat-legend {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .cat-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .cl-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .cl-name {
+    font-size: 10px;
+    color: var(--text-dim);
+    flex: 1;
+    letter-spacing: 0.05em;
+  }
+
+  .cl-val {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text);
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-top">
+    <span class="logo-text">MOVEMENT 2026</span>
+    <div class="sync-indicator">
+      <div class="sync-dot"></div>
+      <span>SYNCED</span>
+    </div>
+  </div>
+  <div class="nav-tabs">
+    <div class="nav-tab active">PLAN</div>
+    <div class="nav-tab">MAP</div>
+    <div class="nav-tab">SCHEDULE</div>
+  </div>
+</div>
+
+<div class="scroll-content">
+
+  <!-- BUDGET CARD -->
+  <div class="section-header">
+    <span class="section-label">SPEND TRACKER</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="budget-card">
+    <div class="budget-top">
+      <div>
+        <div class="budget-label">TOTAL SPENT</div>
+        <div class="budget-amount">$65</div>
+        <div class="budget-sub">3 TICKETS CONFIRMED</div>
+      </div>
+      <div class="budget-right">
+        <div class="budget-label">ESTIMATED TOTAL</div>
+        <div class="budget-target" style="font-family:'Share Tech Mono'; font-size:11px; color:var(--text-dim);">TARGET $120</div>
+        <div class="budget-remaining">$85 EST.</div>
+      </div>
+    </div>
+    <div class="budget-progress" style="margin-bottom:14px;">
+      <div class="budget-progress-fill" style="width:54%;"></div>
+    </div>
+    <div class="budget-breakdown">
+      <div class="budget-item">
+        <div class="bi-amount" style="color:#00ff88;">$65</div>
+        <div class="bi-label">PAID</div>
+      </div>
+      <div class="budget-item">
+        <div class="bi-amount" style="color:#ffb800;">$20</div>
+        <div class="bi-label">PENDING</div>
+      </div>
+      <div class="budget-item">
+        <div class="bi-amount" style="color:var(--text-dim);">$35</div>
+        <div class="bi-label">UNPLANNED</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category breakdown -->
+  <div class="cat-breakdown">
+    <svg class="cat-ring" viewBox="0 0 56 56">
+      <circle cx="28" cy="28" r="22" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"/>
+      <!-- Afterparty: 75% of 138.23 = 103.67 -->
+      <circle cx="28" cy="28" r="22" fill="none" stroke="#b06aff" stroke-width="8"
+        stroke-dasharray="55 83.23" stroke-dashoffset="0" transform="rotate(-90 28 28)" stroke-linecap="round"/>
+      <!-- Sunrise: 23% -->
+      <circle cx="28" cy="28" r="22" fill="none" stroke="#ff6b35" stroke-width="8"
+        stroke-dasharray="31.8 106.43" stroke-dashoffset="-55.8" transform="rotate(-90 28 28)" stroke-linecap="round"/>
+      <!-- Festival: included, symbolic -->
+      <circle cx="28" cy="28" r="22" fill="none" stroke="#00ff88" stroke-width="8"
+        stroke-dasharray="10 127.23" stroke-dashoffset="-88.43" transform="rotate(-90 28 28)" stroke-linecap="round"/>
+      <text x="28" y="31" text-anchor="middle" font-family="Share Tech Mono" font-size="9" fill="white">$65</text>
+    </svg>
+    <div class="cat-legend">
+      <div class="cat-legend-item">
+        <div class="cl-dot" style="background:#b06aff;"></div>
+        <span class="cl-name">AFTERPARTY</span>
+        <span class="cl-val">$45</span>
+      </div>
+      <div class="cat-legend-item">
+        <div class="cl-dot" style="background:#ff6b35;"></div>
+        <span class="cl-name">SUNRISE</span>
+        <span class="cl-val">$20</span>
+      </div>
+      <div class="cat-legend-item">
+        <div class="cl-dot" style="background:#00ff88;"></div>
+        <span class="cl-name">FESTIVAL</span>
+        <span class="cl-val">INCL.</span>
+      </div>
+      <div class="cat-legend-item">
+        <div class="cl-dot" style="background:#ffb800;"></div>
+        <span class="cl-name">PENDING</span>
+        <span class="cl-val">$20</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conflict warning -->
+  <div class="conflict-card">
+    <div class="conflict-icon">⚡</div>
+    <div class="conflict-text">OVERLAP: Blawan + Seth Troxler both end at 5AM Sat</div>
+    <div class="conflict-resolve">RESOLVE</div>
+  </div>
+
+  <!-- TICKETS -->
+  <div class="section-header">
+    <span class="section-label">MY TICKETS</span>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Ticket: Seth Troxler -->
+  <div class="ticket-stub">
+    <div class="ticket-inner" style="background: linear-gradient(135deg, rgba(123,47,255,0.18), rgba(0,10,30,0.6)); border-color: rgba(176,106,255,0.3);">
+      <div class="ticket-status ts-going">✓</div>
+      <div class="ticket-body">
+        <div class="ticket-artist">Seth Troxler</div>
+        <div class="ticket-detail">MARBLE BAR · FRI MAY 22 · 11PM</div>
+        <div class="ticket-tags">
+          <div class="ticket-cat" style="color:#b06aff; border-color:rgba(176,106,255,0.3); background:rgba(123,47,255,0.12);">AFTERPARTY</div>
+        </div>
+      </div>
+      <div class="ticket-right">
+        <div class="ticket-price">$25</div>
+        <div class="ticket-price-label">ADVANCE</div>
+        <div class="ticket-confirmed">● CONF.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ticket: Skee Mask -->
+  <div class="ticket-stub">
+    <div class="ticket-inner" style="background: linear-gradient(135deg, rgba(255,107,53,0.15), rgba(0,10,20,0.6)); border-color: rgba(255,107,53,0.28);">
+      <div class="ticket-status ts-going">✓</div>
+      <div class="ticket-body">
+        <div class="ticket-artist">Skee Mask</div>
+        <div class="ticket-detail">TV LOUNGE · SAT MAY 23 · 5AM</div>
+        <div class="ticket-tags">
+          <div class="ticket-cat" style="color:#ff6b35; border-color:rgba(255,107,53,0.3); background:rgba(255,107,53,0.12);">SUNRISE</div>
+        </div>
+      </div>
+      <div class="ticket-right">
+        <div class="ticket-price">$20</div>
+        <div class="ticket-price-label">ADVANCE</div>
+        <div class="ticket-confirmed">● CONF.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ticket: Mathew Jonson -->
+  <div class="ticket-stub">
+    <div class="ticket-inner" style="background: linear-gradient(135deg, rgba(123,47,255,0.18), rgba(0,10,30,0.6)); border-color: rgba(176,106,255,0.3);">
+      <div class="ticket-status ts-going">✓</div>
+      <div class="ticket-body">
+        <div class="ticket-artist">Mathew Jonson</div>
+        <div class="ticket-detail">TANGENT GALLERY · MON MAY 25 · 12AM</div>
+        <div class="ticket-tags">
+          <div class="ticket-cat" style="color:#b06aff; border-color:rgba(176,106,255,0.3); background:rgba(123,47,255,0.12);">AFTERPARTY</div>
+        </div>
+      </div>
+      <div class="ticket-right">
+        <div class="ticket-price">$20</div>
+        <div class="ticket-price-label">ADVANCE</div>
+        <div class="ticket-confirmed">● CONF.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ticket: Blawan (want, no ticket) -->
+  <div class="ticket-stub">
+    <div class="ticket-inner" style="background: linear-gradient(135deg, rgba(123,47,255,0.1), rgba(0,5,20,0.7)); border-color: rgba(255,184,0,0.2);">
+      <div class="ticket-status ts-want">★</div>
+      <div class="ticket-body">
+        <div class="ticket-artist" style="color:rgba(232,232,255,0.7);">Blawan</div>
+        <div class="ticket-detail">MARBLE BAR · SAT MAY 23 · 1AM</div>
+        <div class="ticket-tags">
+          <div class="ticket-cat" style="color:#b06aff; border-color:rgba(176,106,255,0.25); background:rgba(123,47,255,0.08);">AFTERPARTY</div>
+        </div>
+      </div>
+      <div class="ticket-right">
+        <div class="ticket-price" style="color:var(--text-dim);">$30</div>
+        <div class="ticket-price-label">DOOR</div>
+        <div class="ticket-unconfirmed">○ WANT</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Festival pass note -->
+  <div class="spend-bar">
+    <div>
+      <div class="spend-label">🎟 MOVEMENT FESTIVAL PASS</div>
+      <div style="font-size:10px; color:var(--text-dim); margin-top:2px; font-family:'Share Tech Mono'; letter-spacing:0.06em;">MAY 22–25 · ALL 4 DAYS · HART PLAZA</div>
+    </div>
+    <div style="text-align:right;">
+      <div class="spend-value" style="color:#00ff88;">INCL.</div>
+      <div style="font-size:8px; color:rgba(0,255,136,0.5); font-family:'Share Tech Mono'; letter-spacing:0.08em; margin-top:2px;">● ACTIVE</div>
+    </div>
+  </div>
+
+  <!-- MY DAY-BY-DAY PLAN -->
+  <div class="section-header">
+    <span class="section-label">DAY-BY-DAY PLAN</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="day-tabs" id="planDayTabs">
+    <div class="day-tab" data-plan-day="22" onclick="selectPlanDay(22, this)">
+      <div class="dt-num">22</div>
+      <div class="dt-name">FRI</div>
+    </div>
+    <div class="day-tab active" data-plan-day="23" onclick="selectPlanDay(23, this)">
+      <div class="dt-num">23</div>
+      <div class="dt-name">SAT</div>
+    </div>
+    <div class="day-tab" data-plan-day="24" onclick="selectPlanDay(24, this)">
+      <div class="dt-num">24</div>
+      <div class="dt-name">SUN</div>
+    </div>
+    <div class="day-tab" data-plan-day="25" onclick="selectPlanDay(25, this)">
+      <div class="dt-num">25</div>
+      <div class="dt-name">MON</div>
+    </div>
+  </div>
+
+  <div id="planDayContent"></div>
+
+  <!-- GROUP PANEL -->
+  <div class="section-header" style="margin-top:28px;">
+    <span class="section-label">THE CREW · 20 PEOPLE</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="group-panel">
+    <div class="group-header">
+      <div class="group-title">WHO'S GOING WHERE</div>
+      <div class="group-count">6 CONFIRMED TONIGHT</div>
+    </div>
+    <div id="memberList"></div>
+  </div>
+
+</div>
+
+<script>
+const planEvents = {
+  22: [
+    { artist: 'Movement Preview', venue: 'Hart Plaza', cat: 'festival', start: 14, end: 22, rsvp: 'going' },
+    { artist: 'Seth Troxler', venue: 'Marble Bar', cat: 'afterparty', start: 23, end: 29, rsvp: 'going' },
+  ],
+  23: [
+    { artist: 'Movement Saturday', venue: 'Hart Plaza', cat: 'festival', start: 12, end: 22, rsvp: 'going' },
+    { artist: 'Blawan', venue: 'Marble Bar', cat: 'afterparty', start: 25, end: 29, rsvp: 'want' },
+    { artist: 'Skee Mask', venue: 'TV Lounge', cat: 'sunrise', start: 29, end: 33, rsvp: 'going' },
+  ],
+  24: [
+    { artist: 'Octave One', venue: 'Hart Plaza', cat: 'festival', start: 16, end: 18, rsvp: 'going' },
+    { artist: 'Carl Cox', venue: 'Hart Plaza', cat: 'festival', start: 19, end: 21, rsvp: 'going' },
+  ],
+  25: [
+    { artist: 'Mathew Jonson', venue: 'Tangent Gallery', cat: 'afterparty', start: 24, end: 28, rsvp: 'going' },
+  ],
+};
+
+const catColors = {
+  afterparty: { color: '#b06aff', border: 'rgba(176,106,255,0.3)' },
+  sunrise:    { color: '#ff6b35', border: 'rgba(255,107,53,0.3)' },
+  dayparty:   { color: '#ffb800', border: 'rgba(255,184,0,0.3)' },
+  festival:   { color: '#00ff88', border: 'rgba(0,255,136,0.25)' },
+};
+
+const members = [
+  { name: 'Trinity', init: 'T', color: '#b06aff', events: ['Seth Troxler', 'Skee Mask', 'Mathew Jonson'] },
+  { name: 'Jade', init: 'J', color: '#00ffff', events: ['Blawan', 'Skee Mask'] },
+  { name: 'Marcus', init: 'M', color: '#ff6b35', events: ['Seth Troxler', 'Call Super', 'Blawan'] },
+  { name: 'Anya', init: 'A', color: '#ffb800', events: ['Octave One', 'Carl Cox', 'Paula Temple'] },
+  { name: 'Dev', init: 'D', color: '#00ff88', events: ['Movement Sat', 'Drumcode All Night'] },
+  { name: '+ 15 more', init: '···', color: 'rgba(255,255,255,0.2)', events: [] },
+];
+
+function formatHour(h) {
+  const h24 = h % 24;
+  const ampm = h24 < 12 ? 'AM' : 'PM';
+  const h12 = h24 % 12 || 12;
+  return `${h12}${ampm}`;
+}
+
+let activePlanDay = 23;
+
+function selectPlanDay(day, el) {
+  activePlanDay = day;
+  document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderPlanDay();
+}
+
+function renderPlanDay() {
+  const events = planEvents[activePlanDay] || [];
+  const container = document.getElementById('planDayContent');
+
+  if (!events.length) {
+    container.innerHTML = `<div class="empty-day-card">
+      <div class="empty-day-icon">🎵</div>
+      <div class="empty-day-text">NO EVENTS PLANNED</div>
+      <div class="empty-day-btn" onclick="alert('Opens schedule browser')">+ BROWSE SCHEDULE</div>
+    </div>`;
+    return;
+  }
+
+  const gradients = {
+    afterparty: 'linear-gradient(180deg, #b06aff, #7b2fff)',
+    sunrise: 'linear-gradient(180deg, #ff6b35, #ff9500)',
+    dayparty: 'linear-gradient(180deg, #ffb800, #ff6600)',
+    festival: 'linear-gradient(180deg, #00ff88, #00cc66)',
+  };
+
+  let html = `<div class="day-plan"><div class="day-plan-line"></div>`;
+  events.forEach(e => {
+    const c = catColors[e.cat];
+    const isConfirmed = e.rsvp === 'going';
+    html += `<div class="plan-event">
+      <div class="plan-event-dot" style="background:var(--void); border-color:${c.color}; box-shadow:0 0 6px ${c.color}66;"></div>
+      <div class="plan-event-inner pei-${e.cat}">
+        <div class="plan-event-body">
+          <div class="plan-artist" style="${!isConfirmed ? 'opacity:0.65;' : ''}">${e.artist}</div>
+          <div class="plan-venue-time">${e.venue} · ${formatHour(e.start)}–${formatHour(e.end)}</div>
+        </div>
+        <div class="plan-event-time">${isConfirmed ? '<span style="color:#00ff88; font-size:9px;">✓ CONF</span>' : '<span style="color:#ffb800; font-size:9px;">★ WANT</span>'}</div>
+        <div class="plan-remove-btn" onclick="event.stopPropagation()">×</div>
+      </div>
+    </div>`;
+  });
+
+  // Duration summary
+  const totalHours = events.reduce((sum, e) => sum + (e.end - e.start), 0);
+  const confirmedCount = events.filter(e => e.rsvp === 'going').length;
+  html += `</div>
+  <div style="text-align:right; padding:4px 4px 16px; font-family:'Share Tech Mono'; font-size:9px; color:var(--text-dim); letter-spacing:0.08em;">
+    ${confirmedCount}/${events.length} CONFIRMED · ${totalHours}H TOTAL
+  </div>`;
+
+  container.innerHTML = html;
+}
+
+function renderMembers() {
+  let html = '';
+  members.forEach((m, i) => {
+    const avatarBg = i < 5 ?
+      `background: linear-gradient(135deg, ${m.color}22, ${m.color}44); border-color: ${m.color}44;` :
+      `background: rgba(255,255,255,0.05); border-color:var(--border);`;
+
+    const eventDots = m.events.slice(0,4).map(ev => {
+      const colorMap = { 'Seth Troxler':'#b06aff', 'Skee Mask':'#ff6b35', 'Mathew Jonson':'#b06aff', 'Blawan':'#b06aff', 'Call Super':'#ffb800', 'Octave One':'#00ff88', 'Carl Cox':'#00ff88', 'Paula Temple':'#b06aff', 'Movement Sat':'#00ff88', 'Drumcode All Night':'#b06aff' };
+      return `<div class="member-dot" style="background:${colorMap[ev] || '#888'};"></div>`;
+    }).join('');
+
+    html += `<div class="member-row">
+      <div class="member-avatar" style="${avatarBg} color:${m.color || 'rgba(255,255,255,0.4)'};">${m.init}</div>
+      <div class="member-name">${m.name}</div>
+      <div class="member-dots">${eventDots}</div>
+      <div class="member-count">${m.events.length ? m.events.length + ' EVT' : ''}</div>
+    </div>`;
+  });
+  document.getElementById('memberList').innerHTML = html;
+}
+
+renderPlanDay();
+renderMembers();
+</script>
+</body>
+</html>

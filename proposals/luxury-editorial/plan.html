@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Movement 2026 — My Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0A0A0A;
+    --off-white: #F5F0E8;
+    --accent: #8B6914;
+    --accent-light: #C49A20;
+    --mid: #1A1A1A;
+    --dim: #222;
+    --muted: #555;
+    --rule: rgba(245,240,232,0.07);
+    --rule-light: rgba(245,240,232,0.04);
+
+    --afterparty: #6B3FA0;
+    --dayparty: #D4A843;
+    --sunrise: #E8651A;
+    --festival: #2A7A6F;
+  }
+
+  html, body {
+    background: var(--black);
+    color: var(--off-white);
+    font-family: 'DM Sans', sans-serif;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    max-width: 430px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.4;
+  }
+
+  /* Header */
+  header {
+    padding: 20px 20px 0;
+    flex-shrink: 0;
+    animation: fadeIn 0.6s ease both;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .wordmark {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--off-white);
+    opacity: 0.35;
+    margin-bottom: 4px;
+  }
+
+  .screen-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 40px;
+    letter-spacing: 0.05em;
+    line-height: 0.9;
+  }
+
+  .screen-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 18px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* Ticket summary card */
+  .ticket-card {
+    margin: 0 0 0 0;
+    border: 1px solid var(--rule);
+    background: var(--mid);
+    padding: 0;
+    animation: fadeIn 0.6s ease 0.1s both;
+    flex-shrink: 0;
+  }
+
+  .ticket-card-inner {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr 1px 1fr;
+  }
+
+  .ticket-stat {
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .ticket-stat:last-child { padding-right: 16px; }
+
+  .ticket-stat-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 30px;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    color: var(--off-white);
+    line-height: 1;
+  }
+
+  .ticket-stat-val.accent { color: var(--accent-light); }
+
+  .ticket-stat-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .ticket-divider {
+    background: var(--rule);
+  }
+
+  .ticket-progress-bar {
+    height: 2px;
+    background: var(--dim);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ticket-progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.8s ease 0.4s;
+  }
+
+  /* Section tabs */
+  .section-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--rule);
+    flex-shrink: 0;
+  }
+
+  .section-tab {
+    flex: 1;
+    padding: 10px 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s;
+  }
+
+  .section-tab.active { color: var(--off-white); }
+
+  .section-tab::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 20%;
+    right: 20%;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  .section-tab.active::after { transform: scaleX(1); }
+
+  /* Main scroll */
+  .main-scroll {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--dim) transparent;
+    min-height: 0;
+  }
+
+  /* RSVP LIST */
+  .rsvp-section { display: block; }
+  .rsvp-hidden { display: none; }
+
+  .day-group {
+    padding: 0 20px;
+  }
+
+  .day-group-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 16px 0 10px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 0;
+  }
+
+  .day-group-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    line-height: 1;
+  }
+
+  .day-group-date {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .rsvp-event {
+    display: flex;
+    align-items: stretch;
+    padding: 14px 0;
+    gap: 14px;
+    border-bottom: 1px solid var(--rule-light);
+    position: relative;
+  }
+
+  .rsvp-event:last-child { border-bottom: none; }
+
+  .rsvp-event-bar {
+    width: 2px;
+    flex-shrink: 0;
+    border-radius: 0;
+  }
+
+  .rsvp-event-body { flex: 1; min-width: 0; }
+
+  .rsvp-event-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    letter-spacing: 0.03em;
+    line-height: 1.1;
+    color: var(--off-white);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .rsvp-event-details {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .rsvp-venue {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .rsvp-time {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  .rsvp-event-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .ticket-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .ticket-status-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .ticket-status-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 8px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .rsvp-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--off-white);
+  }
+
+  .rsvp-price.muted { color: var(--muted); font-size: 14px; font-style: italic; }
+
+  /* Pending event (want to go) */
+  .rsvp-event.pending { opacity: 0.6; }
+  .rsvp-event.pending .rsvp-event-name { font-style: italic; }
+
+  /* Want-to-go badge */
+  .wtg-badge {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 7.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: 1px solid var(--rule);
+    color: var(--muted);
+    padding: 2px 5px;
+  }
+
+  /* Spend total banner */
+  .spend-banner {
+    margin: 16px 20px;
+    border: 1px solid rgba(139,105,20,0.3);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(139,105,20,0.05);
+  }
+
+  .spend-banner-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .spend-banner-amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--accent-light);
+  }
+
+  .spend-banner-est {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* SCHEDULE VIEW (day-by-day) */
+  .schedule-section { display: none; }
+  .schedule-visible { display: block; }
+
+  .schedule-day {
+    padding: 0 20px;
+  }
+
+  .schedule-day-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 16px 0 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .schedule-day-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    font-style: italic;
+  }
+
+  .schedule-day-count {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .schedule-timeline {
+    position: relative;
+    padding: 16px 0;
+  }
+
+  /* Vertical timeline line */
+  .schedule-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 16px;
+    bottom: 16px;
+    width: 1px;
+    background: var(--rule);
+  }
+
+  .schedule-item {
+    display: flex;
+    gap: 16px;
+    padding: 10px 0;
+    align-items: flex-start;
+    position: relative;
+  }
+
+  .schedule-item-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 6px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .schedule-item-body { flex: 1; }
+
+  .schedule-item-time {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 3px;
+  }
+
+  .schedule-item-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+    color: var(--off-white);
+  }
+
+  .schedule-item-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 9.5px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .schedule-item-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    padding-top: 2px;
+  }
+
+  .schedule-item-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 300;
+  }
+
+  /* Add event row */
+  .add-event-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    border-top: 1px solid var(--rule);
+    cursor: pointer;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+  }
+
+  .add-event-row:hover { opacity: 0.7; }
+
+  .add-event-plus {
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .add-event-text {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* Bottom nav */
+  nav {
+    display: flex;
+    border-top: 1px solid var(--rule);
+    flex-shrink: 0;
+  }
+
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0 16px;
+    gap: 4px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    transition: opacity 0.2s;
+  }
+
+  .nav-item:hover { opacity: 0.7; }
+
+  .nav-icon {
+    width: 18px;
+    height: 18px;
+    opacity: 0.4;
+  }
+
+  .nav-item.active .nav-icon { opacity: 1; }
+
+  .nav-item-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 8px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .nav-item.active .nav-item-label { color: var(--off-white); }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Cat colors shorthand */
+  .c-afterparty { color: #9B7DB0; }
+  .c-dayparty { color: #D4A843; }
+  .c-sunrise { color: #E8651A; }
+  .c-festival { color: #5AB5A8; }
+
+  .b-afterparty { background: #6B3FA0; }
+  .b-dayparty { background: #D4A843; }
+  .b-sunrise { background: #E8651A; }
+  .b-festival { background: #2A7A6F; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div>
+      <div class="wordmark">Movement Detroit 2026</div>
+      <div class="screen-title">My Plan</div>
+      <div class="screen-subtitle">Private itinerary</div>
+    </div>
+  </div>
+
+  <!-- Ticket card -->
+  <div class="ticket-card">
+    <div class="ticket-card-inner">
+      <div class="ticket-stat">
+        <span class="ticket-stat-val accent">$65</span>
+        <span class="ticket-stat-label">Spent</span>
+      </div>
+      <div class="ticket-divider"></div>
+      <div class="ticket-stat">
+        <span class="ticket-stat-val">$85</span>
+        <span class="ticket-stat-label">Estimated</span>
+      </div>
+      <div class="ticket-divider"></div>
+      <div class="ticket-stat">
+        <span class="ticket-stat-val">3</span>
+        <span class="ticket-stat-label">Tickets</span>
+      </div>
+    </div>
+    <div class="ticket-progress-bar">
+      <div class="ticket-progress-fill" style="width: 76.5%"></div>
+    </div>
+  </div>
+</header>
+
+<div class="section-tabs">
+  <button class="section-tab active" onclick="setSection('rsvp', this)">RSVPs</button>
+  <button class="section-tab" onclick="setSection('schedule', this)">My Schedule</button>
+</div>
+
+<div class="main-scroll">
+
+  <!-- RSVP LIST SECTION -->
+  <div class="rsvp-section" id="rsvpSection">
+
+    <!-- Friday -->
+    <div class="day-group">
+      <div class="day-group-header">
+        <span class="day-group-name">Friday</span>
+        <span class="day-group-date">May 22</span>
+      </div>
+
+      <div class="rsvp-event">
+        <div class="rsvp-event-bar b-afterparty"></div>
+        <div class="rsvp-event-body">
+          <div class="rsvp-event-name">Seth Troxler</div>
+          <div class="rsvp-event-details">
+            <span class="rsvp-venue">Marble Bar</span>
+            <span class="rsvp-time">11PM – 5AM</span>
+          </div>
+        </div>
+        <div class="rsvp-event-right">
+          <div class="ticket-status">
+            <div class="ticket-status-dot" style="background:#2A7A6F"></div>
+            <span class="ticket-status-label c-festival" style="color:#5AB5A8">Ticket</span>
+          </div>
+          <span class="rsvp-price">$25</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Spend summary inline -->
+    <div class="spend-banner">
+      <div>
+        <div class="spend-banner-label">Total spent</div>
+        <div class="spend-banner-est">Est. $85 remaining: $20</div>
+      </div>
+      <div>
+        <div class="spend-banner-amount">$65</div>
+      </div>
+    </div>
+
+    <!-- Saturday -->
+    <div class="day-group">
+      <div class="day-group-header">
+        <span class="day-group-name">Saturday</span>
+        <span class="day-group-date">May 23</span>
+      </div>
+
+      <div class="rsvp-event">
+        <div class="rsvp-event-bar b-sunrise"></div>
+        <div class="rsvp-event-body">
+          <div class="rsvp-event-name">Skee Mask</div>
+          <div class="rsvp-event-details">
+            <span class="rsvp-venue">TV Lounge</span>
+            <span class="rsvp-time">5AM – 9AM</span>
+          </div>
+        </div>
+        <div class="rsvp-event-right">
+          <div class="ticket-status">
+            <div class="ticket-status-dot" style="background:#2A7A6F"></div>
+            <span class="ticket-status-label" style="color:#5AB5A8">Ticket</span>
+          </div>
+          <span class="rsvp-price">$20</span>
+        </div>
+      </div>
+
+      <div class="rsvp-event pending">
+        <div class="rsvp-event-bar b-afterparty"></div>
+        <div class="rsvp-event-body">
+          <div class="rsvp-event-name">Blawan</div>
+          <div class="rsvp-event-details">
+            <span class="rsvp-venue">Marble Bar</span>
+            <span class="rsvp-time">1AM – 5AM</span>
+          </div>
+        </div>
+        <div class="rsvp-event-right">
+          <span class="wtg-badge">Want to go</span>
+          <span class="rsvp-price muted">$30</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monday -->
+    <div class="day-group">
+      <div class="day-group-header">
+        <span class="day-group-name">Monday</span>
+        <span class="day-group-date">May 25</span>
+      </div>
+
+      <div class="rsvp-event">
+        <div class="rsvp-event-bar b-afterparty"></div>
+        <div class="rsvp-event-body">
+          <div class="rsvp-event-name">Mathew Jonson</div>
+          <div class="rsvp-event-details">
+            <span class="rsvp-venue">Tangent Gallery</span>
+            <span class="rsvp-time">12AM – 4AM</span>
+          </div>
+        </div>
+        <div class="rsvp-event-right">
+          <div class="ticket-status">
+            <div class="ticket-status-dot" style="background:#2A7A6F"></div>
+            <span class="ticket-status-label" style="color:#5AB5A8">Ticket</span>
+          </div>
+          <span class="rsvp-price">$20</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add more -->
+    <div class="add-event-row" onclick="alert('Browse schedule to add events')">
+      <div class="add-event-plus">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <line x1="6" y1="1" x2="6" y2="11" stroke="rgba(245,240,232,0.4)" stroke-width="1.2"/>
+          <line x1="1" y1="6" x2="11" y2="6" stroke="rgba(245,240,232,0.4)" stroke-width="1.2"/>
+        </svg>
+      </div>
+      <span class="add-event-text">Browse schedule to add events</span>
+    </div>
+
+    <!-- Spacer -->
+    <div style="height:20px"></div>
+  </div>
+
+  <!-- SCHEDULE SECTION -->
+  <div class="schedule-section" id="scheduleSection">
+
+    <!-- Friday -->
+    <div class="schedule-day">
+      <div class="schedule-day-header">
+        <span class="schedule-day-name">Friday</span>
+        <span class="schedule-day-count">1 event</span>
+      </div>
+      <div class="schedule-timeline">
+        <div class="schedule-item">
+          <div class="schedule-item-dot b-afterparty"></div>
+          <div class="schedule-item-body">
+            <div class="schedule-item-time">11:00 PM – 5:00 AM</div>
+            <div class="schedule-item-name">Seth Troxler</div>
+            <div class="schedule-item-sub">Marble Bar · Afterparty</div>
+          </div>
+          <div class="schedule-item-right">
+            <span class="schedule-item-price">$25</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Saturday -->
+    <div class="schedule-day">
+      <div class="schedule-day-header">
+        <span class="schedule-day-name">Saturday</span>
+        <span class="schedule-day-count">2 events</span>
+      </div>
+      <div class="schedule-timeline">
+
+        <div class="schedule-item">
+          <div class="schedule-item-dot b-sunrise"></div>
+          <div class="schedule-item-body">
+            <div class="schedule-item-time">5:00 AM – 9:00 AM</div>
+            <div class="schedule-item-name">Skee Mask</div>
+            <div class="schedule-item-sub">TV Lounge · Sunrise</div>
+          </div>
+          <div class="schedule-item-right">
+            <span class="schedule-item-price">$20</span>
+          </div>
+        </div>
+
+        <div class="schedule-item" style="opacity:0.55">
+          <div class="schedule-item-dot" style="background:var(--dim);border:1px solid var(--muted)"></div>
+          <div class="schedule-item-body">
+            <div class="schedule-item-time">1:00 AM – 5:00 AM · Want to go</div>
+            <div class="schedule-item-name" style="font-style:italic;color:var(--muted)">Blawan</div>
+            <div class="schedule-item-sub">Marble Bar · No ticket yet</div>
+          </div>
+          <div class="schedule-item-right">
+            <span class="schedule-item-price" style="color:var(--muted);font-size:14px;font-style:italic">$30</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Sunday — empty -->
+    <div class="schedule-day">
+      <div class="schedule-day-header">
+        <span class="schedule-day-name">Sunday</span>
+        <span class="schedule-day-count" style="color:var(--muted)">Nothing planned</span>
+      </div>
+      <div style="padding:20px 0">
+        <div class="add-event-row" style="padding:0;border-top:none" onclick="alert('Browse Sunday events')">
+          <div class="add-event-plus">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <line x1="6" y1="1" x2="6" y2="11" stroke="rgba(245,240,232,0.4)" stroke-width="1.2"/>
+              <line x1="1" y1="6" x2="11" y2="6" stroke="rgba(245,240,232,0.4)" stroke-width="1.2"/>
+            </svg>
+          </div>
+          <span class="add-event-text">Add Sunday events</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monday -->
+    <div class="schedule-day">
+      <div class="schedule-day-header">
+        <span class="schedule-day-name">Monday</span>
+        <span class="schedule-day-count">1 event</span>
+      </div>
+      <div class="schedule-timeline">
+        <div class="schedule-item">
+          <div class="schedule-item-dot b-afterparty"></div>
+          <div class="schedule-item-body">
+            <div class="schedule-item-time">12:00 AM – 4:00 AM</div>
+            <div class="schedule-item-name">Mathew Jonson</div>
+            <div class="schedule-item-sub">Tangent Gallery · Afterparty</div>
+          </div>
+          <div class="schedule-item-right">
+            <span class="schedule-item-price">$20</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:20px"></div>
+  </div>
+
+</div>
+
+<!-- Nav -->
+<nav>
+  <button class="nav-item">
+    <svg class="nav-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.2">
+      <path d="M9 1L9 17M2 6l7-5 7 5M2 9v8h4v-5h6v5h4V9"/>
+    </svg>
+    <span class="nav-item-label">Map</span>
+  </button>
+  <button class="nav-item">
+    <svg class="nav-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.2">
+      <rect x="2" y="3" width="14" height="12" rx="0"/>
+      <line x1="2" y1="7" x2="16" y2="7"/>
+      <line x1="6" y1="3" x2="6" y2="5"/>
+      <line x1="12" y1="3" x2="12" y2="5"/>
+    </svg>
+    <span class="nav-item-label">Schedule</span>
+  </button>
+  <button class="nav-item active">
+    <svg class="nav-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.2">
+      <circle cx="9" cy="6" r="3"/>
+      <path d="M3 16c0-3.3 2.7-6 6-6s6 2.7 6 6"/>
+    </svg>
+    <span class="nav-item-label">Plan</span>
+  </button>
+</nav>
+
+<script>
+function setSection(section, el) {
+  document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+
+  const rsvp = document.getElementById('rsvpSection');
+  const sched = document.getElementById('scheduleSection');
+
+  if (section === 'rsvp') {
+    rsvp.className = 'rsvp-section';
+    sched.className = 'schedule-section';
+  } else {
+    rsvp.className = 'rsvp-section rsvp-hidden';
+    sched.className = 'schedule-section schedule-visible';
+  }
+}
+</script>
+</body>
+</html>
