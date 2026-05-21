@@ -478,7 +478,7 @@ body::after {
 
 <div class="view-controls">
   <div class="view-toggle">
-    <button class="view-btn active" id="ganttBtn" onclick="setView('gantt')">GANTT</button>
+    <button class="view-btn active" id="ganttBtn" onclick="setView('gantt')">TIMELINE</button>
     <button class="view-btn" id="weekendBtn" onclick="setView('weekend')">WKND</button>
     <button class="view-btn" id="listBtn" onclick="setView('list')">LIST</button>
   </div>
