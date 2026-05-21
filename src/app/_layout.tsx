@@ -98,10 +98,7 @@ export default function RootLayout() {
       />
       <Tabs.Screen
         name="social"
-        options={{
-          title: "Who's Going",
-          tabBarIcon: ({ color }) => <Ionicons name="people" size={22} color={color} />,
-        }}
+        options={{ href: null }}
       />
       <Tabs.Screen
         name="map"

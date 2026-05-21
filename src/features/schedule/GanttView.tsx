@@ -191,12 +191,20 @@ body::after {
 
 .gantt-time-header {
   display: flex;
-  margin-left: 90px;
   border-bottom: 1px solid rgba(204,255,0,0.2);
   position: sticky;
   top: 0;
   background: #000;
   z-index: 10;
+}
+.gantt-header-spacer {
+  width: 90px;
+  flex-shrink: 0;
+  position: sticky;
+  left: 0;
+  background: #000;
+  z-index: 11;
+  border-right: 1px solid rgba(204,255,0,0.15);
 }
 .gantt-hour {
   width: var(--hour-px);
@@ -232,6 +240,10 @@ body::after {
   cursor: pointer;
   line-height: 1.2;
   text-transform: uppercase;
+  position: sticky;
+  left: 0;
+  background: var(--void);
+  z-index: 5;
 }
 .gantt-venue-label:hover { color: var(--acid); }
 
@@ -467,6 +479,7 @@ body::after {
 <div class="view-controls">
   <div class="view-toggle">
     <button class="view-btn active" id="ganttBtn" onclick="setView('gantt')">GANTT</button>
+    <button class="view-btn" id="weekendBtn" onclick="setView('weekend')">WKND</button>
     <button class="view-btn" id="listBtn" onclick="setView('list')">LIST</button>
   </div>
   <div class="event-total" id="eventTotal">— EVENTS</div>
@@ -503,8 +516,8 @@ body::after {
       <div class="modal-detail-cell"><div class="modal-detail-label">PRICE</div><div class="modal-detail-val" id="modalPrice">—</div></div>
     </div>
     <div class="modal-actions">
-      <button class="modal-action-btn btn-primary">+ MY PLAN</button>
-      <button class="modal-action-btn btn-secondary">WANT TO GO</button>
+      <button class="modal-action-btn btn-primary" id="modalGoingBtn" onclick="toggleRsvp('going')">+ MY PLAN</button>
+      <button class="modal-action-btn btn-secondary" id="modalWantBtn" onclick="toggleRsvp('want')">WANT TO GO</button>
       <button class="modal-action-btn btn-ra" id="modalRaBtn">↗ VIEW ON RESIDENT ADVISOR</button>
     </div>
   </div>
@@ -543,6 +556,12 @@ const CAT_COLORS = { Afterparty: '#FF0080', Sunrise: '#FF8C00', DayParty: '#CCFF
 let currentDay = '2026-05-22';
 let currentView = 'gantt';
 let activeModal = null;
+let rsvps = {};
+try { rsvps = JSON.parse(localStorage.getItem('rsvps_v1') || '{}'); } catch(e) {}
+
+const WEEKEND_HOUR_PX = 10;
+const WEEKEND_ORIGIN_MS = new Date('2026-05-21T12:00:00').getTime();
+const WEEKEND_TOTAL_HOURS = Math.ceil((new Date('2026-05-26T14:00:00').getTime() - WEEKEND_ORIGIN_MS) / 3600000);
 
 // ===== HELPERS =====
 function parseHour(iso) {
@@ -613,9 +632,11 @@ function setDay(key) {
 
 function setView(v) {
   currentView = v;
-  document.getElementById('ganttView').classList.toggle('hidden', v !== 'gantt');
+  const isGanttLike = v === 'gantt' || v === 'weekend';
+  document.getElementById('ganttView').classList.toggle('hidden', !isGanttLike);
   document.getElementById('listView').classList.toggle('hidden', v !== 'list');
   document.getElementById('ganttBtn').classList.toggle('active', v === 'gantt');
+  document.getElementById('weekendBtn').classList.toggle('active', v === 'weekend');
   document.getElementById('listBtn').classList.toggle('active', v === 'list');
   render();
 }
@@ -631,6 +652,9 @@ function buildGantt(events) {
   // Time header
   const header = document.createElement('div');
   header.className = 'gantt-time-header';
+  const hdrSpacer = document.createElement('div');
+  hdrSpacer.className = 'gantt-header-spacer';
+  header.appendChild(hdrSpacer);
   for (let h = 0; h < GANTT_HOURS; h++) {
     const absH = (GANTT_START + h) % 24;
     const label = absH === 0 ? 'MID' : (absH < 12 ? absH + 'AM' : absH === 12 ? '12PM' : (absH - 12) + 'PM');
@@ -685,6 +709,15 @@ function buildGantt(events) {
       name.className = 'gantt-event-name';
       name.textContent = ev.title.toUpperCase();
       bar.appendChild(name);
+
+      if (rsvps[ev.id] === 'going') {
+        const star = document.createElement('span');
+        star.className = 'rsvp-star';
+        star.textContent = '★';
+        bar.appendChild(star);
+        bar.style.outline = '1px solid rgba(255,255,255,0.3)';
+        bar.style.outlineOffset = '-1px';
+      }
 
       bar.onclick = () => openModal(ev);
       track.appendChild(bar);
@@ -756,10 +789,30 @@ function openModal(ev) {
     raBtn.style.display = 'none';
   }
 
+  syncModalRsvpBtns();
   document.getElementById('modalOverlay').classList.add('open');
 
   // Also notify React Native
   window.ReactNativeWebView.postMessage(ev.id);
+}
+
+function toggleRsvp(state) {
+  if (!activeModal) return;
+  const id = activeModal.id;
+  if (rsvps[id] === state) delete rsvps[id];
+  else rsvps[id] = state;
+  try { localStorage.setItem('rsvps_v1', JSON.stringify(rsvps)); } catch(e) {}
+  syncModalRsvpBtns();
+  render();
+}
+
+function syncModalRsvpBtns() {
+  if (!activeModal) return;
+  const state = rsvps[activeModal.id];
+  const gb = document.getElementById('modalGoingBtn');
+  const wb = document.getElementById('modalWantBtn');
+  if (gb) gb.textContent = state === 'going' ? '★ GOING' : '+ MY PLAN';
+  if (wb) wb.textContent = state === 'want' ? '♥ WANT' : 'WANT TO GO';
 }
 
 function closeModal(e) {
@@ -770,12 +823,123 @@ function closeModalDirect() {
   activeModal = null;
 }
 
+// ===== WEEKEND GANTT =====
+function buildWeekendGantt(events) {
+  const inner = document.getElementById('ganttInner');
+  inner.innerHTML = '';
+
+  const hPx = WEEKEND_HOUR_PX;
+  const totalW = WEEKEND_TOTAL_HOURS * hPx;
+
+  function toX(iso) {
+    return (new Date(iso).getTime() - WEEKEND_ORIGIN_MS) / 3600000 * hPx;
+  }
+
+  // Header with day labels
+  const header = document.createElement('div');
+  header.className = 'gantt-time-header';
+  const hdrSpacer = document.createElement('div');
+  hdrSpacer.className = 'gantt-header-spacer';
+  hdrSpacer.style.fontSize = '7px';
+  hdrSpacer.style.color = 'rgba(204,255,0,0.3)';
+  hdrSpacer.style.display = 'flex';
+  hdrSpacer.style.alignItems = 'center';
+  hdrSpacer.style.justifyContent = 'center';
+  hdrSpacer.style.letterSpacing = '1px';
+  hdrSpacer.textContent = 'ALL';
+  header.appendChild(hdrSpacer);
+
+  const wkndDays = [
+    { label: 'THU 21', start: '2026-05-21T12:00:00', end: '2026-05-22T12:00:00' },
+    { label: 'FRI 22', start: '2026-05-22T12:00:00', end: '2026-05-23T12:00:00' },
+    { label: 'SAT 23', start: '2026-05-23T12:00:00', end: '2026-05-24T12:00:00' },
+    { label: 'SUN 24', start: '2026-05-24T12:00:00', end: '2026-05-25T12:00:00' },
+    { label: 'MON 25', start: '2026-05-25T12:00:00', end: '2026-05-26T14:00:00' },
+  ];
+  wkndDays.forEach(day => {
+    const w = (new Date(day.end).getTime() - new Date(day.start).getTime()) / 3600000 * hPx;
+    const cell = document.createElement('div');
+    cell.style.cssText = 'width:' + w + 'px;flex-shrink:0;font-family:\\'Bebas Neue\\',sans-serif;font-size:10px;' +
+      'color:rgba(204,255,0,0.55);padding:4px 6px;border-left:1px solid rgba(204,255,0,0.2);letter-spacing:2px;';
+    cell.textContent = day.label;
+    header.appendChild(cell);
+  });
+  inner.appendChild(header);
+
+  // All venues with at least one event
+  const venueIds = [...new Set(events.map(e => e.venueId))];
+  venueIds.forEach(vid => {
+    const venue = VENUE_MAP[vid];
+    const venueEvents = events.filter(e => e.venueId === vid);
+    const row = document.createElement('div');
+    row.className = 'gantt-row';
+
+    const lbl = document.createElement('div');
+    lbl.className = 'gantt-venue-label';
+    lbl.title = venue ? venue.name : vid;
+    lbl.textContent = venue ? venue.name.replace(/\\s+/g, ' ') : vid;
+    lbl.onclick = () => { window.ReactNativeWebView.postMessage('venue:' + vid); };
+    row.appendChild(lbl);
+
+    const track = document.createElement('div');
+    track.className = 'gantt-track';
+    track.style.minWidth = totalW + 'px';
+
+    venueEvents.forEach(ev => {
+      const x = toX(ev.startTime);
+      if (x < 0 || x > totalW) return;
+      const endMs = new Date(ev.endTime).getTime();
+      const startMs = new Date(ev.startTime).getTime();
+      const w = Math.max((endMs - startMs) / 3600000 * hPx, 3);
+
+      const bar = document.createElement('div');
+      bar.className = 'gantt-event ' + (CAT_CLASS[ev.category] || 'default');
+      bar.style.left = x + 'px';
+      bar.style.width = w + 'px';
+      bar.style.height = '28px';
+      bar.style.top = '8px';
+      bar.style.padding = '0 3px';
+
+      if (w > 20) {
+        const name = document.createElement('span');
+        name.className = 'gantt-event-name';
+        name.style.fontSize = '7px';
+        name.textContent = ev.title.toUpperCase();
+        bar.appendChild(name);
+      }
+
+      if (rsvps[ev.id] === 'going') {
+        bar.style.outline = '1px solid rgba(255,255,255,0.35)';
+        bar.style.outlineOffset = '-1px';
+        if (w > 14) {
+          const star = document.createElement('span');
+          star.className = 'rsvp-star';
+          star.style.fontSize = '7px';
+          star.textContent = '★';
+          bar.appendChild(star);
+        }
+      }
+
+      bar.onclick = () => openModal(ev);
+      track.appendChild(bar);
+    });
+
+    row.appendChild(track);
+    inner.appendChild(row);
+  });
+}
+
 // ===== RENDER =====
 function render() {
-  const events = eventsForDay(currentDay);
-  document.getElementById('eventTotal').textContent = events.length + ' EVENTS';
-  if (currentView === 'gantt') buildGantt(events);
-  else buildList(events);
+  if (currentView === 'weekend') {
+    document.getElementById('eventTotal').textContent = ALL_EVENTS.length + ' EVENTS · FULL WKND';
+    buildWeekendGantt(ALL_EVENTS);
+  } else {
+    const events = eventsForDay(currentDay);
+    document.getElementById('eventTotal').textContent = events.length + ' EVENTS';
+    if (currentView === 'gantt') buildGantt(events);
+    else buildList(events);
+  }
 }
 
 // ===== INIT =====

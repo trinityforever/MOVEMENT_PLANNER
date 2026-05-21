@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import {
   StyleSheet, Text, View, ScrollView, TouchableOpacity,
-  Platform, FlatList,
+  Platform, FlatList, TextInput,
 } from 'react-native';
 import ScreenLayout from '../components/ScreenLayout';
 import { COLORS } from '../constants/Theme';
@@ -187,14 +187,13 @@ function ItineraryTab({
 
 // ─── Tab: Tickets ─────────────────────────────────────────────────────────────
 
-function TicketsTab({ rsvps }: { rsvps: Record<string, RsvpState> }) {
+function TicketsTab({ rsvps, budget, onBudgetChange }: { rsvps: Record<string, RsvpState>; budget: number; onBudgetChange: (v: number) => void }) {
   const allEvents = dataService.getEvents();
   const goingEvents = allEvents.filter((e) => rsvps[e.id] === 'going');
 
   const paid = goingEvents.reduce((sum, e) => sum + (e.price ?? 0), 0);
   const wantEvents = allEvents.filter((e) => rsvps[e.id] === 'want');
   const projected = paid + wantEvents.reduce((sum, e) => sum + (e.price ?? 0), 0);
-  const budget = 150;
   const pct = Math.min((paid / budget) * 100, 100);
 
   return (
@@ -214,7 +213,19 @@ function TicketsTab({ rsvps }: { rsvps: Record<string, RsvpState> }) {
           <View style={styles.spendDivider} />
           <View>
             <Text style={styles.spendLabel}>BUDGET</Text>
-            <Text style={[styles.spendAmount, { color: 'rgba(204,255,0,0.45)' }]}>${budget}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'baseline' }}>
+              <Text style={[styles.spendAmount, { color: 'rgba(204,255,0,0.45)' }]}>$</Text>
+              <TextInput
+                value={String(budget)}
+                onChangeText={(t) => {
+                  const n = parseInt(t.replace(/[^0-9]/g, ''), 10);
+                  if (!isNaN(n) && n >= 0) onBudgetChange(n);
+                }}
+                keyboardType="numeric"
+                style={[styles.spendAmount, { color: 'rgba(204,255,0,0.45)', minWidth: 40 } as any]}
+                selectTextOnFocus
+              />
+            </View>
           </View>
         </View>
 
@@ -248,7 +259,7 @@ function TicketsTab({ rsvps }: { rsvps: Record<string, RsvpState> }) {
               <View style={styles.ticketRight}>
                 <Text style={styles.ticketPrice}>{e.price === 0 ? 'FREE' : `$${e.price}`}</Text>
                 <View style={styles.ticketConfirmed}>
-                  <Text style={styles.ticketConfirmedText}>✓ CONF</Text>
+                  <Text style={styles.ticketConfirmedText}>★ GOING</Text>
                 </View>
               </View>
             </View>
@@ -375,6 +386,17 @@ function ScheduleTab({ rsvps }: { rsvps: Record<string, RsvpState> }) {
 export default function PlanScreen() {
   const [activeTab, setActiveTab] = useState(0);
   const [rsvps, setRsvps] = useState<Record<string, RsvpState>>(() => loadRsvps());
+  const [budget, setBudget] = useState<number>(() => {
+    try {
+      const v = typeof window !== 'undefined' && window.localStorage ? window.localStorage.getItem('budget_v1') : null;
+      const n = v ? parseInt(v, 10) : NaN;
+      return isNaN(n) ? 150 : n;
+    } catch { return 150; }
+  });
+  const handleBudgetChange = useCallback((val: number) => {
+    setBudget(val);
+    try { if (typeof window !== 'undefined' && window.localStorage) window.localStorage.setItem('budget_v1', String(val)); } catch {}
+  }, []);
 
   const handleToggle = useCallback((id: string, current: RsvpState) => {
     setRsvps((prev) => {
@@ -433,7 +455,7 @@ export default function PlanScreen() {
       {/* Tab content */}
       <View style={{ flex: 1 }}>
         {activeTab === 0 && <ItineraryTab rsvps={rsvps} onToggle={handleToggle} />}
-        {activeTab === 1 && <TicketsTab rsvps={rsvps} />}
+        {activeTab === 1 && <TicketsTab rsvps={rsvps} budget={budget} onBudgetChange={handleBudgetChange} />}
         {activeTab === 2 && <ScheduleTab rsvps={rsvps} />}
       </View>
     </ScreenLayout>

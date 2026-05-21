@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -68,6 +68,30 @@ const EventBottomSheet: React.FC<EventBottomSheetProps> = ({ eventId, onClose, o
   useEffect(() => {
     setSelectedArtist(null);
   }, [eventId]);
+
+  const [rsvp, setRsvp] = useState<'going' | 'want' | null>(null);
+
+  useEffect(() => {
+    if (!eventId) { setRsvp(null); return; }
+    try {
+      const raw = typeof window !== 'undefined' ? window.localStorage?.getItem('rsvps_v1') : null;
+      const rsvps = raw ? JSON.parse(raw) : {};
+      setRsvp(rsvps[eventId] ?? null);
+    } catch { setRsvp(null); }
+  }, [eventId]);
+
+  const handleRsvp = useCallback((state: 'going' | 'want') => {
+    if (!eventId) return;
+    const next = rsvp === state ? null : state;
+    setRsvp(next);
+    try {
+      const raw = window.localStorage?.getItem('rsvps_v1');
+      const rsvps = raw ? JSON.parse(raw) : {};
+      if (next === null) delete rsvps[eventId];
+      else rsvps[eventId] = next;
+      window.localStorage?.setItem('rsvps_v1', JSON.stringify(rsvps));
+    } catch {}
+  }, [eventId, rsvp]);
 
   if (!event) return null;
 
@@ -161,11 +185,23 @@ const EventBottomSheet: React.FC<EventBottomSheetProps> = ({ eventId, onClose, o
               )}
 
               <View style={styles.actions}>
-                <TouchableOpacity style={[styles.primaryButton, { backgroundColor: COLORS.acid }]}>
-                  <Text style={styles.primaryButtonText}>+ MY PLAN</Text>
+                <TouchableOpacity
+                  style={[styles.primaryButton, rsvp === 'going'
+                    ? { backgroundColor: COLORS.acid }
+                    : { backgroundColor: 'transparent', borderWidth: 1, borderColor: COLORS.acid }]}
+                  onPress={() => handleRsvp('going')}
+                >
+                  <Text style={[styles.primaryButtonText, rsvp !== 'going' && { color: COLORS.acid }]}>
+                    {rsvp === 'going' ? '★ GOING' : '+ MY PLAN'}
+                  </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.secondaryButton, { borderColor: color + '66' }]}>
-                  <Text style={[styles.secondaryButtonText, { color }]}>WANT TO GO</Text>
+                <TouchableOpacity
+                  style={[styles.secondaryButton, { borderColor: rsvp === 'want' ? COLORS.pink : color + '66' }]}
+                  onPress={() => handleRsvp('want')}
+                >
+                  <Text style={[styles.secondaryButtonText, { color: rsvp === 'want' ? COLORS.pink : color }]}>
+                    {rsvp === 'want' ? '♥ WANT' : '♡ WANT TO GO'}
+                  </Text>
                 </TouchableOpacity>
               </View>
 

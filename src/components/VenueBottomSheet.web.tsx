@@ -9,6 +9,7 @@ import {
   Linking,
   Platform,
   Animated,
+  useWindowDimensions,
 } from 'react-native';
 import { COLORS } from '../constants/Theme';
 import dataService from '../services/dataService';
@@ -38,7 +39,10 @@ interface VenueBottomSheetProps {
 }
 
 const VenueBottomSheet: React.FC<VenueBottomSheetProps> = ({ venueId, onClose, onEventSelect }) => {
-  const translateX = useRef(new Animated.Value(DRAWER_WIDTH)).current;
+  const { width, height } = useWindowDimensions();
+  const isCompactScreen = width < 768;
+  const hiddenOffset = isCompactScreen ? Math.min(height * 0.82, 680) : DRAWER_WIDTH;
+  const translate = useRef(new Animated.Value(DRAWER_WIDTH)).current;
 
   const venue = useMemo(
     () => (!venueId ? null : dataService.getVenues().find((currentVenue) => currentVenue.id === venueId)),
@@ -52,19 +56,19 @@ const VenueBottomSheet: React.FC<VenueBottomSheetProps> = ({ venueId, onClose, o
 
   useEffect(() => {
     if (!venueId) return;
-    translateX.setValue(DRAWER_WIDTH);
-    Animated.timing(translateX, {
+    translate.setValue(hiddenOffset);
+    Animated.timing(translate, {
       toValue: 0,
       duration: 280,
       useNativeDriver: false,
     }).start();
-  }, [venueId, translateX]);
+  }, [venueId, hiddenOffset, translate]);
 
   if (!venue) return null;
 
   const handleClose = () => {
-    Animated.timing(translateX, {
-      toValue: DRAWER_WIDTH,
+    Animated.timing(translate, {
+      toValue: hiddenOffset,
       duration: 220,
       useNativeDriver: false,
     }).start(() => onClose());
@@ -72,30 +76,45 @@ const VenueBottomSheet: React.FC<VenueBottomSheetProps> = ({ venueId, onClose, o
 
   return (
     <Modal visible={!!venueId} transparent animationType="none" onRequestClose={handleClose}>
-      <View style={styles.backdrop}>
+      <View style={[styles.backdrop, isCompactScreen && styles.backdropCompact]}>
         <TouchableOpacity style={styles.dismissZone} activeOpacity={1} onPress={handleClose} />
-        <Animated.View style={[styles.drawer, { transform: [{ translateX }] }]}>
+        <Animated.View
+          style={[
+            styles.drawer,
+            isCompactScreen ? styles.drawerCompact : styles.drawerDesktop,
+            {
+              transform: isCompactScreen
+                ? [{ translateY: translate }]
+                : [{ translateX: translate }],
+            },
+          ]}
+        >
           <View style={styles.acidRule} />
 
-          <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+          <ScrollView
+            contentContainerStyle={[styles.content, isCompactScreen && styles.contentCompact]}
+            showsVerticalScrollIndicator={false}
+          >
             <TouchableOpacity onPress={handleClose} style={styles.closeRow}>
               <Text style={styles.closeText}>× CLOSE</Text>
             </TouchableOpacity>
 
-            <Text style={styles.venueName}>{venue.name.toUpperCase()}</Text>
+            <Text style={[styles.venueName, isCompactScreen && styles.venueNameCompact]}>
+              {venue.name.toUpperCase()}
+            </Text>
             <TouchableOpacity onPress={() => openMaps(venue.address, venue.city)}>
-              <Text style={styles.addressLink}>
+              <Text style={[styles.addressLink, isCompactScreen && styles.addressLinkCompact]}>
                 ↗ {venue.address.toUpperCase()}, {venue.city.toUpperCase()}
               </Text>
             </TouchableOpacity>
 
-            <View style={styles.statsRow}>
-              <View style={styles.statBox}>
+            <View style={[styles.statsRow, isCompactScreen && styles.statsRowCompact]}>
+              <View style={[styles.statBox, isCompactScreen && styles.statBoxCompact]}>
                 <Text style={styles.statLabel}>EVENTS</Text>
                 <Text style={styles.statValue}>{venueEvents.length}</Text>
               </View>
               {venue.popular && (
-                <View style={[styles.statBox, styles.hotStatBox]}>
+                <View style={[styles.statBox, styles.hotStatBox, isCompactScreen && styles.statBoxCompact]}>
                   <Text style={[styles.statLabel, styles.hotText]}>STATUS</Text>
                   <Text style={[styles.statValue, styles.hotText]}>HOT</Text>
                 </View>
@@ -108,7 +127,7 @@ const VenueBottomSheet: React.FC<VenueBottomSheetProps> = ({ venueId, onClose, o
               return (
                 <TouchableOpacity
                   key={event.id}
-                  style={styles.eventItem}
+                  style={[styles.eventItem, isCompactScreen && styles.eventItemCompact]}
                   onPress={() => {
                     handleClose();
                     setTimeout(() => onEventSelect(event.id), 120);
@@ -116,13 +135,15 @@ const VenueBottomSheet: React.FC<VenueBottomSheetProps> = ({ venueId, onClose, o
                   activeOpacity={0.75}
                 >
                   <View style={[styles.eventColorBar, { backgroundColor: color }]} />
-                  <View style={styles.eventInfo}>
-                    <Text style={[styles.eventTitle, { color }]}>{event.title.toUpperCase()}</Text>
-                    <Text style={styles.eventTime}>
+                  <View style={[styles.eventInfo, isCompactScreen && styles.eventInfoCompact]}>
+                    <Text style={[styles.eventTitle, { color }, isCompactScreen && styles.eventTitleCompact]}>
+                      {event.title.toUpperCase()}
+                    </Text>
+                    <Text style={[styles.eventTime, isCompactScreen && styles.eventTimeCompact]}>
                       {dataService.formatTime(event.startTime)} – {dataService.formatTime(event.endTime)}
                     </Text>
                   </View>
-                  <View style={[styles.eventBadge, { borderColor: color + '55' }]}>
+                  <View style={[styles.eventBadge, isCompactScreen && styles.eventBadgeCompact, { borderColor: color + '55' }]}>
                     <Text style={[styles.eventBadgeText, { color }]}>
                       {(event.category ?? 'EVENT').toUpperCase()}
                     </Text>
@@ -145,20 +166,36 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'rgba(0,0,0,0.58)',
   },
+  backdropCompact: {
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+  },
   dismissZone: {
     flex: 1,
   },
   drawer: {
-    width: DRAWER_WIDTH,
-    maxWidth: '42%',
     backgroundColor: '#000',
-    borderLeftWidth: 1,
-    borderLeftColor: 'rgba(204,255,0,0.12)',
     shadowColor: COLORS.acid,
     shadowOpacity: 0.18,
     shadowRadius: 26,
-    shadowOffset: { width: -8, height: 0 },
     overflow: 'hidden',
+  },
+  drawerDesktop: {
+    width: DRAWER_WIDTH,
+    maxWidth: '42%',
+    borderLeftWidth: 1,
+    borderLeftColor: 'rgba(204,255,0,0.12)',
+    shadowOffset: { width: -8, height: 0 },
+  },
+  drawerCompact: {
+    width: '100%',
+    maxWidth: '100%',
+    maxHeight: '82%',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(204,255,0,0.12)',
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+    shadowOffset: { width: 0, height: -8 },
   },
   acidRule: {
     height: 2,
@@ -168,6 +205,11 @@ const styles = StyleSheet.create({
   content: {
     padding: 20,
     paddingBottom: 40,
+  },
+  contentCompact: {
+    paddingHorizontal: 16,
+    paddingTop: 14,
+    paddingBottom: 28,
   },
   closeRow: {
     alignSelf: 'flex-start',
@@ -188,6 +230,11 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     marginBottom: 10,
   },
+  venueNameCompact: {
+    fontSize: 34,
+    lineHeight: 34,
+    marginBottom: 8,
+  },
   addressLink: {
     color: COLORS.pink,
     fontSize: 12,
@@ -196,10 +243,19 @@ const styles = StyleSheet.create({
     marginBottom: 22,
     textDecorationLine: 'underline',
   },
+  addressLinkCompact: {
+    fontSize: 11,
+    lineHeight: 16,
+    marginBottom: 16,
+  },
   statsRow: {
     flexDirection: 'row',
     gap: 10,
     marginBottom: 24,
+  },
+  statsRowCompact: {
+    gap: 8,
+    marginBottom: 18,
   },
   statBox: {
     minWidth: 110,
@@ -208,6 +264,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#070707',
     paddingHorizontal: 14,
     paddingVertical: 10,
+  },
+  statBoxCompact: {
+    minWidth: 0,
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   hotStatBox: {
     borderColor: COLORS.pink + '66',
@@ -242,6 +304,9 @@ const styles = StyleSheet.create({
     borderBottomColor: 'rgba(204,255,0,0.08)',
     backgroundColor: 'rgba(8,8,8,0.75)',
   },
+  eventItemCompact: {
+    flexWrap: 'wrap',
+  },
   eventColorBar: {
     width: 4,
     flexShrink: 0,
@@ -251,6 +316,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 14,
   },
+  eventInfoCompact: {
+    minWidth: 0,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+  },
   eventTitle: {
     fontSize: 16,
     fontFamily: condensedFont,
@@ -258,11 +328,19 @@ const styles = StyleSheet.create({
     letterSpacing: 0.4,
     marginBottom: 4,
   },
+  eventTitleCompact: {
+    fontSize: 14,
+    lineHeight: 16,
+  },
   eventTime: {
     color: 'rgba(204,255,0,0.42)',
     fontSize: 11,
     fontFamily: monoFont,
     letterSpacing: 1,
+  },
+  eventTimeCompact: {
+    fontSize: 10,
+    letterSpacing: 0.5,
   },
   eventBadge: {
     alignSelf: 'center',
@@ -270,6 +348,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 8,
     paddingVertical: 4,
+  },
+  eventBadgeCompact: {
+    marginRight: 0,
+    marginLeft: 12,
+    marginBottom: 12,
+    alignSelf: 'flex-start',
   },
   eventBadgeText: {
     fontSize: 9,

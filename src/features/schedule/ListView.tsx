@@ -16,7 +16,6 @@ const DAYS = [
   { label: 'SAT', date: '2026-05-23' },
   { label: 'SUN', date: '2026-05-24' },
   { label: 'MON', date: '2026-05-25' },
-  { label: 'TUE', date: '2026-05-26' },
 ];
 
 const monoFont = Platform.OS === 'web' ? "'Share Tech Mono', monospace" : undefined;
