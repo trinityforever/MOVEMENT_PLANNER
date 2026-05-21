@@ -7,17 +7,39 @@
     "endTime": "2026-05-22T04:00:00",
     "category": "Afterparty",
     "organizer": "Interdimensional Transmission",
-    "artists": ["Max Watts", "Submerge DJs"]
+    "artists": [
+      "Max Watts",
+      "Submerge DJs"
+    ],
+    "raUrl": null
   },
   {
     "id": "event-thrg-kick-off",
-    "title": "thrg Memorial Day Weekend Kick-Off with Bad Divas + Joshua Tree",
+    "title": "thrg Memorial Day Weekend Kick-Off",
     "venueId": "venue-marble-bar",
     "startTime": "2026-05-21T22:00:00",
     "endTime": "2026-05-22T04:00:00",
-    "category": "Afterparty"
+    "category": "Afterparty",
+    "raUrl": null
   },
-
+  {
+    "id": "event-belleville-three",
+    "title": "Belleville Three: The Origins",
+    "venueId": "venue-diamondback",
+    "startTime": "2026-05-22T20:00:00",
+    "endTime": "2026-05-23T02:00:00",
+    "category": "Festival",
+    "price": 45,
+    "description": "$45–$149 tiered ticketing. Kevin Saunderson, Juan Atkins & Derrick May — the three originators of Detroit techno, performing together.",
+    "artists": [
+      "Kevin Saunderson",
+      "Juan Atkins",
+      "Derrick May",
+      "The Saunderson Brothers"
+    ],
+    "posterUrl": "https://images.ra.co/c802311259aa7130d8b9db4079432f96b06730ea.png",
+    "raUrl": "https://ra.co/events/2405033"
+  },
   {
     "id": "event-bang-tech-12",
     "title": "Bang Tech 12",
@@ -28,7 +50,10 @@
     "description": "65 DJs, 4 stages. All day and night.",
     "price": 0,
     "priceNote": "FREE",
-    "artists": ["Local DJs from US cities"]
+    "artists": [
+      "Local DJs from US cities"
+    ],
+    "raUrl": null
   },
   {
     "id": "event-razor-n-tape",
@@ -38,7 +63,16 @@
     "endTime": "2026-05-23T02:00:00",
     "category": "Day Party",
     "price": 30,
-    "artists": ["Glenn Underground", "Ge-ology", "Andrés", "Tall Black Guy", "Toribio", "JKriv", "Jason Lindner"]
+    "artists": [
+      "Glenn Underground",
+      "Ge-ology",
+      "Andrés",
+      "Tall Black Guy",
+      "Toribio",
+      "JKriv",
+      "Jason Lindner"
+    ],
+    "raUrl": null
   },
   {
     "id": "event-house-is-home",
@@ -48,7 +82,16 @@
     "endTime": "2026-05-23T02:00:00",
     "category": "Afterparty",
     "price": 29,
-    "artists": ["Stacey Hotwaxx Hale", "Peter Croce", "Dru Allan", "Rootsin", "Delano Smith", "Ash Lauryn", "Medha Achar"]
+    "artists": [
+      "Stacey Hotwaxx Hale",
+      "Peter Croce",
+      "Dru Allan",
+      "Rootsin",
+      "Delano Smith",
+      "Ash Lauryn",
+      "Medha Achar"
+    ],
+    "raUrl": null
   },
   {
     "id": "event-paris-bar-anniversary",
@@ -57,7 +100,12 @@
     "startTime": "2026-05-22T19:00:00",
     "endTime": "2026-05-23T02:00:00",
     "category": "Afterparty",
-    "artists": ["DJ Assault", "Esham", "DANA"]
+    "artists": [
+      "DJ Assault",
+      "Esham",
+      "DANA"
+    ],
+    "raUrl": null
   },
   {
     "id": "event-endzeit",
@@ -66,7 +114,20 @@
     "startTime": "2026-05-22T22:00:00",
     "endTime": "2026-05-23T06:00:00",
     "category": "Afterparty",
-    "artists": ["Rrose", "Reeko", "Neel", "Feral", "Spekki Webu", "Z.I.P.P.O", "Kerrie", "Timnah", "Kudeki", "Torsion", "RMNA"]
+    "artists": [
+      "Rrose",
+      "Reeko",
+      "Neel",
+      "Feral",
+      "Spekki Webu",
+      "Z.I.P.P.O",
+      "Kerrie",
+      "Timnah",
+      "Kudeki",
+      "Torsion",
+      "RMNA"
+    ],
+    "raUrl": null
   },
   {
     "id": "event-t4t-luv-nrg",
@@ -77,28 +138,167 @@
     "category": "Afterparty",
     "price": 52,
     "organizer": "Interdimensional Transmission",
-    "artists": ["Octo Octa", "Eris Drew", "Boyz II Them", "Introspekt", "Sister Zo", "Amino"]
+    "artists": [
+      "Octo Octa",
+      "Eris Drew",
+      "Boyz II Them",
+      "Introspekt",
+      "Sister Zo",
+      "Amino"
+    ],
+    "raUrl": null
   },
-
+  {
+    "id": "event-return-to-source",
+    "title": "Return to the Source (2026)",
+    "venueId": "venue-tangent",
+    "startTime": "2026-05-23T22:00:00",
+    "endTime": "2026-05-26T06:00:00",
+    "category": "Afterparty",
+    "description": "Multi-night series pass covering Tresor 313, Lot Mass, and The Bunker. All at Tangent Gallery.",
+    "artists": [
+      "AZA",
+      "DJ SPHiNX",
+      "Function",
+      "Surgeon",
+      "Tauceti (FR)",
+      "DJ Etta (US)",
+      "LNS",
+      "Huey Mnemonic",
+      "D. Strange",
+      "Sharlese",
+      "Underground Resistance",
+      "Daniel Bell",
+      "BMG",
+      "Bryan Kasenic",
+      "Carlos Souffront",
+      "Craig Gonzalez",
+      "Derek Plaslaiko",
+      "Erika",
+      "Eris Drew",
+      "Mike Servito",
+      "Patrick Russell",
+      "Chuck Gunn",
+      "Jo Johnson",
+      "MERIVOR",
+      "Raica",
+      "Scott Zacharias",
+      "Tammy Lakkis",
+      "Matias Aguayo",
+      "Yessi",
+      "Solar",
+      "Octo Octa",
+      "Faited",
+      "Lauren Flax",
+      "Scotia",
+      "Shaun J. Wright",
+      "Nita Aviance",
+      "Juliana Huxtable",
+      "1morning",
+      "Max Watts",
+      "Chloe Harris",
+      "Carrier"
+    ],
+    "posterUrl": "https://images.ra.co/e89c909899a26567d691305338c9a8dafc18cd7b.jpg",
+    "raUrl": "https://ra.co/events/2353591"
+  },
+  {
+    "id": "event-wall-of-sound",
+    "title": "DVS1 & RE/FORM: The Wall of Sound Detroit",
+    "venueId": "venue-berts",
+    "startTime": "2026-05-23T22:00:00",
+    "endTime": "2026-05-24T10:00:00",
+    "category": "Afterparty",
+    "price": 35,
+    "description": "$35–$80. Part of RE/FORM Detroit Weekender.",
+    "artists": [
+      "DVS1",
+      "Claudio PRC",
+      "Juana",
+      "Rødhåd",
+      "Traversable Wormhole",
+      "Adam X",
+      "Justin Aulis Long",
+      "Traxx"
+    ],
+    "posterUrl": "https://images.ra.co/7ce019f26e425e28d21db5fab9a487c484be2dd3.png",
+    "raUrl": "https://ra.co/events/2365128"
+  },
+  {
+    "id": "event-house-of-efunk",
+    "title": "Soul Clap's House of EFUNK Detroit Day 1",
+    "venueId": "venue-tv-lounge",
+    "startTime": "2026-05-23T23:00:00",
+    "endTime": "2026-05-24T07:00:00",
+    "category": "Afterparty",
+    "price": 40,
+    "artists": [
+      "Blake Baxter",
+      "Carlos Souffront",
+      "Conducta",
+      "Devon James",
+      "DJ Minx",
+      "Eris Drew",
+      "Mike Servito",
+      "Jyoty",
+      "Kyle Hall",
+      "Lakuti",
+      "Lovie",
+      "Mike Dunn",
+      "Salar Ansari",
+      "salute",
+      "Soul Clap",
+      "Stacey Pullen",
+      "Suzi Analogue",
+      "Tedd Patterson"
+    ],
+    "posterUrl": "https://images.ra.co/3574307dd65bcca775d90ec3aa5396f2481a0643.png",
+    "raUrl": "https://ra.co/events/2400560"
+  },
   {
     "id": "event-detroit-transmissions",
-    "title": "Detroit Transmissions",
+    "title": "Detroit Transmission",
     "venueId": "venue-313-rave",
     "startTime": "2026-05-23T14:00:00",
-    "endTime": "2026-05-23T22:00:00",
+    "endTime": "2026-05-24T02:00:00",
     "category": "Afterparty",
     "description": "Demographic-based pricing. No phones or cameras allowed.",
-    "artists": ["Eris Drew", "Lauren Flax", "Mike Servito", "Kiernan Laveaux", "S4M23", "Faited", "Tammy Lakkis", "Venn Diagramm", "Amino", "Savannah G", "joycxi"]
+    "artists": [
+      "Eris Drew",
+      "Lauren Flax",
+      "Mike Servito",
+      "Kiernan Laveaux",
+      "S4M23",
+      "Faited",
+      "Tammy Lakkis",
+      "Venn Diagramm",
+      "Amino",
+      "Savannah G",
+      "joycxi"
+    ],
+    "posterUrl": "https://images.ra.co/32de6917b969fba5083e6e4d1270f8c48ed64980.png",
+    "raUrl": "https://ra.co/events/2340421"
   },
   {
     "id": "event-underground-black",
-    "title": "Underground & Black",
+    "title": "Underground & Black Detroit Day Party Vol. 6",
     "venueId": "venue-spot-lite",
     "startTime": "2026-05-23T14:00:00",
-    "endTime": "2026-05-23T22:00:00",
+    "endTime": "2026-05-23T19:00:00",
     "category": "Day Party",
-    "price": 40,
-    "artists": ["Ash Lauryn", "JADALAREIGN", "CTRLZORA", "Sevyn", "BLKshine", "The AM/AMX", "James Bangura", "DAIYAH", "AIDEL"]
+    "artists": [
+      "Ash Lauryn",
+      "JADALAREIGN",
+      "CTRLZORA",
+      "Sevyn",
+      "BLKshine",
+      "The AM/AMX",
+      "James Bangura",
+      "DAIYAH",
+      "AIDEL"
+    ],
+    "posterUrl": "https://images.ra.co/9ea97e04e1af88d6266f094fa3eab84b017f7c02.png",
+    "raUrl": "https://ra.co/events/2411823"
   },
   {
     "id": "event-viva-la-resistance",
@@ -107,38 +307,112 @@
     "startTime": "2026-05-23T15:00:00",
     "endTime": "2026-05-24T02:00:00",
     "category": "Afterparty",
-    "artists": ["John Beltran", "David A-P", "Den Hur", "Detroit Disco Daddies", "Donna Gardner", "Eddie Logix", "Gino", "Hoagie Dreams", "J.Scott", "Kiki LeFreak", "Marc Meistro", "Peter Croce", "DJ Righteous", "Yukiko", "AIDEL"]
+    "artists": [
+      "John Beltran",
+      "David A-P",
+      "Den Hur",
+      "Detroit Disco Daddies",
+      "Donna Gardner",
+      "Eddie Logix",
+      "Gino",
+      "Hoagie Dreams",
+      "J.Scott",
+      "Kiki LeFreak",
+      "Marc Meistro",
+      "Peter Croce",
+      "DJ Righteous",
+      "Yukiko",
+      "AIDEL"
+    ],
+    "raUrl": null
+  },
+  {
+    "id": "event-barge-viii",
+    "title": "Barge VIII Boat Party",
+    "venueId": "venue-diamond-belle",
+    "startTime": "2026-05-23T12:00:00",
+    "endTime": "2026-05-23T22:00:00",
+    "category": "Day Party",
+    "price": 50,
+    "description": "$50+. Floating boat party on the Detroit River.",
+    "artists": [
+      "Sydney Blu",
+      "Sherif"
+    ],
+    "posterUrl": "https://images.ra.co/c2aeb1be2e57ffbf0b00e84d17365d6910cf939d.jpg",
+    "raUrl": "https://ra.co/events/2403996"
   },
   {
     "id": "event-tresor-313",
     "title": "Tresor 313",
     "venueId": "venue-tangent",
     "startTime": "2026-05-23T22:00:00",
-    "endTime": "2026-05-24T06:00:00",
+    "endTime": "2026-05-24T10:00:00",
     "category": "Afterparty",
     "price": 85,
     "organizer": "Interdimensional Transmission",
     "seriesId": "return-to-source",
     "seriesName": "Return to the Source",
-    "artists": ["Surgeon", "Function", "Depth Charge", "Daniel Bell", "AZA", "DJ Sphinx", "Tauceti", "DJ Etta", "LNS", "Mutagenix", "Sharlese"]
+    "artists": [
+      "AZA",
+      "DJ SPHiNX",
+      "Function",
+      "Surgeon",
+      "Tauceti (FR)",
+      "DJ Etta (US)",
+      "LNS",
+      "Huey Mnemonic",
+      "D. Strange",
+      "Sharlese",
+      "Underground Resistance",
+      "Daniel Bell"
+    ],
+    "posterUrl": "https://images.ra.co/62efc775e23967e87de0bdada6b93737325e78b4.png",
+    "raUrl": "https://ra.co/events/2353593"
   },
   {
     "id": "event-texture-sat",
-    "title": "10 Years of Texture (Saturday)",
+    "title": "10 Years of Texture — Saturday",
     "venueId": "venue-marble-bar",
     "startTime": "2026-05-23T22:00:00",
-    "endTime": "2026-05-24T06:00:00",
+    "endTime": "2026-05-24T09:30:00",
     "category": "Afterparty",
-    "artists": ["Anthony Rother", "Ben UFO", "Juliana Huxtable", "Vladimir Ivkovic", "Scott Zacharias", "Reptant", "mad miran", "Sepehr", "sts (US)", "Ashton Swinton"]
+    "artists": [
+      "Vladimir Ivkovic",
+      "Scott Zacharias",
+      "Sepehr",
+      "Ben UFO",
+      "Reptant",
+      "Salar Ansari",
+      "Jacob Park",
+      "Ashton Swinton",
+      "sts (US)",
+      "mad miran",
+      "Anthony Rother",
+      "Juliana Huxtable"
+    ],
+    "posterUrl": "https://images.ra.co/034db7db4db4a26fa0ef4b282df76e76ff3bba09.jpg",
+    "raUrl": "https://ra.co/events/2328607"
   },
   {
     "id": "event-club-cousins",
     "title": "Club Cousins",
     "venueId": "venue-paris-bar",
     "startTime": "2026-05-23T22:00:00",
-    "endTime": "2026-05-24T04:00:00",
+    "endTime": "2026-05-24T05:00:00",
     "category": "Afterparty",
-    "artists": ["999ADJ", "Auntie Chanel", "DJ Dolla", "flotussin", "NEPTUNEFLESH", "Sapphyre", "SDOT MUSIC"]
+    "price": 20,
+    "artists": [
+      "999ADJ",
+      "Auntie Chanel",
+      "DJ Dolla",
+      "flotussin",
+      "NEPTUNEFLESH",
+      "Sapphyre",
+      "SDOT MUSIC"
+    ],
+    "posterUrl": "https://images.ra.co/18d8bd466252f8b2157cf12414273b1a009bd4b5.png",
+    "raUrl": "https://ra.co/events/2361242"
   },
   {
     "id": "event-club-toilet",
@@ -149,10 +423,79 @@
     "category": "Afterparty",
     "price": 40,
     "priceNote": "Cash only at door. No presale.",
-    "description": "LGBTQ+ dance music community event. Includes full harm reduction team with medic and dance floor safety team.",
-    "artists": ["Kim Ann Foxman", "Tama Sumo", "Shaun J. Wright", "Bijoux Cone", "BLKshine", "Detroit Bureau of Sound", "Doula", "DykeChow", "GIDEÖN", "Cora", "CEM", "Scotia", "Tongue in the Mind", "Perspects", "S4M23", "Sterling Juan Diaz"]
+    "description": "LGBTQ+ dance music community event. Full harm reduction team with medic and dance floor safety team.",
+    "artists": [
+      "Kim Ann Foxman",
+      "Tama Sumo",
+      "Shaun J. Wright",
+      "Bijoux Cone",
+      "BLKshine",
+      "Detroit Bureau of Sound",
+      "Doula",
+      "DykeChow",
+      "GIDEÖN",
+      "Cora",
+      "CEM",
+      "Scotia",
+      "Tongue in the Mind",
+      "Perspects",
+      "S4M23",
+      "Sterling Juan Diaz"
+    ],
+    "raUrl": null
   },
-
+  {
+    "id": "event-bowel-movement",
+    "title": "BOWEL MOVEMENT 2026",
+    "venueId": "venue-tba",
+    "startTime": "2026-05-23T23:00:00",
+    "endTime": "2026-05-24T06:00:00",
+    "category": "Afterparty",
+    "price": 10,
+    "description": "All live, all local Detroit. Secret location revealed to ticket holders.",
+    "artists": [
+      "Babies R Stupid",
+      "OMO (US)",
+      "YxFF",
+      "Mezzanine Swimmers"
+    ],
+    "posterUrl": "https://images.ra.co/d487cd6fcba8012f4de52f081ea4c780bd0f67cf.jpg",
+    "raUrl": "https://ra.co/events/2343386"
+  },
+  {
+    "id": "event-detroit-love",
+    "title": "Detroit Love — Official Movement Afterparty",
+    "venueId": "venue-lincoln-factory",
+    "startTime": "2026-05-23T23:00:00",
+    "endTime": "2026-05-24T06:00:00",
+    "category": "Afterparty",
+    "description": "Official Movement afterparty curated by Carl Craig.",
+    "artists": [
+      "Carl Craig",
+      "Stacey Pullen",
+      "Claude VonStroke",
+      "DJ Holographic",
+      "Kevin Reynolds",
+      "Mirko Loko",
+      "Mister Joshooa",
+      "Ataxia",
+      "Waajeed"
+    ],
+    "posterUrl": "https://images.ra.co/bbdbeb561ba65256b0c34ab93a46d6005e27dc40.png",
+    "raUrl": "https://ra.co/events/2387264"
+  },
+  {
+    "id": "event-reform-weekender",
+    "title": "RE/FORM Detroit Weekender",
+    "venueId": "venue-berts",
+    "startTime": "2026-05-23T22:00:00",
+    "endTime": "2026-05-26T07:00:00",
+    "category": "Afterparty",
+    "price": 35,
+    "description": "$35–$200. Multi-night pass: Wall of Sound, Into The Deep, Anthology at Bert's Warehouse Theater.",
+    "artists": [],
+    "raUrl": "https://ra.co/events/2376060"
+  },
   {
     "id": "event-freaks-come-out",
     "title": "Freaks Come Out at Light",
@@ -161,9 +504,9 @@
     "endTime": "2026-05-24T12:00:00",
     "category": "Sunrise",
     "price": 0,
-    "priceNote": "FREE"
+    "priceNote": "FREE",
+    "raUrl": null
   },
-
   {
     "id": "event-d-life",
     "title": "D-Life 10th Anniversary",
@@ -173,7 +516,22 @@
     "category": "Day Party",
     "price": 63,
     "description": "12.5 hours of music.",
-    "artists": ["Maurice Fulton", "Marcellus Pittman", "Rick Wade", "Ash Lauryn", "DJ Spinna", "Iz & Diz", "Jez", "DJ Lady D", "LADYMONIX", "Mike Dunn", "Norm Talley", "Tekila", "Your Friend Brett"]
+    "artists": [
+      "Maurice Fulton",
+      "Marcellus Pittman",
+      "Rick Wade",
+      "Ash Lauryn",
+      "DJ Spinna",
+      "Iz & Diz",
+      "Jez",
+      "DJ Lady D",
+      "LADYMONIX",
+      "Mike Dunn",
+      "Norm Talley",
+      "Tekila",
+      "Your Friend Brett"
+    ],
+    "raUrl": null
   },
   {
     "id": "event-convergence",
@@ -184,16 +542,45 @@
     "category": "Afterparty",
     "price": 46,
     "description": "2 stages, 21+.",
-    "artists": ["Evelyn", "1morning", "BEIGE", "Faited", "Father Dukes", "Gustav Brovold", "Lauryn Lesley", "Kitty Spit", "Kobe Dupree", "Spacey Lacey", "Tekk Nikk", "Amandroid", "D.Untethered", "Fractal Drip"]
+    "artists": [
+      "Clarisa Kimskii",
+      "BEIGE",
+      "Father Dukes",
+      "Gustav Brovold",
+      "Lauryn Lesley",
+      "Tekk Nikk",
+      "Kobe Dupree",
+      "1morning",
+      "Evelyn",
+      "Faited",
+      "Fractal Drip",
+      "Spacey Lacey"
+    ],
+    "posterUrl": "https://images.ra.co/7dc506a3e8dfc365fb518577cf7784ebad6cd2bc.jpg",
+    "raUrl": "https://ra.co/events/2392793"
   },
   {
     "id": "event-texture-sun",
-    "title": "10 Years of Texture (Sunday)",
+    "title": "10 Years of Texture — Sunday",
     "venueId": "venue-marble-bar",
     "startTime": "2026-05-24T21:00:00",
-    "endTime": "2026-05-25T06:00:00",
+    "endTime": "2026-05-25T05:00:00",
     "category": "Afterparty",
-    "artists": ["Jlin", "Batu", "Laurel Halo", "Carrier", "Emily Jeanne", "DJ Plead", "Mia Koden", "Sha Ru", "Ben Bondy"]
+    "artists": [
+      "Ben Bondy",
+      "Special Guest DJ",
+      "Mia Koden",
+      "Sha Ru",
+      "Ma Sha",
+      "Batu",
+      "Carrier",
+      "Emily Jeanne",
+      "Jlin",
+      "Laurel Halo",
+      "DJ Plead"
+    ],
+    "posterUrl": "https://images.ra.co/297016afac1c5737aac9df73b52fbeb2c6c4c090.jpg",
+    "raUrl": "https://ra.co/events/2347026"
   },
   {
     "id": "event-no-way-back",
@@ -204,28 +591,101 @@
     "category": "Afterparty",
     "price": 85,
     "description": "All day / night nonstop.",
-    "artists": ["Erika", "Eris Drew", "Mike Servito", "Derek Plaslaiko", "Carlos Souffront", "Function", "Raica", "BMG", "Bryan Kasenic", "Craig Gonzalez", "Patrick Russell", "Chuck Gunn", "Jo Johnson", "MERIVOR", "Scott Zacharias"]
+    "artists": [
+      "BMG",
+      "Bryan Kasenic",
+      "Carlos Souffront",
+      "Craig Gonzalez",
+      "Derek Plaslaiko",
+      "Erika",
+      "Eris Drew",
+      "Mike Servito",
+      "Patrick Russell",
+      "Chuck Gunn",
+      "Function",
+      "Jo Johnson",
+      "MERIVOR",
+      "Raica",
+      "Scott Zacharias"
+    ],
+    "posterUrl": "https://images.ra.co/f8467e7869d0f81cc0a26e07a2bc593ffe612f23.jpg",
+    "raUrl": "https://ra.co/events/2353595"
   },
-
   {
     "id": "event-where-are-my-keys",
     "title": "Where Are My Keys?",
     "venueId": "venue-3fifty",
     "startTime": "2026-05-25T05:00:00",
-    "endTime": "2026-05-25T14:00:00",
+    "endTime": "2026-05-26T07:00:00",
     "category": "Sunrise",
-    "price": 67,
+    "price": 25,
     "description": "Sunrise Monday into day.",
-    "artists": ["Acid Pauli", "Danny Daze", "DJ Godfather", "Dubtribe Sound System", "Egyptian Lover", "Kiernan Laveaux", "LADYMONIX", "Margaret Dygas", "The Advent", "Will Renuart", "Atnarko", "Inbal", "Jacob Park", "Puma"]
+    "artists": [
+      "Acid Pauli",
+      "Danny Daze",
+      "DJ Godfather",
+      "Egyptian Lover",
+      "Kiernan Laveaux",
+      "LADYMONIX",
+      "Margaret Dygas",
+      "Mark Grusane",
+      "Shokh",
+      "The Advent",
+      "Will Renuart",
+      "Atnarko",
+      "Inbal",
+      "Jacob Park",
+      "Puma",
+      "Brett Johnson",
+      "Jubilee",
+      "Move D",
+      "Los Hermanos",
+      "Peter Croce",
+      "something blue",
+      "Steingold",
+      "Big Strick",
+      "Dan Polito",
+      "Andrés",
+      "Donna Gardner",
+      "Eastside Jon",
+      "John Collins (US)",
+      "Mike Grant",
+      "Rick Wilhite",
+      "DJ Scandalous",
+      "Todd Modes"
+    ],
+    "posterUrl": "https://images.ra.co/a8fc6df36f29b18b708026397bcf62e503cc4093.jpg",
+    "raUrl": "https://ra.co/events/2388713"
   },
   {
     "id": "event-toasted",
     "title": "Toasted",
     "venueId": "venue-marble-bar",
     "startTime": "2026-05-25T07:00:00",
-    "endTime": "2026-05-25T18:00:00",
+    "endTime": "2026-05-26T04:00:00",
     "category": "Sunrise",
-    "artists": ["Derrick Carter", "Horse Meat Disco", "Tama Sumo", "Lakuti", "Scan 7", "Mike Servito", "Kyle Hall", "Byron the Aquarius", "Norm Talley", "Eddie C", "Steve Bug"]
+    "artists": [
+      "Derrick Carter",
+      "Horse Meat Disco",
+      "Tama Sumo",
+      "Lakuti",
+      "Scan 7",
+      "Main Phase",
+      "Mike Servito",
+      "Kyle Hall",
+      "Byron The Aquarius",
+      "Norm Talley",
+      "Eddie C",
+      "PAURRO",
+      "Ladylike",
+      "Mister Joshooa",
+      "ADMN",
+      "BeatLoaf",
+      "RIRKIN",
+      "Matthew Berels"
+    ],
+    "posterUrl": "https://images.ra.co/d1fee503b138207b19830405118dd4205b745115.jpg",
+    "raUrl": "https://ra.co/events/2389694"
   },
   {
     "id": "event-lot-mass",
@@ -238,7 +698,14 @@
     "organizer": "Interdimensional Transmission",
     "seriesId": "return-to-source",
     "seriesName": "Return to the Source",
-    "artists": ["Tammy Lakkis", "Matias Aguayo", "Yessi", "Solar"]
+    "artists": [
+      "Tammy Lakkis",
+      "Matias Aguayo",
+      "Yessi",
+      "Solar"
+    ],
+    "posterUrl": "https://images.ra.co/027bf68bc7cafb7ffe27c6f2a276b0ea7418f937.jpg",
+    "raUrl": "https://ra.co/events/2353597"
   },
   {
     "id": "event-monday-new-monday",
@@ -247,7 +714,18 @@
     "startTime": "2026-05-25T14:00:00",
     "endTime": "2026-05-25T22:00:00",
     "category": "Day Party",
-    "artists": ["Carlos Souffront", "Tammy Lakkis", "Shigeto", "Ryan Spencer", "4AM NYC", "Ameera", "Kiernan Laveaux", "Charles Trees", "Kenjiro"]
+    "artists": [
+      "Carlos Souffront",
+      "Tammy Lakkis",
+      "Shigeto",
+      "Ryan Spencer",
+      "4AM NYC",
+      "Ameera",
+      "Kiernan Laveaux",
+      "Charles Trees",
+      "Kenjiro"
+    ],
+    "raUrl": null
   },
   {
     "id": "event-skeez-bbq",
@@ -256,28 +734,50 @@
     "startTime": "2026-05-25T16:00:00",
     "endTime": "2026-05-25T22:00:00",
     "category": "Day Party",
-    "artists": ["DJ Skeez"]
+    "artists": [
+      "DJ Skeez"
+    ],
+    "raUrl": null
   },
   {
     "id": "event-the-bunker",
-    "title": "The Bunker",
+    "title": "I.T. presents The Bunker",
     "venueId": "venue-tangent",
     "startTime": "2026-05-25T22:00:00",
-    "endTime": "2026-05-26T10:00:00",
+    "endTime": "2026-05-26T06:00:00",
     "category": "Afterparty",
     "organizer": "Interdimensional Transmission",
     "seriesId": "return-to-source",
     "seriesName": "Return to the Source",
-    "description": "Night nonstop. Covered by Return to the Source pass (Lot Mass ticket).",
-    "artists": ["Surgeon", "Erika", "Octo Octa", "Faited", "Lauren Flax", "Shaun J. Wright", "Mike Servito", "Max Watts", "Juliana Huxtable", "Nita Aviance", "1morning", "Chloe Harris", "Jo Johnson", "Bryan Kasenic", "Carrier", "Scotia"]
+    "description": "Night nonstop. Covered by Return to the Source pass.",
+    "artists": [
+      "Surgeon",
+      "Erika",
+      "Octo Octa",
+      "Faited",
+      "Lauren Flax",
+      "Scotia",
+      "Mike Servito",
+      "Shaun J. Wright",
+      "Nita Aviance",
+      "Juliana Huxtable",
+      "1morning",
+      "Max Watts",
+      "Jo Johnson",
+      "Chloe Harris",
+      "Carrier",
+      "Bryan Kasenic"
+    ],
+    "posterUrl": "https://images.ra.co/e8d85c08e9e5a7fd90491f825d672503b8eaec8a.jpg",
+    "raUrl": "https://ra.co/events/2353600"
   },
-
   {
     "id": "event-glow",
     "title": "GLOW",
     "venueId": "venue-third-street-bar",
     "startTime": "2026-05-26T22:00:00",
     "endTime": "2026-05-27T04:00:00",
-    "category": "Afterparty"
+    "category": "Afterparty",
+    "raUrl": null
   }
 ]

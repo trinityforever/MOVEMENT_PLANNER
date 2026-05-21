@@ -4,63 +4,90 @@
     "name": "Tangent Gallery",
     "address": "715 E Milwaukee St",
     "city": "Detroit",
-    "coordinates": { "latitude": 42.3752, "longitude": -83.0445 }
+    "coordinates": {
+      "latitude": 42.3752,
+      "longitude": -83.0445
+    }
   },
   {
     "id": "venue-marble-bar",
     "name": "Marble Bar",
     "address": "1501 Holden St",
     "city": "Detroit",
-    "coordinates": { "latitude": 42.3685, "longitude": -83.0872 }
+    "coordinates": {
+      "latitude": 42.3685,
+      "longitude": -83.0872
+    }
   },
   {
     "id": "venue-paris-bar",
     "name": "Paris Bar",
     "address": "2961 E McNichols Rd",
     "city": "Hamtramck",
-    "coordinates": { "latitude": 42.4191, "longitude": -83.0412 }
+    "coordinates": {
+      "latitude": 42.4191,
+      "longitude": -83.0412
+    }
   },
   {
     "id": "venue-motor-city-wine",
     "name": "Motor City Wine",
     "address": "1949 Michigan Ave",
     "city": "Detroit",
-    "coordinates": { "latitude": 42.3317, "longitude": -83.0737 }
+    "coordinates": {
+      "latitude": 42.3317,
+      "longitude": -83.0737
+    }
   },
   {
     "id": "venue-menjos",
     "name": "Menjo's",
     "address": "950 W McNichols Rd",
     "city": "Detroit",
-    "coordinates": { "latitude": 42.4211, "longitude": -83.1177 }
+    "coordinates": {
+      "latitude": 42.4211,
+      "longitude": -83.1177
+    }
   },
   {
     "id": "venue-northern-lights",
     "name": "Northern Lights Lounge",
     "address": "660 W Baltimore St",
     "city": "Detroit",
-    "coordinates": { "latitude": 42.3388, "longitude": -83.0561 }
+    "coordinates": {
+      "latitude": 42.3388,
+      "longitude": -83.0561
+    }
   },
   {
     "id": "venue-bookies",
     "name": "Bookies Bar N' Grille",
     "address": "2208 Cass Ave",
     "city": "Detroit",
-    "coordinates": { "latitude": 42.3484, "longitude": -83.0524 }
+    "coordinates": {
+      "latitude": 42.3484,
+      "longitude": -83.0524
+    }
   },
   {
     "id": "venue-spot-lite",
-    "name": "Spot Lite",
-    "address": "2905 Beaufait",
+    "name": "Spot Lite Detroit",
+    "address": "2905 Beaufait St",
     "city": "Detroit",
-    "coordinates": { "latitude": 42.3638, "longitude": -83.0225 }
+    "coordinates": {
+      "latitude": 42.3638,
+      "longitude": -83.0225
+    }
   },
   {
     "id": "venue-3fifty",
     "name": "3fifty Terrace",
     "address": "350 Madison St",
     "city": "Detroit",
-    "coordinates": { "latitude": 42.3298, "longitude": -83.0430 }
+    "coordinates": {
+      "latitude": 42.3298,
+      "longitude": -83.043
+    }
   },
   {
     "id": "venue-313-rave",
@@ -74,34 +101,86 @@
     "name": "Third Street Bar",
     "address": "701 W Forest Ave",
     "city": "Detroit",
-    "coordinates": { "latitude": 42.3625, "longitude": -83.0601 }
+    "coordinates": {
+      "latitude": 42.3625,
+      "longitude": -83.0601
+    }
   },
   {
     "id": "venue-art-park-mcw",
     "name": "Lincoln Street Art Park",
     "address": "5926 Lincoln St",
     "city": "Detroit",
-    "coordinates": { "latitude": 42.3630, "longitude": -83.0815 }
+    "coordinates": {
+      "latitude": 42.363,
+      "longitude": -83.0815
+    }
   },
   {
     "id": "venue-spkrbox",
     "name": "Spkrbox",
     "address": "200 Grand River Ave",
     "city": "Detroit",
-    "coordinates": { "latitude": 42.33381, "longitude": -83.04987 }
+    "coordinates": {
+      "latitude": 42.33381,
+      "longitude": -83.04987
+    }
   },
   {
     "id": "venue-lincoln-factory",
     "name": "Lincoln Factory",
     "address": "1331 Holden St",
     "city": "Detroit",
-    "coordinates": { "latitude": 42.3626, "longitude": -83.0820 }
+    "coordinates": {
+      "latitude": 42.3626,
+      "longitude": -83.082
+    }
   },
   {
     "id": "venue-tba",
-    "name": "TBA",
+    "name": "TBA — Secret Location",
     "address": "TBA",
     "city": "Detroit",
     "coordinates": null
+  },
+  {
+    "id": "venue-diamondback",
+    "name": "Diamondback Music Hall",
+    "address": "49345 S I-94 Service Dr",
+    "city": "Belleville",
+    "coordinates": {
+      "latitude": 42.2006,
+      "longitude": -83.483
+    }
+  },
+  {
+    "id": "venue-tv-lounge",
+    "name": "TV Lounge",
+    "address": "2548 Grand River Ave",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.3498,
+      "longitude": -83.079
+    }
+  },
+  {
+    "id": "venue-diamond-belle",
+    "name": "The Diamond Belle Boat",
+    "address": "1340 Atwater St",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.3252,
+      "longitude": -83.0393
+    }
+  },
+  {
+    "id": "venue-berts",
+    "name": "Bert's Warehouse Theater",
+    "address": "2739 Russell St",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.3574,
+      "longitude": -83.0205
+    }
   }
 ]

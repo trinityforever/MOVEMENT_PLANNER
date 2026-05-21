@@ -40,6 +40,7 @@ export type Event = {
   priceNote?: string;
   hasTicket?: boolean;
   raUrl?: string;
+  posterUrl?: string;
   organizer?: string;
   seriesId?: string;
   seriesName?: string;

@@ -26,7 +26,7 @@ export default function ScheduleScreen() {
           selectedIndex={viewMode}
           onChange={setViewMode}
         />
-        <Text style={styles.subtitle}>28 EVENTS · 12 VENUES</Text>
+        <Text style={styles.subtitle}>35 EVENTS · 19 VENUES</Text>
       </View>
 
       <View style={styles.container}>
