@@ -153,6 +153,20 @@ const EventBottomSheet: React.FC<EventBottomSheetProps> = ({ eventId, onClose, o
           <TouchableOpacity style={styles.modalDismissZone} activeOpacity={1} onPress={() => setSelectedArtist(null)} />
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>{selectedArtist}</Text>
+            <View style={styles.artistLinks}>
+              <TouchableOpacity
+                style={styles.artistLinkBtn}
+                onPress={() => Linking.openURL(`https://soundcloud.com/search?q=${encodeURIComponent(selectedArtist ?? '')}`)}
+              >
+                <Text style={styles.artistLinkText}>↗ SOUNDCLOUD</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.artistLinkBtn, { borderColor: 'rgba(255,85,0,0.5)' }]}
+                onPress={() => Linking.openURL(`https://ra.co/search?q=${encodeURIComponent(selectedArtist ?? '')}`)}
+              >
+                <Text style={[styles.artistLinkText, { color: '#FF5500' }]}>↗ RA</Text>
+              </TouchableOpacity>
+            </View>
             <Text style={styles.modalSubtitle}>Other parties in the database</Text>
             <ScrollView contentContainerStyle={styles.relatedEventsList}>
               {relatedArtistEvents.length ? relatedArtistEvents.map((relatedEvent) => (
@@ -331,6 +345,24 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: '800',
     marginBottom: 4,
+  },
+  artistLinks: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 12,
+  },
+  artistLinkBtn: {
+    borderWidth: 1,
+    borderColor: 'rgba(204,255,0,0.3)',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 4,
+  },
+  artistLinkText: {
+    color: COLORS.acid,
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 1,
   },
   modalSubtitle: {
     color: COLORS.textSecondary,
