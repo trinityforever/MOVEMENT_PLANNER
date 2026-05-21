@@ -61,6 +61,15 @@ function useHtmlContent() {
   --amber: #FF8C00;
   --dim: #0a0a0a;
   --hour-px: ${HOUR_PX}px;
+  --label-width-px: 90px;
+  --row-height-px: 44px;
+  --event-height-px: 34px;
+  --event-top-px: 5px;
+  --event-font-px: 11px;
+  --hour-font-px: 9px;
+  --label-font-px: 9px;
+  --event-pad-x-px: 8px;
+  --star-font-px: 9px;
 }
 
 html, body {
@@ -188,7 +197,13 @@ body::after {
 .gantt-wrapper::-webkit-scrollbar { height: 3px; width: 3px; }
 .gantt-wrapper::-webkit-scrollbar-thumb { background: rgba(204,255,0,0.3); }
 
-.gantt-inner { display: flex; flex-direction: column; min-width: max-content; }
+.gantt-inner {
+  display: flex;
+  flex-direction: column;
+  min-width: max-content;
+  transform-origin: 0 0;
+  will-change: transform;
+}
 
 .gantt-time-header {
   display: flex;
@@ -199,7 +214,7 @@ body::after {
   z-index: 10;
 }
 .gantt-header-spacer {
-  width: 90px;
+  width: var(--label-width-px);
   flex-shrink: 0;
   position: sticky;
   left: 0;
@@ -211,7 +226,7 @@ body::after {
   width: var(--hour-px);
   flex-shrink: 0;
   font-family: 'Share Tech Mono', monospace;
-  font-size: 9px;
+  font-size: var(--hour-font-px);
   color: rgba(204,255,0,0.4);
   padding: 4px 3px;
   border-left: 1px solid rgba(204,255,0,0.08);
@@ -223,15 +238,15 @@ body::after {
   display: flex;
   align-items: center;
   border-bottom: 1px solid rgba(204,255,0,0.06);
-  min-height: 44px;
+  min-height: var(--row-height-px);
 }
 .gantt-row:hover { background: rgba(204,255,0,0.015); }
 .gantt-venue-label {
-  width: 90px;
+  width: var(--label-width-px);
   flex-shrink: 0;
   padding: 4px 8px;
   font-family: 'Share Tech Mono', monospace;
-  font-size: 9px;
+  font-size: var(--label-font-px);
   color: rgba(204,255,0,0.55);
   letter-spacing: 0.5px;
   overflow: hidden;
@@ -250,7 +265,7 @@ body::after {
 
 .gantt-track {
   position: relative;
-  height: 44px;
+  height: var(--row-height-px);
   flex: 1;
   min-width: calc(var(--hour-px) * ${GANTT_TOTAL_HOURS});
 }
@@ -270,11 +285,11 @@ body::after {
 
 .gantt-event {
   position: absolute;
-  top: 5px;
-  height: 34px;
+  top: var(--event-top-px);
+  height: var(--event-height-px);
   display: flex;
   align-items: center;
-  padding: 0 8px;
+  padding: 0 var(--event-pad-x-px);
   cursor: pointer;
   overflow: hidden;
   transition: filter 0.15s, transform 0.1s;
@@ -285,7 +300,7 @@ body::after {
 .gantt-event-name {
   font-family: 'Barlow Condensed', sans-serif;
   font-weight: 900;
-  font-size: 11px;
+  font-size: var(--event-font-px);
   letter-spacing: 0.5px;
   text-transform: uppercase;
   color: #000;
@@ -295,7 +310,7 @@ body::after {
   pointer-events: none;
 }
 .rsvp-star {
-  font-size: 9px;
+  font-size: var(--star-font-px);
   margin-left: 4px;
   opacity: 0.9;
   flex-shrink: 0;
@@ -530,8 +545,36 @@ function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
 
+function getVisualScale(hourPx, baseHourPx) {
+  return clamp(Math.pow(hourPx / baseHourPx, 0.5), 0.9, 1.6);
+}
+
+function getZoomMetrics(viewName) {
+  const isWeekend = viewName === 'weekend';
+  const px = isWeekend ? currentWeekendHourPx : currentHourPx;
+  const basePx = isWeekend ? WEEKEND_HOUR_PX : HOUR_PX;
+  const uiScale = getVisualScale(px, basePx);
+  return {
+    px,
+    basePx,
+    uiScale,
+    labelWidth: LABEL_WIDTH_PX * uiScale,
+    rowHeight: 44 * uiScale,
+  };
+}
+
 function syncZoomCssVars() {
+  const metrics = getZoomMetrics(currentView);
   document.documentElement.style.setProperty('--hour-px', currentHourPx + 'px');
+  document.documentElement.style.setProperty('--label-width-px', metrics.labelWidth + 'px');
+  document.documentElement.style.setProperty('--row-height-px', metrics.rowHeight + 'px');
+  document.documentElement.style.setProperty('--event-height-px', (34 * metrics.uiScale) + 'px');
+  document.documentElement.style.setProperty('--event-top-px', (5 * metrics.uiScale) + 'px');
+  document.documentElement.style.setProperty('--event-font-px', (11 * metrics.uiScale) + 'px');
+  document.documentElement.style.setProperty('--hour-font-px', (9 * metrics.uiScale) + 'px');
+  document.documentElement.style.setProperty('--label-font-px', (9 * metrics.uiScale) + 'px');
+  document.documentElement.style.setProperty('--event-pad-x-px', (8 * metrics.uiScale) + 'px');
+  document.documentElement.style.setProperty('--star-font-px', (9 * metrics.uiScale) + 'px');
 }
 
 function getPinchDistance(touches) {
@@ -545,33 +588,33 @@ function getPinchCenterX(touches, rect) {
   return ((touches[0].clientX + touches[1].clientX) / 2) - rect.left;
 }
 
-function zoomTimelineAroundPoint(nextPx, centerX) {
-  if (currentView === 'list') return;
-  const wrapper = document.querySelector('.gantt-wrapper');
-  if (!wrapper) return;
-
-  const currentPx = currentView === 'weekend' ? currentWeekendHourPx : currentHourPx;
-  const clampedNextPx = currentView === 'weekend'
-    ? clamp(nextPx, MIN_WEEKEND_HOUR_PX, MAX_WEEKEND_HOUR_PX)
-    : clamp(nextPx, MIN_HOUR_PX, MAX_HOUR_PX);
-
-  if (Math.abs(clampedNextPx - currentPx) < 0.5) return;
-
-  const focalHours = Math.max(0, (wrapper.scrollLeft + centerX - LABEL_WIDTH_PX) / currentPx);
-
-  if (currentView === 'weekend') currentWeekendHourPx = clampedNextPx;
-  else currentHourPx = clampedNextPx;
-
-  syncZoomCssVars();
-  render();
-
-  wrapper.scrollLeft = Math.max(0, focalHours * clampedNextPx - centerX + LABEL_WIDTH_PX);
+function getPinchCenterY(touches, rect) {
+  return ((touches[0].clientY + touches[1].clientY) / 2) - rect.top;
 }
 
-function queuePinchZoom(nextPx, centerX) {
+function shouldStartPinch(target) {
+  if (!target || !target.closest) return false;
+  return !!target.closest('.gantt-track, .gantt-grid-lines, .gantt-grid-cell, .gantt-event, .gantt-hour');
+}
+
+function applyPinchPreview(scaleX, scaleY, originX, originY) {
+  const inner = document.getElementById('ganttInner');
+  if (!inner) return;
+  inner.style.transformOrigin = originX + 'px ' + originY + 'px';
+  inner.style.transform = 'translateZ(0) scale(' + scaleX + ', ' + scaleY + ')';
+}
+
+function clearPinchPreview() {
+  const inner = document.getElementById('ganttInner');
+  if (!inner) return;
+  inner.style.transform = '';
+  inner.style.transformOrigin = '';
+}
+
+function queuePinchPreview(scaleX, scaleY, originX, originY) {
   if (pinchRaf) cancelAnimationFrame(pinchRaf);
   pinchRaf = requestAnimationFrame(() => {
-    zoomTimelineAroundPoint(nextPx, centerX);
+    applyPinchPreview(scaleX, scaleY, originX, originY);
     pinchRaf = null;
   });
 }
@@ -582,24 +625,48 @@ function attachPinchHandlers() {
   wrapper.dataset.pinchBound = 'true';
 
   wrapper.addEventListener('touchstart', (event) => {
-    if (currentView === 'list' || event.touches.length < 2) return;
+    if (currentView === 'list' || event.touches.length < 2 || !shouldStartPinch(event.target)) return;
     const rect = wrapper.getBoundingClientRect();
+    const metrics = getZoomMetrics(currentView);
     pinchState = {
+      view: currentView,
       distance: getPinchDistance(event.touches),
-      basePx: currentView === 'weekend' ? currentWeekendHourPx : currentHourPx,
+      lastDistance: getPinchDistance(event.touches),
+      basePx: metrics.px,
+      baseUiScale: metrics.uiScale,
       centerX: getPinchCenterX(event.touches, rect),
+      centerY: getPinchCenterY(event.touches, rect),
+      scrollLeft: wrapper.scrollLeft,
+      scrollTop: wrapper.scrollTop,
+      labelWidth: metrics.labelWidth,
+      rowHeight: metrics.rowHeight,
     };
   }, { passive: false });
 
   wrapper.addEventListener('touchmove', (event) => {
-    if (!pinchState || currentView === 'list' || event.touches.length < 2) return;
+    if (!pinchState || currentView === 'list' || event.touches.length < 2 || pinchState.view !== currentView) return;
     event.preventDefault();
     const rect = wrapper.getBoundingClientRect();
     const nextDistance = getPinchDistance(event.touches);
     if (!nextDistance || !pinchState.distance) return;
     const scale = nextDistance / pinchState.distance;
+    pinchState.lastDistance = nextDistance;
     const centerX = getPinchCenterX(event.touches, rect);
-    queuePinchZoom(pinchState.basePx * scale, centerX || pinchState.centerX);
+    const centerY = getPinchCenterY(event.touches, rect);
+    const nextPx = pinchState.basePx * scale;
+    const clampedNextPx = currentView === 'weekend'
+      ? clamp(nextPx, MIN_WEEKEND_HOUR_PX, MAX_WEEKEND_HOUR_PX)
+      : clamp(nextPx, MIN_HOUR_PX, MAX_HOUR_PX);
+    const nextUiScale = getVisualScale(
+      clampedNextPx,
+      currentView === 'weekend' ? WEEKEND_HOUR_PX : HOUR_PX
+    );
+    queuePinchPreview(
+      clampedNextPx / pinchState.basePx,
+      nextUiScale / pinchState.baseUiScale,
+      wrapper.scrollLeft + (centerX || pinchState.centerX),
+      wrapper.scrollTop + (centerY || pinchState.centerY)
+    );
   }, { passive: false });
 
   const clearPinch = () => {
@@ -608,9 +675,44 @@ function attachPinchHandlers() {
       cancelAnimationFrame(pinchRaf);
       pinchRaf = null;
     }
+    clearPinchPreview();
   };
 
-  wrapper.addEventListener('touchend', clearPinch, { passive: true });
+  const finalizePinch = () => {
+    if (!pinchState) return clearPinch();
+    const activeScale = pinchState.lastDistance && pinchState.distance
+      ? pinchState.lastDistance / pinchState.distance
+      : 1;
+    const scaledPx = pinchState.basePx * activeScale;
+    const clampedNextPx = pinchState.view === 'weekend'
+      ? clamp(scaledPx, MIN_WEEKEND_HOUR_PX, MAX_WEEKEND_HOUR_PX)
+      : clamp(scaledPx, MIN_HOUR_PX, MAX_HOUR_PX);
+    const nextUiScale = getVisualScale(
+      clampedNextPx,
+      pinchState.view === 'weekend' ? WEEKEND_HOUR_PX : HOUR_PX
+    );
+    const focalHours = Math.max(0, (pinchState.scrollLeft + pinchState.centerX - pinchState.labelWidth) / pinchState.basePx);
+    const focalRows = Math.max(0, (pinchState.scrollTop + pinchState.centerY) / pinchState.rowHeight);
+
+    if (pinchState.view === 'weekend') currentWeekendHourPx = clampedNextPx;
+    else currentHourPx = clampedNextPx;
+
+    clearPinchPreview();
+    render();
+
+    const nextLabelWidth = LABEL_WIDTH_PX * nextUiScale;
+    const nextRowHeight = 44 * nextUiScale;
+    wrapper.scrollLeft = Math.max(0, focalHours * clampedNextPx - pinchState.centerX + nextLabelWidth);
+    wrapper.scrollTop = Math.max(0, focalRows * nextRowHeight - pinchState.centerY);
+
+    pinchState = null;
+    if (pinchRaf) {
+      cancelAnimationFrame(pinchRaf);
+      pinchRaf = null;
+    }
+  };
+
+  wrapper.addEventListener('touchend', finalizePinch, { passive: true });
   wrapper.addEventListener('touchcancel', clearPinch, { passive: true });
 }
 
@@ -784,6 +886,7 @@ function buildWeekendGantt(events) {
 
   const hPx = currentWeekendHourPx;
   const totalW = WEEKEND_TOTAL_HOURS * hPx;
+  const uiScale = getZoomMetrics('weekend').uiScale;
 
   function toX(iso) {
     return (new Date(iso).getTime() - WEEKEND_ORIGIN_MS) / 3600000 * hPx;
@@ -850,14 +953,14 @@ function buildWeekendGantt(events) {
       bar.className = 'gantt-event ' + (CAT_CLASS[ev.category] || 'default');
       bar.style.left = x + 'px';
       bar.style.width = w + 'px';
-      bar.style.height = '28px';
-      bar.style.top = '8px';
-      bar.style.padding = '0 3px';
+      bar.style.height = (28 * uiScale) + 'px';
+      bar.style.top = (8 * uiScale) + 'px';
+      bar.style.padding = '0 ' + (3 * uiScale) + 'px';
 
-      if (w > 20) {
+      if (w > 20 * uiScale) {
         const name = document.createElement('span');
         name.className = 'gantt-event-name';
-        name.style.fontSize = '7px';
+        name.style.fontSize = (7 * uiScale) + 'px';
         name.textContent = ev.title.toUpperCase();
         bar.appendChild(name);
       }
@@ -865,10 +968,10 @@ function buildWeekendGantt(events) {
       if (rsvps[ev.id] === 'going') {
         bar.style.outline = '1px solid rgba(255,255,255,0.35)';
         bar.style.outlineOffset = '-1px';
-        if (w > 14) {
+        if (w > 14 * uiScale) {
           const star = document.createElement('span');
           star.className = 'rsvp-star';
-          star.style.fontSize = '7px';
+          star.style.fontSize = (7 * uiScale) + 'px';
           star.textContent = '★';
           bar.appendChild(star);
         }
