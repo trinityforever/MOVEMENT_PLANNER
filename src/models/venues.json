@@ -40,16 +40,6 @@
     }
   },
   {
-    "id": "venue-menjos",
-    "name": "Menjo's",
-    "address": "950 W McNichols Rd",
-    "city": "Detroit",
-    "coordinates": {
-      "latitude": 42.4211,
-      "longitude": -83.1177
-    }
-  },
-  {
     "id": "venue-northern-lights",
     "name": "Northern Lights Lounge",
     "address": "660 W Baltimore St",
@@ -61,7 +51,7 @@
   },
   {
     "id": "venue-bookies",
-    "name": "Bookies Bar N' Grille",
+    "name": "Bookies",
     "address": "2208 Cass Ave",
     "city": "Detroit",
     "coordinates": {
@@ -99,11 +89,11 @@
   {
     "id": "venue-third-street-bar",
     "name": "Third Street Bar",
-    "address": "701 W Forest Ave",
+    "address": "4626 Third St",
     "city": "Detroit",
     "coordinates": {
-      "latitude": 42.3625,
-      "longitude": -83.0601
+      "latitude": 42.3437,
+      "longitude": -83.0714
     }
   },
   {
@@ -122,8 +112,8 @@
     "address": "200 Grand River Ave",
     "city": "Detroit",
     "coordinates": {
-      "latitude": 42.33381,
-      "longitude": -83.04987
+      "latitude": 42.3338,
+      "longitude": -83.0499
     }
   },
   {
@@ -138,7 +128,7 @@
   },
   {
     "id": "venue-tba",
-    "name": "TBA — Secret Location",
+    "name": "TBA",
     "address": "TBA",
     "city": "Detroit",
     "coordinates": null
@@ -181,6 +171,233 @@
     "coordinates": {
       "latitude": 42.3574,
       "longitude": -83.0205
+    }
+  },
+  {
+    "id": "venue-ufo-bar",
+    "name": "UFO Bar",
+    "address": "2110 Trumbull Ave",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.3329,
+      "longitude": -83.0726
+    }
+  },
+  {
+    "id": "venue-mocad",
+    "name": "MOCAD",
+    "address": "4454 Woodward Ave",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.3619,
+      "longitude": -83.0604
+    }
+  },
+  {
+    "id": "venue-detroit-shipping",
+    "name": "Detroit Shipping Company",
+    "address": "474 Peteboro St",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.349,
+      "longitude": -83.0546
+    }
+  },
+  {
+    "id": "venue-the-market",
+    "name": "The Market",
+    "address": "2529 Orleans St",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.3548,
+      "longitude": -83.0313
+    }
+  },
+  {
+    "id": "venue-epiphany",
+    "name": "Epiphany Detroit",
+    "address": "10103 Kercheval St",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.3613,
+      "longitude": -82.9861
+    }
+  },
+  {
+    "id": "venue-russell-industrial",
+    "name": "Russell Industrial Center",
+    "address": "1600 Clay St",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.3756,
+      "longitude": -83.0518
+    }
+  },
+  {
+    "id": "venue-hizz-lounge",
+    "name": "Hizz Lounge",
+    "address": "2475 W Grand Blvd",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.3714,
+      "longitude": -83.0913
+    }
+  },
+  {
+    "id": "venue-batch-brewing",
+    "name": "Batch Brewing Company",
+    "address": "1400 Porter St",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.3307,
+      "longitude": -83.0631
+    }
+  },
+  {
+    "id": "venue-moondog",
+    "name": "Moondog Cafe",
+    "address": "8045 Linwood St",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.3817,
+      "longitude": -83.0951
+    }
+  },
+  {
+    "id": "venue-dreamtroit",
+    "name": "Dreamtroit",
+    "address": "1331 Holden St",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.3626,
+      "longitude": -83.082
+    }
+  },
+  {
+    "id": "venue-exodos",
+    "name": "Exodos Lounge",
+    "address": "525 Monroe St",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.3307,
+      "longitude": -83.0381
+    }
+  },
+  {
+    "id": "venue-big-pink",
+    "name": "Big Pink",
+    "address": "6440 Wight St",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.3598,
+      "longitude": -83.0197
+    }
+  },
+  {
+    "id": "venue-nancy-whiskeys",
+    "name": "Nancy Whiskey's Detroit",
+    "address": "2644 Harrison St",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.3283,
+      "longitude": -83.0729
+    }
+  },
+  {
+    "id": "venue-bassment",
+    "name": "The Bassment",
+    "address": "20516 Russell St",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.4478,
+      "longitude": -83.0157
+    }
+  },
+  {
+    "id": "venue-jobstoppers",
+    "name": "Jobstoppers",
+    "address": "5631 Michigan Ave",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.3329,
+      "longitude": -83.1072
+    }
+  },
+  {
+    "id": "venue-mix-bricktown",
+    "name": "MIX Bricktown",
+    "address": "641 Beaubien St",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.3324,
+      "longitude": -83.0428
+    }
+  },
+  {
+    "id": "venue-corktown-tavern",
+    "name": "Corktown Tavern",
+    "address": "1716 Michigan Ave",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.3302,
+      "longitude": -83.0695
+    }
+  },
+  {
+    "id": "venue-woodrow-wilson",
+    "name": "15605 Woodrow Wilson",
+    "address": "15605 Woodrow Wilson St",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.3951,
+      "longitude": -83.0927
+    }
+  },
+  {
+    "id": "venue-out-of-office",
+    "name": "Out of Office Garage",
+    "address": "2400 Cole St",
+    "city": "Birmingham",
+    "coordinates": {
+      "latitude": 42.5396,
+      "longitude": -83.2215
+    }
+  },
+  {
+    "id": "venue-el-club",
+    "name": "El Club",
+    "address": "4114 Vernor Hwy",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.3244,
+      "longitude": -83.1
+    }
+  },
+  {
+    "id": "venue-lagerhaus5",
+    "name": "Lagerhaus 5",
+    "address": "TBA",
+    "city": "Detroit",
+    "coordinates": null
+  },
+  {
+    "id": "venue-tba-highland-park",
+    "name": "TBA — 333 Midland, Highland Park",
+    "address": "333 Midland Ave",
+    "city": "Highland Park",
+    "coordinates": {
+      "latitude": 42.4064,
+      "longitude": -83.0969
+    }
+  },
+  {
+    "id": "venue-pocket-change",
+    "name": "Pocket Change",
+    "address": "1454 Gratiot Ave",
+    "city": "Detroit",
+    "coordinates": {
+      "latitude": 42.3555,
+      "longitude": -83.0161
     }
   }
 ]
