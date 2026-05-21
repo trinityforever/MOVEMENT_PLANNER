@@ -37,6 +37,26 @@ export const getEventsByVenue = (venueId: string): Event[] => {
   return events.filter((event) => event.venueId === venueId);
 };
 
+export const getEventsByArtist = (
+  artistName: string,
+  options?: { excludeEventId?: string }
+): Event[] => {
+  const normalizedArtist = artistName.trim().toLowerCase();
+  if (!normalizedArtist) return [];
+
+  return events
+    .filter((event) => {
+      if (options?.excludeEventId && event.id === options.excludeEventId) {
+        return false;
+      }
+
+      return (event.artists ?? []).some(
+        (artist) => artist.trim().toLowerCase() === normalizedArtist
+      );
+    })
+    .sort((a, b) => a.startTime.localeCompare(b.startTime));
+};
+
 export const getCustomLocations = (): CustomLocation[] => {
   return customLocations;
 };
@@ -66,6 +86,7 @@ export default {
   getVenues,
   getEventsByDay,
   getEventsByVenue,
+  getEventsByArtist,
   getCustomLocations,
   addCustomLocation,
   removeCustomLocation,

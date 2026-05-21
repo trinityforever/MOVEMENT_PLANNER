@@ -37,7 +37,11 @@ export default function ScheduleScreen() {
         )}
       </View>
 
-      <EventBottomSheet eventId={selectedEventId} onClose={handleCloseBottomSheet} />
+      <EventBottomSheet
+        eventId={selectedEventId}
+        onClose={handleCloseBottomSheet}
+        onEventSelect={handleEventSelect}
+      />
     </ScreenLayout>
   );
 }

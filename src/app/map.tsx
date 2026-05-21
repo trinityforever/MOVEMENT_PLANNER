@@ -58,6 +58,7 @@ export default function MapTab() {
       <EventBottomSheet
         eventId={selectedEventId}
         onClose={handleCloseEventSheet}
+        onEventSelect={handleEventSelect}
       />
 
       <AddLocationModal

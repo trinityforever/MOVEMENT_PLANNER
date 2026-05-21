@@ -3,6 +3,7 @@ import {
   getVenues,
   getEventsByDay,
   getEventsByVenue,
+  getEventsByArtist,
   formatTime,
 } from './dataService';
 
@@ -72,6 +73,29 @@ describe('dataService', () => {
 
     it('returns empty array for unknown venue', () => {
       expect(getEventsByVenue('nonexistent')).toEqual([]);
+    });
+  });
+
+  describe('getEventsByArtist', () => {
+    it('filters events by artist name across the dataset', () => {
+      const events = getEventsByArtist('Mike Servito');
+      expect(events.length).toBeGreaterThan(1);
+      for (const event of events) {
+        expect(event.artists).toContain('Mike Servito');
+      }
+    });
+
+    it('can exclude the current event from related results', () => {
+      const allEvents = getEventsByArtist('Mike Servito');
+      const [firstEvent] = allEvents;
+      expect(firstEvent).toBeDefined();
+
+      const relatedEvents = getEventsByArtist('Mike Servito', { excludeEventId: firstEvent.id });
+      expect(relatedEvents.some((event) => event.id === firstEvent.id)).toBe(false);
+    });
+
+    it('matches artist names case-insensitively', () => {
+      expect(getEventsByArtist('mike servito')).toEqual(getEventsByArtist('Mike Servito'));
     });
   });
 

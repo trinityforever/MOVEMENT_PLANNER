@@ -1,11 +1,35 @@
 # FLINTASTIC — Session Handoff
-*Last updated: 2026-05-06 (V1.6 landing — Gantt landscape scroll + pinch zoom fix)*
+*Last updated: 2026-05-21 (artist cross-party popup + map drawer ownership fix)*
 
 This document is for the next agent picking up this project. Read it fully before touching any code.
 
 ---
 
-## V1.6: In Progress (May 6)
+## V1.7: Shipped (May 21)
+
+Two UI behaviors were added/fixed on top of the existing acid-rave MVP:
+
+1. **Artist cross-party popup** — tapping an artist in an event detail now opens an in-app popup listing the other events in the local database for that same artist. Selecting one jumps directly to that related event.
+
+2. **Map drawer ownership fix** — the new right-side slide-out belongs to the **web map venue popup**, not the schedule event popup. The schedule web event detail is back to a centered modal; the map web venue detail now uses the right-side drawer.
+
+### Files touched in V1.7
+
+`dataService.ts` (`getEventsByArtist` helper), `dataService.test.ts` (artist lookup coverage), `ScheduleScreen.tsx` + `map.tsx` (pass `onEventSelect` through), `EventBottomSheet.tsx` (native artist popup), `EventBottomSheet.web.tsx` (web centered event modal + artist popup), `VenueBottomSheet.web.tsx` (web right-side venue drawer)
+
+### Important implementation note
+
+This repo still does **not** use SQLite yet. The new "other parties for this artist" behavior is powered by the existing in-memory/local JSON data layer via `dataService.getEventsByArtist(...)`. If the app migrates to SQLite later, keep the UI contract and swap only the query implementation.
+
+### Current expected web behavior
+
+- **Schedule / Gantt / List**: event tap → centered event modal
+- **Map**: venue pin tap → right-side venue drawer
+- **Any event modal**: artist tap → "other parties in database" popup
+
+---
+
+## V1.6: Shipped (May 6)
 
 Seven polish items requested for the Movement weekend app:
 
