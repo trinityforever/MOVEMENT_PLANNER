@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movement Planning — Terminal Popup v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=Barlow+Condensed:wght@900&display=swap" rel="stylesheet">
+<style>
+  /* ── Reset ─────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ── Design tokens ─────────────────────────────────────── */
+  :root {
+    --acid:    #CCFF00;
+    --pink:    #FF0080;
+    --green:   #00FF41;
+    --amber:   #FF8C00;
+    --void:    #000000;
+    --dim:     rgba(204,255,0,0.08);
+    --glow:    0 0 8px rgba(0,255,65,0.5);
+    --acid-glow: 0 0 20px rgba(204,255,0,0.3);
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-mono:    'Share Tech Mono', monospace;
+    --font-artist:  'Barlow Condensed', sans-serif;
+  }
+
+  /* ── Map background ─────────────────────────────────────── */
+  body {
+    background: #080c0a;
+    font-family: var(--font-mono);
+    min-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Dark city grid map simulation */
+  .map-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .map-bg svg {
+    width: 100%;
+    height: 100%;
+    opacity: 0.9;
+  }
+
+  /* Subtle vignette over map */
+  .map-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 80% at 50% 50%, transparent 40%, rgba(0,0,0,0.6) 100%);
+    pointer-events: none;
+  }
+
+  /* ── Map pin (the dot the card points to) ───────────────── */
+  .map-pin-area {
+    position: fixed;
+    /* Center-left area — where Tangent Gallery "is" */
+    left: 42%;
+    top: 52%;
+    z-index: 10;
+    transform: translate(-50%, -50%);
+  }
+
+  .map-pin-dot {
+    width: 14px;
+    height: 14px;
+    background: var(--pink);
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 4px rgba(255,0,128,0.25), 0 0 20px rgba(255,0,128,0.6);
+    animation: ping 2s ease-in-out infinite;
+    position: relative;
+    z-index: 2;
+    transform: rotate(45deg);
+  }
+
+  .map-pin-pulse {
+    position: absolute;
+    inset: -8px;
+    border: 1px solid rgba(255,0,128,0.4);
+    animation: pulse-ring 2s ease-out infinite;
+    transform: rotate(45deg);
+  }
+
+  @keyframes ping {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(255,0,128,0.25), 0 0 20px rgba(255,0,128,0.6); }
+    50%       { box-shadow: 0 0 0 8px rgba(255,0,128,0.1),  0 0 30px rgba(255,0,128,0.8); }
+  }
+
+  @keyframes pulse-ring {
+    0%   { transform: scale(1);   opacity: 0.8; }
+    100% { transform: scale(2.5); opacity: 0;   }
+  }
+
+  /* ── Connector line from pin to card ────────────────────── */
+  .connector {
+    position: fixed;
+    left: 42%;
+    top: 52%;
+    z-index: 9;
+    /* Drawn as SVG line via a pseudo — we'll use absolute SVG overlay */
+  }
+
+  /* ── Terminal card ──────────────────────────────────────── */
+  .terminal-card {
+    position: fixed;
+    /* Offset from center — upper-right of pin */
+    left: calc(42% + 28px);
+    top: calc(52% - 360px);
+    width: 380px;
+    z-index: 20;
+
+    background: var(--void);
+    border: 1px solid var(--acid);
+    box-shadow:
+      var(--acid-glow),
+      inset 0 0 40px rgba(0,0,0,0.9);
+
+    /* Scanline overlay */
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,255,65,0.015) 2px,
+        rgba(0,255,65,0.015) 4px
+      );
+
+    /* Entry animation */
+    animation: card-drop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    transform-origin: bottom left;
+  }
+
+  @keyframes card-drop {
+    0%   { opacity: 0; transform: translateY(-30px) scale(0.96); }
+    100% { opacity: 1; transform: translateY(0)     scale(1); }
+  }
+
+  /* ── Triangle pointer ───────────────────────────────────── */
+  .terminal-card::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 24px;
+    width: 0; height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 12px solid var(--acid);
+    filter: drop-shadow(0 4px 8px rgba(204,255,0,0.4));
+  }
+
+  /* ── Header bar ─────────────────────────────────────────── */
+  .card-header {
+    background: var(--acid);
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .card-header-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--void);
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card-header-label .cursor {
+    display: inline-block;
+    width: 7px;
+    height: 10px;
+    background: var(--void);
+    margin-left: 2px;
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+  }
+
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  .close-btn {
+    background: none;
+    border: 1px solid var(--void);
+    color: var(--void);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 2px 6px;
+    cursor: pointer;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: background 0.1s, color 0.1s;
+  }
+
+  .close-btn:hover {
+    background: var(--void);
+    color: var(--acid);
+  }
+
+  /* ── Card body ──────────────────────────────────────────── */
+  .card-body {
+    padding: 14px 14px 10px;
+  }
+
+  /* ── Event title ────────────────────────────────────────── */
+  .event-title {
+    font-family: var(--font-display);
+    font-size: 48px;
+    line-height: 0.9;
+    color: var(--pink);
+    text-shadow: 0 0 30px rgba(255,0,128,0.5);
+    letter-spacing: 0.02em;
+    margin-bottom: 14px;
+    min-height: 44px;
+    /* Appears after typewriter completes */
+    opacity: 0;
+    animation: title-appear 0.3s ease forwards 2.1s;
+  }
+
+  @keyframes title-appear {
+    0%   { opacity: 0; transform: translateX(-6px); }
+    100% { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ── Data fields ────────────────────────────────────────── */
+  .data-fields {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    border-top: 1px solid rgba(204,255,0,0.2);
+    padding-top: 10px;
+  }
+
+  .field-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--green);
+    text-shadow: var(--glow);
+
+    /* Typewriter stagger */
+    opacity: 0;
+    animation: field-in 0.01s ease forwards;
+  }
+
+  /* Each field animates in sequentially — set via inline style delay */
+  @keyframes field-in {
+    to { opacity: 1; }
+  }
+
+  .field-prompt {
+    color: rgba(0,255,65,0.5);
+    flex-shrink: 0;
+    margin-right: 1px;
+  }
+
+  .field-key {
+    color: var(--acid);
+    flex-shrink: 0;
+    min-width: 80px;
+    letter-spacing: 0.04em;
+  }
+
+  .field-dots {
+    color: rgba(204,255,0,0.3);
+    flex-shrink: 0;
+  }
+
+  .field-val {
+    color: var(--green);
+    text-shadow: var(--glow);
+    padding-left: 6px;
+  }
+
+  .field-val.cat-afterparty { color: var(--pink); text-shadow: 0 0 8px rgba(255,0,128,0.5); }
+  .field-val.price         { color: var(--amber); text-shadow: 0 0 8px rgba(255,140,0,0.5); }
+
+  /* ── Lineup expandable ──────────────────────────────────── */
+  .lineup-row {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .lineup-toggle {
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    text-align: left;
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--green);
+    text-shadow: var(--glow);
+  }
+
+  .lineup-toggle .field-prompt { color: rgba(0,255,65,0.5); margin-right: 1px; }
+  .lineup-toggle .field-key   { color: var(--acid); min-width: 80px; letter-spacing: 0.04em; }
+  .lineup-toggle .field-dots  { color: rgba(204,255,0,0.3); }
+
+  .lineup-badge {
+    margin-left: 6px;
+    background: rgba(204,255,0,0.12);
+    border: 1px solid rgba(204,255,0,0.3);
+    color: var(--acid);
+    font-size: 9px;
+    padding: 0 5px;
+    line-height: 1.6;
+    letter-spacing: 0.08em;
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+
+  .lineup-toggle:hover .lineup-badge,
+  .lineup-toggle.open .lineup-badge {
+    background: rgba(204,255,0,0.25);
+  }
+
+  .lineup-expand-arrow {
+    display: inline-block;
+    margin-left: 4px;
+    transition: transform 0.2s;
+    color: var(--acid);
+    font-size: 10px;
+  }
+
+  .lineup-toggle.open .lineup-expand-arrow {
+    transform: rotate(90deg);
+  }
+
+  .lineup-list {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.25s ease;
+    opacity: 0;
+    padding-left: 12px;
+  }
+
+  .lineup-list.expanded {
+    max-height: 200px;
+    opacity: 1;
+    overflow-y: auto;
+  }
+
+  .lineup-list::-webkit-scrollbar { width: 3px; }
+  .lineup-list::-webkit-scrollbar-track { background: transparent; }
+  .lineup-list::-webkit-scrollbar-thumb { background: var(--acid); }
+
+  .artist-item {
+    font-family: var(--font-artist);
+    font-weight: 900;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--green);
+    text-shadow: var(--glow);
+    letter-spacing: 0.06em;
+    padding-left: 2px;
+  }
+
+  .artist-item::before {
+    content: '  ↳ ';
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: rgba(0,255,65,0.4);
+  }
+
+  /* ── Divider ────────────────────────────────────────────── */
+  .card-divider {
+    border: none;
+    border-top: 1px solid rgba(204,255,0,0.15);
+    margin: 12px 0 10px;
+  }
+
+  /* ── Action buttons ─────────────────────────────────────── */
+  .actions {
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    animation: field-in 0.01s ease forwards 2.8s;
+  }
+
+  .btn-exec {
+    flex: 1;
+    background: none;
+    border: 1px solid;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    padding: 8px 6px;
+    cursor: pointer;
+    line-height: 1;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+    text-align: center;
+  }
+
+  .btn-exec::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .btn-exec:hover::before { opacity: 0.1; }
+
+  .btn-plan {
+    border-color: var(--acid);
+    color: var(--acid);
+    text-shadow: 0 0 6px rgba(204,255,0,0.6);
+    box-shadow: inset 0 0 0 0 rgba(204,255,0,0);
+  }
+
+  .btn-plan:hover {
+    background: rgba(204,255,0,0.08);
+    box-shadow: 0 0 12px rgba(204,255,0,0.3);
+  }
+
+  .btn-ra {
+    border-color: rgba(204,255,0,0.35);
+    color: rgba(204,255,0,0.6);
+  }
+
+  .btn-ra:hover {
+    border-color: var(--acid);
+    color: var(--acid);
+    background: rgba(204,255,0,0.05);
+  }
+
+  /* ── Status bar ─────────────────────────────────────────── */
+  .status-bar {
+    background: rgba(204,255,0,0.05);
+    border-top: 1px solid rgba(204,255,0,0.15);
+    padding: 4px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 9px;
+    color: rgba(204,255,0,0.4);
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+  }
+
+  .status-dot {
+    display: inline-block;
+    width: 5px; height: 5px;
+    background: var(--green);
+    margin-right: 5px;
+    animation: blink 1.8s ease-in-out infinite;
+    box-shadow: var(--glow);
+    transform: rotate(45deg);
+  }
+
+  /* ── Connector SVG overlay ──────────────────────────────── */
+  .connector-svg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 15;
+    overflow: visible;
+  }
+
+  /* ── Typewriter typeout for header ──────────────────────── */
+  .typewriter-text {
+    overflow: hidden;
+    white-space: nowrap;
+    animation: type-header 1.2s steps(26, end) forwards;
+    max-width: 0;
+    display: inline-block;
+  }
+
+  @keyframes type-header {
+    from { max-width: 0; }
+    to   { max-width: 280px; }
+  }
+
+  /* ── Dismiss animation state ────────────────────────────── */
+  .terminal-card.dismissing {
+    animation: card-dismiss 0.3s ease forwards !important;
+  }
+
+  @keyframes card-dismiss {
+    0%   { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-20px) scale(0.95); }
+  }
+
+  /* ── Other map markers (atmosphere) ────────────────────── */
+  .other-pin {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background: rgba(204,255,0,0.6);
+    border: 1px solid rgba(204,255,0,0.9);
+    box-shadow: 0 0 8px rgba(204,255,0,0.4);
+    z-index: 8;
+    transform: rotate(45deg);
+  }
+
+  /* ── Phosphor scanline effect on card text ──────────────── */
+  .card-body, .status-bar {
+    position: relative;
+  }
+
+  .card-body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 1px,
+      rgba(0,255,65,0.02) 1px,
+      rgba(0,255,65,0.02) 2px
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .card-body > * { position: relative; z-index: 2; }
+</style>
+</head>
+<body>
+
+<!-- ── Map background ──────────────────────────────────────── -->
+<div class="map-bg">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1440" height="900" fill="#050908"/>
+
+    <!-- Major grid roads -->
+    <g stroke="#1a2b1f" stroke-width="1.5" fill="none">
+      <!-- Horizontal majors -->
+      <line x1="0" y1="120" x2="1440" y2="120"/>
+      <line x1="0" y1="240" x2="1440" y2="240"/>
+      <line x1="0" y1="360" x2="1440" y2="360"/>
+      <line x1="0" y1="480" x2="1440" y2="480"/>
+      <line x1="0" y1="600" x2="1440" y2="600"/>
+      <line x1="0" y1="720" x2="1440" y2="720"/>
+      <!-- Vertical majors -->
+      <line x1="180" y1="0" x2="180" y2="900"/>
+      <line x1="360" y1="0" x2="360" y2="900"/>
+      <line x1="540" y1="0" x2="540" y2="900"/>
+      <line x1="720" y1="0" x2="720" y2="900"/>
+      <line x1="900" y1="0" x2="900" y2="900"/>
+      <line x1="1080" y1="0" x2="1080" y2="900"/>
+      <line x1="1260" y1="0" x2="1260" y2="900"/>
+    </g>
+
+    <!-- Minor grid -->
+    <g stroke="#0e1912" stroke-width="0.5" fill="none">
+      <line x1="0" y1="60"  x2="1440" y2="60"/>
+      <line x1="0" y1="180" x2="1440" y2="180"/>
+      <line x1="0" y1="300" x2="1440" y2="300"/>
+      <line x1="0" y1="420" x2="1440" y2="420"/>
+      <line x1="0" y1="540" x2="1440" y2="540"/>
+      <line x1="0" y1="660" x2="1440" y2="660"/>
+      <line x1="0" y1="780" x2="1440" y2="780"/>
+      <line x1="0" y1="840" x2="1440" y2="840"/>
+      <line x1="90"  y1="0" x2="90"  y2="900"/>
+      <line x1="270" y1="0" x2="270" y2="900"/>
+      <line x1="450" y1="0" x2="450" y2="900"/>
+      <line x1="630" y1="0" x2="630" y2="900"/>
+      <line x1="810" y1="0" x2="810" y2="900"/>
+      <line x1="990" y1="0" x2="990" y2="900"/>
+      <line x1="1170" y1="0" x2="1170" y2="900"/>
+      <line x1="1350" y1="0" x2="1350" y2="900"/>
+    </g>
+
+    <!-- City blocks (filled rectangles suggesting buildings) -->
+    <g fill="#0c1510" stroke="#111f16" stroke-width="0.5">
+      <rect x="200" y="140" width="120" height="80"/>
+      <rect x="370" y="140" width="140" height="60"/>
+      <rect x="560" y="140" width="100" height="80"/>
+      <rect x="200" y="260" width="80" height="60"/>
+      <rect x="310" y="260" width="190" height="80"/>
+      <rect x="560" y="260" width="120" height="55"/>
+      <rect x="730" y="260" width="130" height="80"/>
+      <rect x="200" y="380" width="150" height="70"/>
+      <rect x="390" y="380" width="110" height="60"/>
+      <rect x="555" y="385" width="125" height="50"/>
+      <rect x="730" y="380" width="140" height="75"/>
+      <rect x="920" y="380" width="120" height="60"/>
+      <rect x="200" y="500" width="100" height="70"/>
+      <rect x="340" y="500" width="160" height="60"/>
+      <rect x="550" y="500" width="130" height="70"/>
+      <rect x="730" y="500" width="100" height="65"/>
+      <rect x="920" y="500" width="130" height="65"/>
+      <rect x="1100" y="500" width="130" height="70"/>
+      <rect x="200" y="620" width="130" height="70"/>
+      <rect x="375" y="625" width="140" height="65"/>
+      <rect x="560" y="620" width="110" height="70"/>
+      <rect x="730" y="620" width="130" height="65"/>
+      <rect x="920" y="625" width="120" height="60"/>
+      <rect x="1100" y="620" width="130" height="70"/>
+    </g>
+
+    <!-- Diagonal road (Woodward Ave style) -->
+    <g stroke="#1a2b1f" stroke-width="3" fill="none">
+      <line x1="0" y1="900" x2="800" y2="0"/>
+    </g>
+
+    <!-- Riverfront hint at bottom -->
+    <path d="M0 840 Q360 820 720 835 Q1080 850 1440 830 L1440 900 L0 900 Z" fill="#060f0b" stroke="#0d1e13" stroke-width="1"/>
+    <path d="M0 855 Q360 840 720 852 Q1080 865 1440 848" fill="none" stroke="#0f2016" stroke-width="0.5"/>
+
+    <!-- Glowing accent roads -->
+    <g stroke="rgba(0,255,65,0.04)" stroke-width="2" fill="none">
+      <line x1="720" y1="0" x2="720" y2="900"/>
+      <line x1="0" y1="480" x2="1440" y2="480"/>
+    </g>
+
+    <!-- Area labels -->
+    <g font-family="'Share Tech Mono', monospace" fill="rgba(0,255,65,0.12)" font-size="9" letter-spacing="0.1em">
+      <text x="220" y="138">MIDTOWN</text>
+      <text x="560" y="138">CORKTOWN</text>
+      <text x="730" y="258">EASTERN MKT</text>
+      <text x="920" y="378">HAMTRAMCK</text>
+      <text x="220" y="498">NEW CENTER</text>
+      <text x="730" y="498">POLETOWN</text>
+      <text x="220" y="618">WOODBRIDGE</text>
+      <text x="560" y="618">MEXICANTOWN</text>
+    </g>
+  </svg>
+</div>
+
+<!-- ── Other atmosphere pins ──────────────────────────────── -->
+<div class="other-pin" style="left: 30%; top: 38%;"></div>
+<div class="other-pin" style="left: 58%; top: 44%; background: rgba(255,140,0,0.6); border-color: rgba(255,140,0,0.9); box-shadow: 0 0 8px rgba(255,140,0,0.4);"></div>
+<div class="other-pin" style="left: 65%; top: 60%;"></div>
+<div class="other-pin" style="left: 25%; top: 62%; background: rgba(255,0,128,0.5); border-color: rgba(255,0,128,0.9); box-shadow: 0 0 8px rgba(255,0,128,0.4);"></div>
+<div class="other-pin" style="left: 72%; top: 35%;"></div>
+
+<!-- ── Map pin dot for Tangent Gallery ───────────────────── -->
+<div class="map-pin-area" id="mapPin">
+  <div class="map-pin-dot"></div>
+  <div class="map-pin-pulse"></div>
+</div>
+
+<!-- ── Connector SVG line ─────────────────────────────────── -->
+<svg class="connector-svg" id="connectorSvg">
+  <defs>
+    <marker id="dot-end" markerWidth="4" markerHeight="4" refX="2" refY="2">
+      <circle cx="2" cy="2" r="1.5" fill="#CCFF00" opacity="0.5"/>
+    </marker>
+  </defs>
+  <line id="connectorLine"
+    x1="0" y1="0" x2="0" y2="0"
+    stroke="rgba(204,255,0,0.25)"
+    stroke-width="1"
+    stroke-dasharray="3 3"
+    marker-end="url(#dot-end)"
+  />
+</svg>
+
+<!-- ── Terminal card ──────────────────────────────────────── -->
+<div class="terminal-card" id="terminalCard">
+
+  <!-- Header -->
+  <div class="card-header">
+    <span class="card-header-label">
+      <span class="typewriter-text">[MOVEMENT 26] &gt; EVENT_DATA.EXE</span>
+      <span class="cursor"></span>
+    </span>
+    <button class="close-btn" onclick="dismissCard()" aria-label="Close">✕</button>
+  </div>
+
+  <!-- Body -->
+  <div class="card-body">
+
+    <!-- Event title (appears after typewriter) -->
+    <div class="event-title" id="eventTitle">TRESOR 313</div>
+
+    <!-- Data fields -->
+    <ul class="data-fields" id="dataFields">
+
+      <li class="field-row" style="animation-delay: 1.2s">
+        <span class="field-prompt">&gt;&nbsp;</span>
+        <span class="field-key">VENUE</span>
+        <span class="field-dots">......</span>
+        <span class="field-val">TANGENT GALLERY</span>
+      </li>
+
+      <li class="field-row" style="animation-delay: 1.45s">
+        <span class="field-prompt">&gt;&nbsp;</span>
+        <span class="field-key">TIME</span>
+        <span class="field-dots">.......</span>
+        <span class="field-val">22:00 SAT → 10:00 SUN</span>
+      </li>
+
+      <li class="field-row" style="animation-delay: 1.7s">
+        <span class="field-prompt">&gt;&nbsp;</span>
+        <span class="field-key">PRICE</span>
+        <span class="field-dots">......</span>
+        <span class="field-val price">$85 USD</span>
+      </li>
+
+      <li class="field-row" style="animation-delay: 1.95s">
+        <span class="field-prompt">&gt;&nbsp;</span>
+        <span class="field-key">CATEGORY</span>
+        <span class="field-dots">...</span>
+        <span class="field-val cat-afterparty">AFTERPARTY</span>
+      </li>
+
+      <li class="field-row lineup-row" style="animation-delay: 2.2s">
+        <button class="lineup-toggle" id="lineupToggle" onclick="toggleLineup()" aria-expanded="false">
+          <span class="field-prompt">&gt;&nbsp;</span>
+          <span class="field-key">LINEUP</span>
+          <span class="field-dots">.....</span>
+          <span class="lineup-badge">8 ARTISTS</span>
+          <span class="lineup-expand-arrow">▶</span>
+        </button>
+        <div class="lineup-list" id="lineupList" role="list">
+          <div class="artist-item">SURGEON</div>
+          <div class="artist-item">FUNCTION</div>
+          <div class="artist-item">AZA</div>
+          <div class="artist-item">DJ SPHiNX</div>
+          <div class="artist-item">TAUCETI</div>
+          <div class="artist-item">LNS</div>
+          <div class="artist-item">DJ ETTA</div>
+          <div class="artist-item">SHARLESE</div>
+        </div>
+      </li>
+
+    </ul>
+  </div>
+
+  <hr class="card-divider">
+
+  <!-- Actions -->
+  <div class="actions" style="padding: 0 14px 12px;">
+    <button class="btn-exec btn-plan" onclick="handlePlan(this)">[EXEC: ADD_TO_PLAN]</button>
+    <button class="btn-exec btn-ra">[EXEC: OPEN_RA]</button>
+  </div>
+
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span><span class="status-dot"></span>CONNECTED · MOVEMENT 2026</span>
+    <span>SAT 05.23.26</span>
+  </div>
+
+</div>
+
+<script>
+  /* ── Connector line ───────────────────────────────────── */
+  function drawConnector() {
+    const pin  = document.getElementById('mapPin');
+    const card = document.getElementById('terminalCard');
+    const line = document.getElementById('connectorLine');
+
+    if (!pin || !card || !line) return;
+
+    const pinRect  = pin.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+
+    const x1 = pinRect.left + pinRect.width  / 2;
+    const y1 = pinRect.top  + pinRect.height / 2;
+
+    // Connect to bottom-left corner of card (where the triangle pointer is)
+    const x2 = cardRect.left + 30;
+    const y2 = cardRect.bottom;
+
+    line.setAttribute('x1', x1);
+    line.setAttribute('y1', y1);
+    line.setAttribute('x2', x2);
+    line.setAttribute('y2', y2);
+  }
+
+  window.addEventListener('load', drawConnector);
+  window.addEventListener('resize', drawConnector);
+
+  /* ── Lineup toggle ────────────────────────────────────── */
+  function toggleLineup() {
+    const toggle = document.getElementById('lineupToggle');
+    const list   = document.getElementById('lineupList');
+    const open   = list.classList.toggle('expanded');
+    toggle.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', open);
+    // Redraw connector after height change
+    setTimeout(drawConnector, 10);
+    setTimeout(drawConnector, 360);
+  }
+
+  /* ── Plan button feedback ─────────────────────────────── */
+  function handlePlan(btn) {
+    const original = btn.textContent;
+    btn.textContent = '[✓ ADDED TO PLAN]';
+    btn.style.color = 'var(--green)';
+    btn.style.borderColor = 'var(--green)';
+    btn.style.textShadow = '0 0 8px rgba(0,255,65,0.6)';
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.style.color = '';
+      btn.style.borderColor = '';
+      btn.style.textShadow = '';
+    }, 2200);
+  }
+
+  /* ── Dismiss animation ────────────────────────────────── */
+  function dismissCard() {
+    const card = document.getElementById('terminalCard');
+    const svg  = document.getElementById('connectorSvg');
+    card.classList.add('dismissing');
+    svg.style.transition = 'opacity 0.3s';
+    svg.style.opacity = '0';
+
+    setTimeout(() => {
+      card.style.display = 'none';
+      svg.style.display  = 'none';
+      document.getElementById('mapPin').style.display = 'none';
+      showReopenHint();
+    }, 320);
+  }
+
+  function showReopenHint() {
+    const hint = document.createElement('div');
+    hint.style.cssText = `
+      position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+      font-family: 'Share Tech Mono', monospace; font-size: 11px;
+      color: rgba(204,255,0,0.5); letter-spacing: 0.1em;
+      animation: field-in 0.3s ease forwards;
+      cursor: pointer;
+    `;
+    hint.textContent = '[ TAP ANY PIN TO INSPECT EVENT ]';
+    hint.onclick = () => location.reload();
+    document.body.appendChild(hint);
+  }
+
+  /* ── Lineup auto-opens after all fields render ────────── */
+  setTimeout(() => {
+    toggleLineup();
+  }, 2600);
+
+  /* ── Initial connector draw after card animates in ───── */
+  setTimeout(drawConnector, 500);
+</script>
+</body>
+</html>

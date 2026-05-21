@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movement 2026 — Event Popup Mockup v3: Bottom Drawer / Timeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── TOKENS ── */
+:root {
+  --acid:   #CCFF00;
+  --pink:   #FF0080;
+  --green:  #00FF41;
+  --amber:  #FF8C00;
+  --void:   #000000;
+  --dim:    #111111;
+  --muted:  #333333;
+  --ghost:  rgba(204,255,0,0.07);
+  --bebas:  'Bebas Neue', sans-serif;
+  --mono:   'Share Tech Mono', monospace;
+  --barlow: 'Barlow Condensed', sans-serif;
+  /* Afterparty = pink */
+  --cat:    var(--pink);
+}
+
+/* ── MAP BACKGROUND ── */
+body {
+  background: #0a0a0a;
+  font-family: var(--mono);
+  color: var(--acid);
+  min-height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.map-bg {
+  position: fixed;
+  inset: 0;
+  background-color: #0d0d0d;
+  background-image:
+    linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+    repeating-linear-gradient(0deg, transparent, transparent 59px, #191919 60px),
+    repeating-linear-gradient(90deg, transparent, transparent 59px, #191919 60px);
+  transition: filter 0.5s ease, brightness 0.5s ease;
+}
+.map-bg.blurred { filter: blur(8px) brightness(0.35); }
+
+.map-label {
+  position: absolute;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: #252525;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ── SCRIM ── */
+.scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0);
+  transition: background 0.45s ease;
+  pointer-events: none;
+  z-index: 10;
+}
+.scrim.active {
+  background: rgba(0,0,0,0.6);
+  pointer-events: auto;
+  cursor: pointer;
+}
+.scrim.dismissing { background: rgba(0,0,0,0); transition: background 0.35s ease; }
+
+/* ── FLOATING MAP PIN ── */
+.map-pin {
+  position: fixed;
+  top: 38%;
+  left: 52%;
+  transform: translate(-50%, -50%);
+  z-index: 15;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.pin-diamond {
+  width: 16px;
+  height: 16px;
+  background: var(--cat);
+  transform: rotate(45deg);
+  box-shadow: 0 0 0 3px rgba(255,0,128,0.2), 0 0 24px rgba(255,0,128,0.7);
+  animation: pin-pulse 2.4s ease-in-out infinite;
+}
+@keyframes pin-pulse {
+  0%,100% { box-shadow: 0 0 0 3px rgba(255,0,128,0.2), 0 0 20px rgba(255,0,128,0.6); }
+  50%      { box-shadow: 0 0 0 8px rgba(255,0,128,0.06), 0 0 42px rgba(255,0,128,0.95); }
+}
+
+.pin-stem {
+  width: 2px;
+  height: 8px;
+  background: var(--cat);
+  opacity: 0.6;
+}
+
+.pin-label {
+  margin-top: 5px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--cat);
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 0 14px rgba(255,0,128,0.9);
+  background: rgba(0,0,0,0.7);
+  padding: 2px 6px;
+}
+
+/* ── BOTTOM DRAWER ── */
+.drawer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  height: 68vh;
+  max-height: 520px;
+  transform: translateY(100%);
+  transition: transform 0.52s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  border-top: 2px solid var(--cat);
+  box-shadow:
+    0 -6px 60px rgba(255,0,128,0.45),
+    0 -1px 0 rgba(255,0,128,0.12);
+}
+.drawer.open {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.drawer.dismissing {
+  transform: translateY(100%);
+  transition: transform 0.38s cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* Global CRT scanlines on drawer */
+.drawer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0,0,0,0.07) 3px,
+    rgba(0,0,0,0.07) 4px
+  );
+  z-index: 100;
+}
+
+/* ── TICKER STRIP (drag handle + marquee) ── */
+.drawer-ticker {
+  background: var(--cat);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  height: 34px;
+  overflow: hidden;
+  position: relative;
+}
+
+.ticker-overflow {
+  flex: 1;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.ticker-track {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  animation: ticker-scroll 20s linear infinite;
+  will-change: transform;
+}
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.ticker-item {
+  font-family: var(--bebas);
+  font-size: 19px;
+  color: var(--void);
+  letter-spacing: 3px;
+  padding: 0 28px;
+}
+.ticker-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  background: rgba(0,0,0,0.35);
+  vertical-align: middle;
+  margin: 0 4px;
+  transform: rotate(45deg);
+}
+
+.drawer-close {
+  flex-shrink: 0;
+  height: 100%;
+  background: rgba(0,0,0,0.3);
+  border: none;
+  border-left: 1px solid rgba(0,0,0,0.25);
+  color: var(--void);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  padding: 0 18px;
+  cursor: pointer;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s;
+}
+.drawer-close:hover { background: rgba(0,0,0,0.5); }
+.drawer-close .esc-key { opacity: 0.5; font-size: 8px; }
+
+/* ── THREE-COLUMN BODY ── */
+.drawer-body {
+  display: grid;
+  grid-template-columns: 260px 1fr 188px;
+  min-height: 0;
+  flex: 1;
+  background: var(--void);
+  overflow: hidden;
+}
+
+/* ────────────────────────────────────
+   COL 1 — EVENT IDENTITY
+──────────────────────────────────── */
+.col-id {
+  background: #050505;
+  border-right: 1px solid #1c1c1c;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.col-id::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--cat);
+  box-shadow: 0 0 16px var(--cat);
+  z-index: 2;
+}
+
+.id-gradient {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 25% 25%, rgba(255,0,128,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 75% 80%, rgba(204,255,0,0.05) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+.id-inner {
+  position: relative;
+  z-index: 1;
+  padding: 20px 18px 18px 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.cat-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--cat);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+}
+.cat-label::before {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  background: var(--cat);
+  box-shadow: 0 0 8px var(--cat);
+}
+
+.event-title {
+  font-family: var(--bebas);
+  font-size: clamp(46px, 4.5vw, 70px);
+  line-height: 0.87;
+  color: #fff;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+  position: relative;
+  display: block;
+}
+
+/* Glitch */
+@keyframes g-base {
+  0%,88%,100%  { transform:translate(0); clip-path:none; color:#fff; }
+  89%          { clip-path:inset(28% 0 52% 0); transform:translate(-5px, 2px); color:var(--green); }
+  90%          { clip-path:inset(62% 0 8% 0);  transform:translate(5px,-2px);  color:var(--acid); }
+  91%          { clip-path:none; transform:translate(0); color:#fff; }
+  92%          { clip-path:inset(10% 0 80% 0);  transform:translate(-7px,0); color:var(--amber); }
+  93%          { clip-path:none; transform:translate(0); color:#fff; }
+}
+@keyframes g-sh1 {
+  0%,88%,100% { opacity:0; transform:translate(0); }
+  89%,93%     { opacity:0.65; transform:translate(-4px,2px); }
+  91%         { opacity:0; }
+}
+@keyframes g-sh2 {
+  0%,88%,100% { opacity:0; transform:translate(0); }
+  89.5%,93%   { opacity:0.55; transform:translate(4px,-2px); }
+  91%         { opacity:0; }
+}
+.event-title { animation: g-base 5s steps(1) infinite; }
+.event-title::before,
+.event-title::after {
+  content: attr(data-text);
+  position: absolute;
+  top:0; left:0; width:100%; height:100%;
+  font-family:var(--bebas); font-size:inherit; line-height:inherit;
+  pointer-events:none;
+}
+.event-title::before { color:var(--green); animation:g-sh1 5s steps(1) infinite; clip-path:inset(20% 0 60% 0); opacity:0; }
+.event-title::after  { color:var(--acid);  animation:g-sh2 5s steps(1) infinite; clip-path:inset(60% 0 20% 0); opacity:0; }
+
+.cursor-blink {
+  display: inline-block;
+  width: 3px;
+  height: 0.65em;
+  background: var(--acid);
+  vertical-align: middle;
+  animation: blink 1s step-end infinite;
+  margin-left: 4px;
+  position: relative;
+  top: -3px;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+.event-sub {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: #2e2e2e;
+  text-transform: uppercase;
+  margin-top: 8px;
+  flex-shrink: 0;
+}
+
+/* Stat block at bottom of col 1 */
+.stat-stack {
+  margin-top: auto;
+  border-top: 1px solid #181818;
+  flex-shrink: 0;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px solid #111;
+}
+.stat-row:last-child { border-bottom: none; }
+
+.sk {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: #2e2e2e;
+  text-transform: uppercase;
+}
+.sv {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--acid);
+  letter-spacing: 1px;
+  text-align: right;
+}
+.sv.hi  { color: var(--green); font-size: 16px; }
+.sv.am  { color: var(--amber); }
+
+/* ────────────────────────────────────
+   COL 2 — HORIZONTAL TIMELINE
+──────────────────────────────────── */
+.col-timeline {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--void);
+  border-right: 1px solid #111;
+  position: relative;
+}
+
+.tl-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px 8px;
+  border-bottom: 1px solid #141414;
+  flex-shrink: 0;
+}
+.tl-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 4px;
+  color: #2a2a2a;
+  text-transform: uppercase;
+}
+.tl-range {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: #222;
+  letter-spacing: 2px;
+}
+
+/* Scrollable canvas wrapper */
+.tl-viewport {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.tl-canvas {
+  position: absolute;
+  inset: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #1c1c1c transparent;
+}
+.tl-canvas::-webkit-scrollbar { height: 3px; }
+.tl-canvas::-webkit-scrollbar-track { background: transparent; }
+.tl-canvas::-webkit-scrollbar-thumb { background: #1e1e1e; }
+
+/* Timeline inner: 14hr × 80px/hr = 1120px */
+.tl-inner {
+  width: 1120px;
+  height: 100%;
+  min-height: 180px;
+  position: relative;
+}
+
+/* Hour grid verticals */
+.hr-line {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 1px;
+  background: #0e0e0e;
+}
+.hr-label {
+  position: absolute;
+  top: 6px;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: #1e1e1e;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+  user-select: none;
+  white-space: nowrap;
+}
+
+/* NOW indicator at left edge (10PM) */
+.now-line {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 2px;
+  background: var(--acid);
+  box-shadow: 0 0 10px var(--acid), 0 0 22px rgba(204,255,0,0.35);
+  z-index: 6;
+  left: 0;
+}
+.now-line::after {
+  content: 'NOW';
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 2px;
+  color: var(--acid);
+  white-space: nowrap;
+  text-shadow: 0 0 8px var(--acid);
+}
+
+/* Artist blocks */
+.ab {
+  position: absolute;
+  height: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #0c0c0c;
+  border: 1px solid #1e1e1e;
+  border-left: 3px solid var(--cat);
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  gap: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, box-shadow 0.12s;
+  z-index: 3;
+}
+.ab:hover {
+  background: #151515;
+  border-color: #2a2a2a;
+  border-left-color: var(--acid);
+  box-shadow: 0 0 18px rgba(204,255,0,0.12), inset 0 0 20px rgba(204,255,0,0.03);
+}
+.ab:hover .ab-name { color: var(--acid); }
+
+.ab-name {
+  font-family: var(--barlow);
+  font-size: 17px;
+  font-weight: 900;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  line-height: 1;
+  transition: color 0.12s;
+}
+.ab-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.ab-time {
+  font-family: var(--mono);
+  font-size: 7px;
+  color: #282828;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.ab-stage {
+  font-family: var(--mono);
+  font-size: 7px;
+  color: var(--amber);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Headliner: pink accent */
+.ab.headliner { border-left-color: var(--cat); box-shadow: inset 0 0 40px rgba(255,0,128,0.03); }
+
+/* Edge fade overlays */
+.tl-fade-l {
+  position: absolute;
+  left: 0; top: 0; bottom: 0; width: 16px;
+  background: linear-gradient(to left, transparent, var(--void));
+  pointer-events: none; z-index: 10;
+}
+.tl-fade-r {
+  position: absolute;
+  right: 0; top: 0; bottom: 0; width: 44px;
+  background: linear-gradient(to right, transparent, var(--void));
+  pointer-events: none; z-index: 10;
+}
+
+/* Scroll arrow hint */
+.tl-scroll-hint {
+  position: absolute;
+  bottom: 7px;
+  right: 50px;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: #1e1e1e;
+  text-transform: uppercase;
+  z-index: 11;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  opacity: 0;
+  animation: hint-show 3.5s ease 1.2s forwards;
+}
+@keyframes hint-show {
+  0%   { opacity:0; }
+  15%  { opacity:1; }
+  85%  { opacity:1; }
+  100% { opacity:0; }
+}
+.hint-arrow {
+  width: 28px;
+  height: 1px;
+  background: #1e1e1e;
+  position: relative;
+  display: inline-block;
+}
+.hint-arrow::after {
+  content: '';
+  position: absolute;
+  right: -1px; top: -3px;
+  border-left: 5px solid #1e1e1e;
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+}
+
+/* ────────────────────────────────────
+   COL 3 — ACTIONS
+──────────────────────────────────── */
+.col-actions {
+  background: #050505;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.action-top {
+  padding: 14px 14px 12px;
+  border-bottom: 1px solid #0f0f0f;
+  flex-shrink: 0;
+}
+.action-top-lbl {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 4px;
+  color: #222;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.btn-add {
+  width: 100%;
+  background: var(--acid);
+  color: var(--void);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border: none;
+  padding: 14px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-add:hover { background: #d4ff0d; }
+.btn-add::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0);
+  transition: background 0.12s;
+}
+.btn-add:hover::after { background: rgba(255,255,255,0.04); }
+
+/* secondary links */
+.action-links {
+  flex: 1;
+  padding: 0 14px;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #0f0f0f;
+  overflow: hidden;
+}
+.action-links-lbl {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 4px;
+  color: #1e1e1e;
+  text-transform: uppercase;
+  padding: 12px 0 8px;
+  flex-shrink: 0;
+}
+.al {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid #0c0c0c;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #2e2e2e;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: color 0.12s;
+}
+.al:last-child { border-bottom: none; }
+.al:hover { color: var(--acid); }
+.al .ar { color: #1a1a1a; transition: color 0.12s; }
+.al:hover .ar { color: var(--acid); }
+
+/* conflict status */
+.conflict-status {
+  padding: 12px 14px;
+  flex-shrink: 0;
+  background: #030303;
+  border-top: 1px solid #0c0c0c;
+}
+.cs-lbl {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: #1c1c1c;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.cs-val {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--green);
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cs-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  flex-shrink: 0;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 800px) {
+  .drawer-body {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+    overflow-y: auto;
+  }
+  .col-id { min-height: 150px; }
+  .tl-viewport { min-height: 160px; }
+  .drawer { max-height: 86vh; }
+}
+
+/* ── DISMISS HINT ── */
+.dismiss-hint {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.13);
+  text-transform: uppercase;
+  z-index: 15;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease 1s;
+}
+.drawer.open ~ .dismiss-hint { opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- Map background -->
+<div class="map-bg" id="mapBg">
+  <span class="map-label" style="top:22%;left:18%;transform:rotate(-8deg)">Gratiot Ave</span>
+  <span class="map-label" style="top:58%;left:8%">Woodward Ave</span>
+  <span class="map-label" style="top:35%;left:55%;transform:rotate(4deg)">East Grand Blvd</span>
+  <span class="map-label" style="top:74%;left:40%">Jefferson Ave</span>
+  <span class="map-label" style="top:12%;left:62%">I-375</span>
+  <span class="map-label" style="top:48%;left:70%;transform:rotate(-5deg)">Mack Ave</span>
+  <span class="map-label" style="top:82%;left:22%;transform:rotate(3deg)">Fort St</span>
+  <span class="map-label" style="top:30%;left:35%">7 Mile Rd</span>
+</div>
+
+<!-- Scrim -->
+<div class="scrim active" id="scrim"></div>
+
+<!-- Floating map pin -->
+<div class="map-pin" id="mapPin" role="button" tabindex="0" aria-label="Open No Way Back event details">
+  <div class="pin-diamond"></div>
+  <div class="pin-stem"></div>
+  <div class="pin-label">No Way Back</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     BOTTOM DRAWER
+══════════════════════════════════════════════════════════ -->
+<div class="drawer open" id="drawer" role="dialog" aria-modal="true" aria-label="No Way Back event details">
+
+  <!-- Ticker strip / drag handle -->
+  <div class="drawer-ticker">
+    <div class="ticker-overflow" aria-hidden="true">
+      <div class="ticker-track">
+        <!-- Doubled for seamless loop -->
+        <span class="ticker-item">No Way Back <span class="ticker-dot"></span></span>
+        <span class="ticker-item">Tangent Gallery <span class="ticker-dot"></span></span>
+        <span class="ticker-item">Detroit, MI <span class="ticker-dot"></span></span>
+        <span class="ticker-item">Sun May 24 <span class="ticker-dot"></span></span>
+        <span class="ticker-item">10PM — 12PM <span class="ticker-dot"></span></span>
+        <span class="ticker-item">Afterparty <span class="ticker-dot"></span></span>
+        <span class="ticker-item">8 Artists Confirmed <span class="ticker-dot"></span></span>
+        <span class="ticker-item">No Way Back <span class="ticker-dot"></span></span>
+        <span class="ticker-item">Tangent Gallery <span class="ticker-dot"></span></span>
+        <span class="ticker-item">Detroit, MI <span class="ticker-dot"></span></span>
+        <span class="ticker-item">Sun May 24 <span class="ticker-dot"></span></span>
+        <span class="ticker-item">10PM — 12PM <span class="ticker-dot"></span></span>
+        <span class="ticker-item">Afterparty <span class="ticker-dot"></span></span>
+        <span class="ticker-item">8 Artists Confirmed <span class="ticker-dot"></span></span>
+      </div>
+    </div>
+    <button class="drawer-close" id="closeBtn" aria-label="Close event drawer">
+      <span class="esc-key">ESC</span>
+      <span>×</span>
+    </button>
+  </div>
+
+  <!-- Three-column body -->
+  <div class="drawer-body">
+
+    <!-- ── COL 1: IDENTITY ── -->
+    <div class="col-id">
+      <div class="id-gradient"></div>
+      <div class="id-inner">
+
+        <div class="cat-label">Afterparty / Club Night</div>
+
+        <div class="event-title" data-text="No Way Back">No Way Back<span class="cursor-blink"></span></div>
+
+        <div class="event-sub">Est. 2009 &nbsp;·&nbsp; EVT—0047</div>
+
+        <div class="stat-stack">
+          <div class="stat-row">
+            <span class="sk">Doors</span>
+            <span class="sv am">10PM Sun</span>
+          </div>
+          <div class="stat-row">
+            <span class="sk">Until</span>
+            <span class="sv am">12PM Mon</span>
+          </div>
+          <div class="stat-row">
+            <span class="sk">Duration</span>
+            <span class="sv">14 hrs</span>
+          </div>
+          <div class="stat-row">
+            <span class="sk">Entry</span>
+            <span class="sv hi">$85</span>
+          </div>
+          <div class="stat-row">
+            <span class="sk">Venue</span>
+            <span class="sv" style="font-size:10px;line-height:1.4;text-align:right;max-width:130px">Tangent Gallery<br><span style="color:#222">715 E Milwaukee</span></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── COL 2: TIMELINE ── -->
+    <div class="col-timeline">
+      <div class="tl-header">
+        <div class="tl-label">// Lineup timeline — scroll →</div>
+        <div class="tl-range">22:00 Sun → 12:00 Mon</div>
+      </div>
+
+      <div class="tl-viewport">
+        <div class="tl-canvas" id="tlCanvas">
+          <div class="tl-inner">
+
+            <!-- NOW line at 10PM = left:0 -->
+            <div class="now-line"></div>
+
+            <!--
+              Scale: 80px per hour
+              10PM = 0, 11PM = 80, 12AM = 160, 1AM = 240, 2AM = 320,
+              3AM = 400, 4AM = 480, 5AM = 560, 6AM = 640, 7AM = 720,
+              8AM = 800, 9AM = 880, 10AM = 960, 11AM = 1040, 12PM = 1120
+            -->
+            <div class="hr-line" style="left:0"></div>   <div class="hr-label" style="left:0">10PM</div>
+            <div class="hr-line" style="left:80px"></div>  <div class="hr-label" style="left:80px">11PM</div>
+            <div class="hr-line" style="left:160px"></div> <div class="hr-label" style="left:160px">12AM</div>
+            <div class="hr-line" style="left:240px"></div> <div class="hr-label" style="left:240px">1AM</div>
+            <div class="hr-line" style="left:320px"></div> <div class="hr-label" style="left:320px">2AM</div>
+            <div class="hr-line" style="left:400px"></div> <div class="hr-label" style="left:400px">3AM</div>
+            <div class="hr-line" style="left:480px"></div> <div class="hr-label" style="left:480px">4AM</div>
+            <div class="hr-line" style="left:560px"></div> <div class="hr-label" style="left:560px">5AM</div>
+            <div class="hr-line" style="left:640px"></div> <div class="hr-label" style="left:640px">6AM</div>
+            <div class="hr-line" style="left:720px"></div> <div class="hr-label" style="left:720px">7AM</div>
+            <div class="hr-line" style="left:800px"></div> <div class="hr-label" style="left:800px">8AM</div>
+            <div class="hr-line" style="left:880px"></div> <div class="hr-label" style="left:880px">9AM</div>
+            <div class="hr-line" style="left:960px"></div> <div class="hr-label" style="left:960px">10AM</div>
+            <div class="hr-line" style="left:1040px"></div><div class="hr-label" style="left:1040px">11AM</div>
+            <div class="hr-line" style="left:1120px"></div><div class="hr-label" style="left:1120px">12PM</div>
+
+            <!--
+              Erika:           10PM–12AM  → left:2   width:156
+              Eris Drew:       12AM–2AM   → left:162  width:156
+              Mike Servito:    2AM–4AM    → left:322  width:156
+              Derek Plaslaiko: 4AM–6AM    → left:482  width:156
+              Carlos Souffront:6AM–8AM   → left:642  width:156
+              Function:        8AM–9:30AM → left:802  width:116 (1.5h)
+              Raica:           9:30–11AM  → left:922  width:116
+              BMG:             11AM–12PM  → left:1042 width:76
+            -->
+
+            <div class="ab headliner" style="left:2px;width:156px" title="Erika — 10PM→12AM">
+              <div><div class="ab-name">Erika</div></div>
+              <div class="ab-meta">
+                <div class="ab-time">10PM → 12AM</div>
+                <div class="ab-stage">Open</div>
+              </div>
+            </div>
+
+            <div class="ab headliner" style="left:162px;width:156px" title="Eris Drew — 12AM→2AM">
+              <div><div class="ab-name">Eris Drew</div></div>
+              <div class="ab-meta">
+                <div class="ab-time">12AM → 2AM</div>
+                <div class="ab-stage">Main</div>
+              </div>
+            </div>
+
+            <div class="ab" style="left:322px;width:156px" title="Mike Servito — 2AM→4AM">
+              <div><div class="ab-name">Mike Servito</div></div>
+              <div class="ab-meta">
+                <div class="ab-time">2AM → 4AM</div>
+                <div class="ab-stage">Main</div>
+              </div>
+            </div>
+
+            <div class="ab" style="left:482px;width:156px" title="Derek Plaslaiko — 4AM→6AM">
+              <div><div class="ab-name">Derek Plaslaiko</div></div>
+              <div class="ab-meta">
+                <div class="ab-time">4AM → 6AM</div>
+                <div class="ab-stage">Main</div>
+              </div>
+            </div>
+
+            <div class="ab" style="left:642px;width:156px" title="Carlos Souffront — 6AM→8AM">
+              <div><div class="ab-name">Carlos Souffront</div></div>
+              <div class="ab-meta">
+                <div class="ab-time">6AM → 8AM</div>
+                <div class="ab-stage">Main</div>
+              </div>
+            </div>
+
+            <div class="ab" style="left:802px;width:116px" title="Function — 8AM→9:30AM">
+              <div><div class="ab-name">Function</div></div>
+              <div class="ab-meta">
+                <div class="ab-time">8AM → 9:30</div>
+                <div class="ab-stage">Main</div>
+              </div>
+            </div>
+
+            <div class="ab" style="left:922px;width:116px" title="Raica — 9:30AM→11AM">
+              <div><div class="ab-name">Raica</div></div>
+              <div class="ab-meta">
+                <div class="ab-time">9:30 → 11AM</div>
+                <div class="ab-stage">Main</div>
+              </div>
+            </div>
+
+            <div class="ab headliner" style="left:1042px;width:76px" title="BMG — 11AM→12PM">
+              <div><div class="ab-name">BMG</div></div>
+              <div class="ab-meta">
+                <div class="ab-time">11 → 12PM</div>
+                <div class="ab-stage">Close</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="tl-fade-l"></div>
+        <div class="tl-fade-r"></div>
+
+        <div class="tl-scroll-hint">
+          Scroll <span class="hint-arrow"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── COL 3: ACTIONS ── -->
+    <div class="col-actions">
+
+      <div class="action-top">
+        <div class="action-top-lbl">// Plan</div>
+        <button class="btn-add" id="addBtn" aria-label="Add No Way Back to your plan">
+          <span>+</span>
+          <span>Add to Plan</span>
+        </button>
+      </div>
+
+      <div class="action-links">
+        <div class="action-links-lbl">// Links</div>
+        <button class="al"><span>RA Page</span><span class="ar">↗</span></button>
+        <button class="al"><span>Get Tickets</span><span class="ar">↗</span></button>
+        <button class="al"><span>Share Event</span><span class="ar">↗</span></button>
+        <button class="al"><span>View on Map</span><span class="ar">↗</span></button>
+      </div>
+
+      <div class="conflict-status">
+        <div class="cs-lbl">// Schedule</div>
+        <div class="cs-val"><span class="cs-dot"></span>No conflicts</div>
+      </div>
+
+    </div>
+
+  </div>
+  <!-- /drawer-body -->
+
+</div>
+<!-- /drawer -->
+
+<div class="dismiss-hint" id="dismissHint">Click map to dismiss</div>
+
+<script>
+  const drawer   = document.getElementById('drawer');
+  const scrim    = document.getElementById('scrim');
+  const mapBg    = document.getElementById('mapBg');
+  const closeBtn = document.getElementById('closeBtn');
+  const mapPin   = document.getElementById('mapPin');
+  const addBtn   = document.getElementById('addBtn');
+
+  // On load: blur map, show drawer
+  mapBg.classList.add('blurred');
+
+  function dismiss() {
+    drawer.classList.remove('open');
+    drawer.classList.add('dismissing');
+    scrim.classList.remove('active');
+    scrim.classList.add('dismissing');
+    mapBg.classList.remove('blurred');
+  }
+
+  function openDrawer() {
+    drawer.style.display = '';
+    drawer.classList.remove('dismissing');
+    drawer.classList.add('open');
+    scrim.classList.remove('dismissing');
+    scrim.classList.add('active');
+    mapBg.classList.add('blurred');
+  }
+
+  scrim.addEventListener('click', dismiss);
+  closeBtn.addEventListener('click', e => { e.stopPropagation(); dismiss(); });
+  mapPin.addEventListener('click', e => { e.stopPropagation(); openDrawer(); });
+  mapPin.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDrawer(); }
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') dismiss(); });
+
+  // Add to plan feedback
+  addBtn.addEventListener('click', () => {
+    const orig = addBtn.innerHTML;
+    addBtn.innerHTML = '<span>✓</span><span>Added</span>';
+    addBtn.style.background = 'var(--green)';
+    addBtn.disabled = true;
+    setTimeout(() => {
+      addBtn.innerHTML = orig;
+      addBtn.style.background = '';
+      addBtn.disabled = false;
+    }, 2400);
+  });
+
+  // Staggered artist block entrance
+  document.querySelectorAll('.ab').forEach((el, i) => {
+    el.style.opacity = '0';
+    el.style.transition = 'none';
+    setTimeout(() => {
+      el.style.transition = 'opacity 0.28s ease, background 0.12s, border-color 0.12s, box-shadow 0.12s';
+      el.style.opacity = '1';
+    }, 350 + i * 45);
+  });
+</script>
+</body>
+</html>
