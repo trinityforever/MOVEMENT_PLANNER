@@ -4,6 +4,7 @@ import {
   getEventsByDay,
   getEventsByVenue,
   getEventsByArtist,
+  getResidentAdvisorArtistUrl,
   formatTime,
 } from './dataService';
 
@@ -96,6 +97,62 @@ describe('dataService', () => {
 
     it('matches artist names case-insensitively', () => {
       expect(getEventsByArtist('mike servito')).toEqual(getEventsByArtist('Mike Servito'));
+    });
+
+    it('returns the exact set of matching events for every artist in the dataset', () => {
+      const events = getEvents();
+      const artistNames = new Set(
+        events.flatMap((event) => event.artists ?? [])
+      );
+
+      for (const artistName of artistNames) {
+        const expectedEventIds = events
+          .filter((event) =>
+            (event.artists ?? []).some(
+              (artist) => artist.trim().toLowerCase() === artistName.trim().toLowerCase()
+            )
+          )
+          .map((event) => event.id)
+          .sort();
+
+        const actualEventIds = getEventsByArtist(artistName)
+          .map((event) => event.id)
+          .sort();
+
+        expect(actualEventIds).toEqual(expectedEventIds);
+      }
+    });
+
+    it('has no artist-name collisions that differ only by case or whitespace', () => {
+      const events = getEvents();
+      const variantsByNormalizedArtist = new Map<string, Set<string>>();
+
+      for (const event of events) {
+        for (const artist of event.artists ?? []) {
+          const normalizedArtist = artist.trim().toLowerCase();
+          const variants = variantsByNormalizedArtist.get(normalizedArtist) ?? new Set<string>();
+          variants.add(artist);
+          variantsByNormalizedArtist.set(normalizedArtist, variants);
+        }
+      }
+
+      const collisions = [...variantsByNormalizedArtist.values()].filter(
+        (variants) => variants.size > 1
+      );
+
+      expect(collisions).toEqual([]);
+    });
+  });
+
+  describe('getResidentAdvisorArtistUrl', () => {
+    it('builds the expected RA DJ url for simple names', () => {
+      expect(getResidentAdvisorArtistUrl('FAITED')).toBe('https://ra.co/dj/faited');
+      expect(getResidentAdvisorArtistUrl('Mike Servito')).toBe('https://ra.co/dj/mikeservito');
+    });
+
+    it('strips punctuation, accents, and parenthetical suffixes', () => {
+      expect(getResidentAdvisorArtistUrl('De León')).toBe('https://ra.co/dj/deleon');
+      expect(getResidentAdvisorArtistUrl('John Collins (US)')).toBe('https://ra.co/dj/johncollins');
     });
   });
 

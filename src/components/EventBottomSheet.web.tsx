@@ -105,6 +105,10 @@ const EventBottomSheet: React.FC<EventBottomSheetProps> = ({ eventId, onClose, o
     onEventSelect(relatedEventId);
   };
 
+  const residentAdvisorArtistUrl = selectedArtist
+    ? dataService.getResidentAdvisorArtistUrl(selectedArtist)
+    : null;
+
   return (
     <>
       <Modal visible={!!eventId} transparent animationType="fade" onRequestClose={onClose}>
@@ -238,12 +242,13 @@ const EventBottomSheet: React.FC<EventBottomSheetProps> = ({ eventId, onClose, o
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.artistLinkBtn, { borderColor: 'rgba(255,85,0,0.5)' }]}
-                onPress={() => Linking.openURL(`https://ra.co/search?q=${encodeURIComponent(selectedArtist ?? '')}`)}
+                onPress={() => residentAdvisorArtistUrl && Linking.openURL(residentAdvisorArtistUrl)}
               >
-                <Text style={[styles.artistLinkText, { color: '#FF5500' }]}>↗ RA</Text>
+                <Text style={[styles.artistLinkText, { color: '#FF5500' }]}>↗ RA DJ PAGE</Text>
               </TouchableOpacity>
             </View>
             <Text style={styles.artistModalSubtitle}>OTHER PARTIES IN DATABASE</Text>
+            <Text style={styles.artistModalNote}>RA page uses a best-effort slug from the artist name.</Text>
             <ScrollView contentContainerStyle={styles.artistModalList}>
               {relatedArtistEvents.length ? relatedArtistEvents.map((relatedEvent) => (
                 <TouchableOpacity
@@ -524,6 +529,13 @@ const styles = StyleSheet.create({
     fontSize: 9,
     color: 'rgba(204,255,0,0.45)',
     letterSpacing: 2,
+    marginBottom: 6,
+  },
+  artistModalNote: {
+    fontFamily: monoFont,
+    fontSize: 9,
+    color: 'rgba(204,255,0,0.32)',
+    lineHeight: 14,
     marginBottom: 12,
   },
   artistModalList: {

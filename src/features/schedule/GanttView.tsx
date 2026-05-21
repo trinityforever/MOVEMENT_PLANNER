@@ -183,6 +183,7 @@ body::after {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   max-height: calc(100vh - 130px);
+  touch-action: pan-x pan-y;
 }
 .gantt-wrapper::-webkit-scrollbar { height: 3px; width: 3px; }
 .gantt-wrapper::-webkit-scrollbar-thumb { background: rgba(204,255,0,0.3); }
@@ -381,89 +382,6 @@ body::after {
 .list-badge.Festival   { color: #00FF41; border: 1px solid rgba(0,255,65,0.4); }
 .rsvp-dot { font-size: 9px; color: var(--pink); }
 
-/* MODAL */
-.modal-overlay {
-  display: none;
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.88);
-  z-index: 10000;
-  align-items: flex-end;
-  justify-content: center;
-}
-.modal-overlay.open { display: flex; }
-.modal-sheet {
-  width: 100%;
-  max-width: 440px;
-  background: #000;
-  border-top: 2px solid var(--acid);
-  padding: 20px 16px 36px;
-  box-shadow: 0 -4px 40px rgba(204,255,0,0.2);
-  animation: slideup 0.25s ease-out;
-}
-@keyframes slideup { from { transform: translateY(100%); } to { transform: translateY(0); } }
-.modal-close {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 10px;
-  color: rgba(204,255,0,0.45);
-  letter-spacing: 2px;
-  margin-bottom: 14px;
-  cursor: pointer;
-  display: inline-block;
-}
-.modal-close:hover { color: var(--pink); }
-.modal-artist {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 40px;
-  letter-spacing: 3px;
-  color: var(--acid);
-  line-height: 1;
-  margin-bottom: 2px;
-  animation: glitch 6s infinite;
-}
-@keyframes glitch {
-  0%,94%,96%,100% { text-shadow: none; }
-  95% { text-shadow: -2px 0 var(--pink), 2px 0 var(--green); }
-}
-.modal-type {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
-  margin-bottom: 14px;
-  text-transform: uppercase;
-}
-.modal-type.Afterparty { color: #FF0080; }
-.modal-type.Sunrise    { color: #FF8C00; }
-.modal-type.DayParty, .modal-type.Day-Party, .modal-type.Day\\ Party { color: #CCFF00; }
-.modal-type.Festival   { color: #00FF41; }
-
-.modal-detail-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1px;
-  background: rgba(204,255,0,0.15);
-  border: 1px solid rgba(204,255,0,0.15);
-  margin-bottom: 12px;
-}
-.modal-detail-cell { background: #0a0a0a; padding: 10px 12px; }
-.modal-detail-label { font-size: 9px; color: rgba(204,255,0,0.45); letter-spacing: 1px; margin-bottom: 3px; }
-.modal-detail-val { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 14px; color: #fff; }
-
-.modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.modal-action-btn {
-  padding: 12px;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 14px;
-  letter-spacing: 2px;
-  border: 1px solid;
-  cursor: pointer;
-  text-align: center;
-  background: transparent;
-}
-.btn-primary { background: var(--acid); border-color: var(--acid); color: var(--void); box-shadow: 0 0 15px rgba(204,255,0,0.35); }
-.btn-secondary { border-color: rgba(255,0,128,0.5); color: var(--pink); }
-.btn-ra { grid-column: 1 / -1; border-color: rgba(204,255,0,0.25); color: rgba(204,255,0,0.55); font-size: 11px; }
-.btn-ra:hover { border-color: var(--acid); color: var(--acid); }
-
 .empty-state {
   padding: 48px 16px;
   text-align: center;
@@ -504,25 +422,6 @@ body::after {
   <div class="list-scroller" id="listScroller"></div>
 </div>
 
-<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-  <div class="modal-sheet" id="modalSheet">
-    <div class="modal-close" onclick="closeModalDirect()">✕ CLOSE</div>
-    <div class="modal-artist" id="modalArtist">—</div>
-    <div class="modal-type" id="modalType">—</div>
-    <div class="modal-detail-grid">
-      <div class="modal-detail-cell"><div class="modal-detail-label">VENUE</div><div class="modal-detail-val" id="modalVenue">—</div></div>
-      <div class="modal-detail-cell"><div class="modal-detail-label">DATE</div><div class="modal-detail-val" id="modalDate">—</div></div>
-      <div class="modal-detail-cell"><div class="modal-detail-label">TIME</div><div class="modal-detail-val" id="modalTime">—</div></div>
-      <div class="modal-detail-cell"><div class="modal-detail-label">PRICE</div><div class="modal-detail-val" id="modalPrice">—</div></div>
-    </div>
-    <div class="modal-actions">
-      <button class="modal-action-btn btn-primary" id="modalGoingBtn" onclick="toggleRsvp('going')">+ MY PLAN</button>
-      <button class="modal-action-btn btn-secondary" id="modalWantBtn" onclick="toggleRsvp('want')">WANT TO GO</button>
-      <button class="modal-action-btn btn-ra" id="modalRaBtn">↗ VIEW ON RESIDENT ADVISOR</button>
-    </div>
-  </div>
-</div>
-
 <script>
 // ===== DATA (injected) =====
 const ALL_EVENTS = ${eventsJson};
@@ -535,6 +434,9 @@ ALL_VENUES.forEach(v => { VENUE_MAP[v.id] = v; });
 const HOUR_PX = ${HOUR_PX};
 const GANTT_START = ${GANTT_START_HOUR}; // noon
 const GANTT_HOURS = ${GANTT_TOTAL_HOURS};
+const LABEL_WIDTH_PX = 90;
+const MIN_HOUR_PX = 36;
+const MAX_HOUR_PX = 144;
 
 const DAYS = [
   { key: '2026-05-21', label: 'THU 21' },
@@ -555,13 +457,18 @@ const CAT_COLORS = { Afterparty: '#FF0080', Sunrise: '#FF8C00', DayParty: '#CCFF
 
 let currentDay = '2026-05-22';
 let currentView = 'gantt';
-let activeModal = null;
 let rsvps = {};
 try { rsvps = JSON.parse(localStorage.getItem('rsvps_v1') || '{}'); } catch(e) {}
 
 const WEEKEND_HOUR_PX = 10;
+const MIN_WEEKEND_HOUR_PX = 4;
+const MAX_WEEKEND_HOUR_PX = 28;
 const WEEKEND_ORIGIN_MS = new Date('2026-05-21T12:00:00').getTime();
 const WEEKEND_TOTAL_HOURS = Math.ceil((new Date('2026-05-26T14:00:00').getTime() - WEEKEND_ORIGIN_MS) / 3600000);
+let currentHourPx = HOUR_PX;
+let currentWeekendHourPx = WEEKEND_HOUR_PX;
+let pinchState = null;
+let pinchRaf = null;
 
 // ===== HELPERS =====
 function parseHour(iso) {
@@ -589,7 +496,13 @@ function fmtTime(iso) {
 function hourToX(h) {
   // Adjust: hours < GANTT_START mean "next day" (e.g. 2AM = 26h from noon-12h=14h)
   const adj = h < GANTT_START ? h + 24 : h;
-  return (adj - GANTT_START) * HOUR_PX;
+  return (adj - GANTT_START) * currentHourPx;
+}
+
+function getDayWindowMs(dateKey) {
+  const startMs = new Date(dateKey + 'T12:00:00').getTime();
+  const endMs = startMs + GANTT_HOURS * 3600000;
+  return { startMs, endMs };
 }
 
 function eventsForDay(dateKey) {
@@ -607,6 +520,98 @@ function eventsForDay(dateKey) {
     }
     return false;
   });
+}
+
+function selectEvent(eventId) {
+  window.ReactNativeWebView.postMessage(eventId);
+}
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function syncZoomCssVars() {
+  document.documentElement.style.setProperty('--hour-px', currentHourPx + 'px');
+}
+
+function getPinchDistance(touches) {
+  if (!touches || touches.length < 2) return 0;
+  const dx = touches[0].clientX - touches[1].clientX;
+  const dy = touches[0].clientY - touches[1].clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+function getPinchCenterX(touches, rect) {
+  return ((touches[0].clientX + touches[1].clientX) / 2) - rect.left;
+}
+
+function zoomTimelineAroundPoint(nextPx, centerX) {
+  if (currentView === 'list') return;
+  const wrapper = document.querySelector('.gantt-wrapper');
+  if (!wrapper) return;
+
+  const currentPx = currentView === 'weekend' ? currentWeekendHourPx : currentHourPx;
+  const clampedNextPx = currentView === 'weekend'
+    ? clamp(nextPx, MIN_WEEKEND_HOUR_PX, MAX_WEEKEND_HOUR_PX)
+    : clamp(nextPx, MIN_HOUR_PX, MAX_HOUR_PX);
+
+  if (Math.abs(clampedNextPx - currentPx) < 0.5) return;
+
+  const focalHours = Math.max(0, (wrapper.scrollLeft + centerX - LABEL_WIDTH_PX) / currentPx);
+
+  if (currentView === 'weekend') currentWeekendHourPx = clampedNextPx;
+  else currentHourPx = clampedNextPx;
+
+  syncZoomCssVars();
+  render();
+
+  wrapper.scrollLeft = Math.max(0, focalHours * clampedNextPx - centerX + LABEL_WIDTH_PX);
+}
+
+function queuePinchZoom(nextPx, centerX) {
+  if (pinchRaf) cancelAnimationFrame(pinchRaf);
+  pinchRaf = requestAnimationFrame(() => {
+    zoomTimelineAroundPoint(nextPx, centerX);
+    pinchRaf = null;
+  });
+}
+
+function attachPinchHandlers() {
+  const wrapper = document.querySelector('.gantt-wrapper');
+  if (!wrapper || wrapper.dataset.pinchBound === 'true') return;
+  wrapper.dataset.pinchBound = 'true';
+
+  wrapper.addEventListener('touchstart', (event) => {
+    if (currentView === 'list' || event.touches.length < 2) return;
+    const rect = wrapper.getBoundingClientRect();
+    pinchState = {
+      distance: getPinchDistance(event.touches),
+      basePx: currentView === 'weekend' ? currentWeekendHourPx : currentHourPx,
+      centerX: getPinchCenterX(event.touches, rect),
+    };
+  }, { passive: false });
+
+  wrapper.addEventListener('touchmove', (event) => {
+    if (!pinchState || currentView === 'list' || event.touches.length < 2) return;
+    event.preventDefault();
+    const rect = wrapper.getBoundingClientRect();
+    const nextDistance = getPinchDistance(event.touches);
+    if (!nextDistance || !pinchState.distance) return;
+    const scale = nextDistance / pinchState.distance;
+    const centerX = getPinchCenterX(event.touches, rect);
+    queuePinchZoom(pinchState.basePx * scale, centerX || pinchState.centerX);
+  }, { passive: false });
+
+  const clearPinch = () => {
+    pinchState = null;
+    if (pinchRaf) {
+      cancelAnimationFrame(pinchRaf);
+      pinchRaf = null;
+    }
+  };
+
+  wrapper.addEventListener('touchend', clearPinch, { passive: true });
+  wrapper.addEventListener('touchcancel', clearPinch, { passive: true });
 }
 
 // ===== DAY TABS =====
@@ -645,6 +650,7 @@ function setView(v) {
 function buildGantt(events) {
   const inner = document.getElementById('ganttInner');
   inner.innerHTML = '';
+  const dayWindow = getDayWindowMs(currentDay);
 
   // Group by venue
   const venueIds = [...new Set(events.map(e => e.venueId))];
@@ -694,11 +700,17 @@ function buildGantt(events) {
 
     // Event bars
     venueEvents.forEach(ev => {
-      const startH = parseHour(ev.startTime);
-      let endH = parseHour(ev.endTime);
-      if (endH < startH && endH < GANTT_START) endH += 24;
-      const x = hourToX(startH);
-      const w = Math.max((endH < startH ? endH + 24 : endH) - (startH < GANTT_START ? startH + 24 : startH), 0.5) * HOUR_PX;
+      const startMs = new Date(ev.startTime).getTime();
+      let endMs = new Date(ev.endTime).getTime();
+      if (endMs <= startMs) endMs += 24 * 3600000;
+
+      const clippedStartMs = Math.max(startMs, dayWindow.startMs);
+      const clippedEndMs = Math.min(endMs, dayWindow.endMs);
+
+      if (clippedEndMs <= clippedStartMs) return;
+
+      const x = ((clippedStartMs - dayWindow.startMs) / 3600000) * currentHourPx;
+      const w = Math.max(((clippedEndMs - clippedStartMs) / 3600000) * currentHourPx, 24);
 
       const bar = document.createElement('div');
       bar.className = 'gantt-event ' + (CAT_CLASS[ev.category] || 'default');
@@ -719,7 +731,7 @@ function buildGantt(events) {
         bar.style.outlineOffset = '-1px';
       }
 
-      bar.onclick = () => openModal(ev);
+      bar.onclick = () => selectEvent(ev.id);
       track.appendChild(bar);
     });
 
@@ -760,67 +772,9 @@ function buildList(events) {
       '<div class="list-venue">' + (venue ? venue.name.toUpperCase() : '') + '</div></div>' +
       '<div class="list-meta"><span class="list-price">' + ev.price + '</span><span class="list-badge ' + catClass + '">' + ev.category.toUpperCase() + '</span></div>';
 
-    item.onclick = () => openModal(ev);
+    item.onclick = () => selectEvent(ev.id);
     scroller.appendChild(item);
   });
-}
-
-// ===== MODAL =====
-function openModal(ev) {
-  activeModal = ev;
-  const venue = VENUE_MAP[ev.venueId];
-  const catClass = CAT_CLASS[ev.category] || 'Festival';
-
-  document.getElementById('modalArtist').textContent = ev.title.toUpperCase();
-  const typeEl = document.getElementById('modalType');
-  typeEl.textContent = ev.category.toUpperCase();
-  typeEl.className = 'modal-type ' + catClass;
-
-  document.getElementById('modalVenue').textContent = venue ? venue.name.toUpperCase() : '—';
-  document.getElementById('modalDate').textContent = getDayLabel(getDate(ev.startTime));
-  document.getElementById('modalTime').textContent = fmtTime(ev.startTime) + ' – ' + fmtTime(ev.endTime);
-  document.getElementById('modalPrice').textContent = ev.price;
-
-  const raBtn = document.getElementById('modalRaBtn');
-  if (ev.raUrl) {
-    raBtn.style.display = '';
-    raBtn.onclick = () => window.open(ev.raUrl, '_blank');
-  } else {
-    raBtn.style.display = 'none';
-  }
-
-  syncModalRsvpBtns();
-  document.getElementById('modalOverlay').classList.add('open');
-
-  // Also notify React Native
-  window.ReactNativeWebView.postMessage(ev.id);
-}
-
-function toggleRsvp(state) {
-  if (!activeModal) return;
-  const id = activeModal.id;
-  if (rsvps[id] === state) delete rsvps[id];
-  else rsvps[id] = state;
-  try { localStorage.setItem('rsvps_v1', JSON.stringify(rsvps)); } catch(e) {}
-  syncModalRsvpBtns();
-  render();
-}
-
-function syncModalRsvpBtns() {
-  if (!activeModal) return;
-  const state = rsvps[activeModal.id];
-  const gb = document.getElementById('modalGoingBtn');
-  const wb = document.getElementById('modalWantBtn');
-  if (gb) gb.textContent = state === 'going' ? '★ GOING' : '+ MY PLAN';
-  if (wb) wb.textContent = state === 'want' ? '♥ WANT' : 'WANT TO GO';
-}
-
-function closeModal(e) {
-  if (e.target === document.getElementById('modalOverlay')) closeModalDirect();
-}
-function closeModalDirect() {
-  document.getElementById('modalOverlay').classList.remove('open');
-  activeModal = null;
 }
 
 // ===== WEEKEND GANTT =====
@@ -828,7 +782,7 @@ function buildWeekendGantt(events) {
   const inner = document.getElementById('ganttInner');
   inner.innerHTML = '';
 
-  const hPx = WEEKEND_HOUR_PX;
+  const hPx = currentWeekendHourPx;
   const totalW = WEEKEND_TOTAL_HOURS * hPx;
 
   function toX(iso) {
@@ -920,7 +874,7 @@ function buildWeekendGantt(events) {
         }
       }
 
-      bar.onclick = () => openModal(ev);
+      bar.onclick = () => selectEvent(ev.id);
       track.appendChild(bar);
     });
 
@@ -931,6 +885,7 @@ function buildWeekendGantt(events) {
 
 // ===== RENDER =====
 function render() {
+  syncZoomCssVars();
   if (currentView === 'weekend') {
     document.getElementById('eventTotal').textContent = ALL_EVENTS.length + ' EVENTS · FULL WKND';
     buildWeekendGantt(ALL_EVENTS);
@@ -950,6 +905,8 @@ const firstDay = DAYS.find(d => eventsForDay(d.key).length > 0);
 if (firstDay) currentDay = firstDay.key;
 
 buildDayTabs();
+attachPinchHandlers();
+syncZoomCssVars();
 render();
 </script>
 </body>

@@ -59,6 +59,9 @@ const EventBottomSheet: React.FC<EventBottomSheetProps> = ({ eventId, onClose, o
     setSelectedArtist(null);
     onEventSelect(relatedEventId);
   };
+  const residentAdvisorArtistUrl = selectedArtist
+    ? dataService.getResidentAdvisorArtistUrl(selectedArtist)
+    : null;
 
   return (
     <>
@@ -162,12 +165,13 @@ const EventBottomSheet: React.FC<EventBottomSheetProps> = ({ eventId, onClose, o
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.artistLinkBtn, { borderColor: 'rgba(255,85,0,0.5)' }]}
-                onPress={() => Linking.openURL(`https://ra.co/search?q=${encodeURIComponent(selectedArtist ?? '')}`)}
+                onPress={() => residentAdvisorArtistUrl && Linking.openURL(residentAdvisorArtistUrl)}
               >
-                <Text style={[styles.artistLinkText, { color: '#FF5500' }]}>↗ RA</Text>
+                <Text style={[styles.artistLinkText, { color: '#FF5500' }]}>↗ RA DJ PAGE</Text>
               </TouchableOpacity>
             </View>
             <Text style={styles.modalSubtitle}>Other parties in the database</Text>
+            <Text style={styles.modalNote}>RA page uses a best-effort slug from the artist name.</Text>
             <ScrollView contentContainerStyle={styles.relatedEventsList}>
               {relatedArtistEvents.length ? relatedArtistEvents.map((relatedEvent) => (
                 <TouchableOpacity
@@ -369,6 +373,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textTransform: 'uppercase',
     letterSpacing: 1,
+    marginBottom: 6,
+  },
+  modalNote: {
+    color: 'rgba(204,255,0,0.45)',
+    fontSize: 11,
+    lineHeight: 16,
     marginBottom: 12,
   },
   relatedEventsList: {

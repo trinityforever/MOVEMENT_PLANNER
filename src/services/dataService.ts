@@ -57,6 +57,19 @@ export const getEventsByArtist = (
     .sort((a, b) => a.startTime.localeCompare(b.startTime));
 };
 
+export const getResidentAdvisorArtistUrl = (artistName: string): string => {
+  const slug = artistName
+    .trim()
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/&/g, 'and')
+    .replace(/\([^)]*\)/g, '')
+    .replace(/[^a-z0-9]+/g, '');
+
+  return `https://ra.co/dj/${slug}`;
+};
+
 export const getCustomLocations = (): CustomLocation[] => {
   return customLocations;
 };
@@ -87,6 +100,7 @@ export default {
   getEventsByDay,
   getEventsByVenue,
   getEventsByArtist,
+  getResidentAdvisorArtistUrl,
   getCustomLocations,
   addCustomLocation,
   removeCustomLocation,
