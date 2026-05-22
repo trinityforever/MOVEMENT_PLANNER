@@ -55,6 +55,23 @@ const EventBottomSheet: React.FC<EventBottomSheetProps> = ({ eventId, onClose, o
   if (!event) return null;
 
   const isFree = event.price === 0 || event.priceNote === 'FREE';
+  const startDate = event.startTime.split('T')[0];
+  const startHour = parseHour(event.startTime, startDate);
+  const endHour = parseHour(event.endTime, startDate);
+  const durationHours = Math.max(endHour - startHour, 1);
+  const pxPerHour = 80;
+  const totalTimelineWidth = Math.round(durationHours * pxPerHour);
+  const artists = event.artists ?? [];
+  const slotHours = artists.length > 0 ? durationHours / artists.length : durationHours;
+  const slotPx = Math.round(slotHours * pxPerHour);
+  const hourTicks: { label: string; x: number }[] = [];
+  for (let i = 0; i <= Math.ceil(durationHours); i++) {
+    const absHour = startHour + i;
+    const displayHour = absHour % 24;
+    const ampm = displayHour < 12 ? 'AM' : 'PM';
+    const h12 = displayHour === 0 ? 12 : displayHour > 12 ? displayHour - 12 : displayHour;
+    hourTicks.push({ label: `${h12}${ampm}`, x: i * pxPerHour });
+  }
   const handleRelatedEventPress = (relatedEventId: string) => {
     setSelectedArtist(null);
     onEventSelect(relatedEventId);
@@ -92,8 +109,7 @@ const EventBottomSheet: React.FC<EventBottomSheetProps> = ({ eventId, onClose, o
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Artists</Text>
               <View style={styles.artistList}>
-                {event.artists?.length ? (() => {
-                  const artists = event.artists;
+                {artists.length ? (() => {
                   return artists.map((artist, i) => (
                     <TouchableOpacity
                       key={artist}
@@ -105,6 +121,68 @@ const EventBottomSheet: React.FC<EventBottomSheetProps> = ({ eventId, onClose, o
                 })() : <Text style={styles.bodyText}>Lineup TBA</Text>}
               </View>
             </View>
+
+            {!!artists.length && (
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Lineup Timeline</Text>
+                <View style={styles.timelineWrapper}>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator
+                    contentContainerStyle={{ width: totalTimelineWidth + 40, paddingRight: 40 }}
+                    style={styles.timelineScroll}
+                  >
+                    {hourTicks.map((tick) => (
+                      <View key={tick.x} style={[styles.hourLine, { left: tick.x }]} />
+                    ))}
+                    {hourTicks.map((tick) => (
+                      <Text key={`tick-${tick.x}`} style={[styles.hourLabel, { left: tick.x }]}>
+                        {tick.label}
+                      </Text>
+                    ))}
+
+                    <View style={styles.nowLine} />
+                    <Text style={styles.nowLabel}>NOW</Text>
+
+                    {artists.map((artist, i) => {
+                      const left = i * slotPx + 2;
+                      const width = slotPx - 3;
+                      const slotStartHour = startHour + i * slotHours;
+                      const slotEndHour = slotStartHour + slotHours;
+                      const fmt = (h: number) => {
+                        const d = h % 24;
+                        const ampm = d < 12 ? 'AM' : 'PM';
+                        const h12 = d === 0 ? 12 : d > 12 ? d - 12 : d;
+                        return `${Math.floor(h12)}${ampm}`;
+                      };
+
+                      return (
+                        <TouchableOpacity
+                          key={artist}
+                          activeOpacity={0.85}
+                          onPress={() => setSelectedArtist(artist)}
+                          style={[
+                            styles.artistBlock,
+                            {
+                              left,
+                              width: Math.max(width, 60),
+                              borderLeftColor: getCategoryColor(event.category),
+                            },
+                          ]}
+                        >
+                          <Text style={styles.artistBlockName} numberOfLines={1}>
+                            {artist.toUpperCase()}
+                          </Text>
+                          <Text style={styles.artistBlockTime}>
+                            {fmt(slotStartHour)}→{fmt(slotEndHour)}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </ScrollView>
+                </View>
+              </View>
+            )}
 
             {event.description && (
               <View style={styles.section}>
@@ -204,6 +282,14 @@ const getCategoryColor = (category?: string) => {
   }
 };
 
+const parseHour = (iso: string, baseDate: string): number => {
+  const [datePart, timePart] = iso.split('T');
+  const [h, m] = timePart.split(':').map(Number);
+  const hour = h + m / 60;
+  if (datePart > baseDate) return hour + 24;
+  return hour;
+};
+
 const styles = StyleSheet.create({
   background: {
     backgroundColor: COLORS.surface,
@@ -276,6 +362,70 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 22,
     textDecorationLine: 'underline',
+  },
+  timelineWrapper: {
+    borderWidth: 1,
+    borderColor: '#222',
+    backgroundColor: '#050505',
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  timelineScroll: {
+    height: 92,
+  },
+  hourLine: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    width: 1,
+    backgroundColor: '#1a1a1a',
+  },
+  hourLabel: {
+    position: 'absolute',
+    top: 4,
+    fontSize: 8,
+    color: COLORS.textSecondary,
+    letterSpacing: 1,
+  },
+  nowLine: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    width: 2,
+    backgroundColor: COLORS.festival,
+  },
+  nowLabel: {
+    position: 'absolute',
+    top: 4,
+    left: 4,
+    fontSize: 8,
+    color: COLORS.festival,
+    letterSpacing: 1,
+    fontWeight: '700',
+  },
+  artistBlock: {
+    position: 'absolute',
+    top: 20,
+    height: 48,
+    backgroundColor: '#111',
+    borderWidth: 1,
+    borderColor: '#222',
+    borderLeftWidth: 3,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    justifyContent: 'space-between',
+    overflow: 'hidden',
+  },
+  artistBlockName: {
+    color: COLORS.textPrimary,
+    fontSize: 13,
+    fontWeight: '800',
+  },
+  artistBlockTime: {
+    color: COLORS.textSecondary,
+    fontSize: 8,
+    letterSpacing: 1,
   },
   infoRow: {
     flexDirection: 'row',

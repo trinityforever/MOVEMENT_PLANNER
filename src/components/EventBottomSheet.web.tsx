@@ -41,6 +41,14 @@ function formatDate(isoString: string) {
   }).toUpperCase();
 }
 
+function parseHour(iso: string, baseDate: string): number {
+  const [datePart, timePart] = iso.split('T');
+  const [h, m] = timePart.split(':').map(Number);
+  const hour = h + m / 60;
+  if (datePart > baseDate) return hour + 24;
+  return hour;
+}
+
 const EventBottomSheet: React.FC<EventBottomSheetProps> = ({ eventId, onClose, onEventSelect }) => {
   const [selectedArtist, setSelectedArtist] = useState<string | null>(null);
   const venues = useMemo(() => dataService.getVenues(), []);
@@ -99,6 +107,22 @@ const EventBottomSheet: React.FC<EventBottomSheetProps> = ({ eventId, onClose, o
   const artists = event.artists ?? [];
   const isFree = event.price === 0 || event.priceNote === 'FREE';
   const priceDisplay = isFree ? 'FREE' : event.price != null ? `$${event.price}` : '—';
+  const startDate = event.startTime.split('T')[0];
+  const startHour = parseHour(event.startTime, startDate);
+  const endHour = parseHour(event.endTime, startDate);
+  const durationHours = Math.max(endHour - startHour, 1);
+  const pxPerHour = 80;
+  const totalTimelineWidth = Math.round(durationHours * pxPerHour);
+  const slotHours = artists.length > 0 ? durationHours / artists.length : durationHours;
+  const slotPx = Math.round(slotHours * pxPerHour);
+  const hourTicks: { label: string; x: number }[] = [];
+  for (let i = 0; i <= Math.ceil(durationHours); i++) {
+    const absHour = startHour + i;
+    const displayHour = absHour % 24;
+    const ampm = displayHour < 12 ? 'AM' : 'PM';
+    const h12 = displayHour === 0 ? 12 : displayHour > 12 ? displayHour - 12 : displayHour;
+    hourTicks.push({ label: `${h12}${ampm}`, x: i * pxPerHour });
+  }
 
   const handleRelatedEventPress = (relatedEventId: string) => {
     setSelectedArtist(null);
@@ -177,6 +201,68 @@ const EventBottomSheet: React.FC<EventBottomSheetProps> = ({ eventId, onClose, o
                         <Text style={[styles.artistChipText, { color }]}>{artist.toUpperCase()}</Text>
                       </TouchableOpacity>
                     ))}
+                  </View>
+                </View>
+              )}
+
+              {!!artists.length && (
+                <View style={styles.section}>
+                  <Text style={styles.sectionLabel}>LINEUP TIMELINE</Text>
+                  <View style={styles.timelineWrapper}>
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator
+                      contentContainerStyle={{ width: totalTimelineWidth + 40, paddingRight: 40 }}
+                      style={styles.timelineScroll}
+                    >
+                      {hourTicks.map((tick) => (
+                        <View key={tick.x} style={[styles.hourLine, { left: tick.x }]} />
+                      ))}
+                      {hourTicks.map((tick) => (
+                        <Text key={`tick-${tick.x}`} style={[styles.hourLabel, { left: tick.x }]}>
+                          {tick.label}
+                        </Text>
+                      ))}
+
+                      <View style={styles.nowLine} />
+                      <Text style={styles.nowLabel}>NOW</Text>
+
+                      {artists.map((artist, i) => {
+                        const left = i * slotPx + 2;
+                        const width = slotPx - 3;
+                        const slotStartHour = startHour + i * slotHours;
+                        const slotEndHour = slotStartHour + slotHours;
+                        const fmt = (h: number) => {
+                          const d = h % 24;
+                          const ampm = d < 12 ? 'AM' : 'PM';
+                          const h12 = d === 0 ? 12 : d > 12 ? d - 12 : d;
+                          return `${Math.floor(h12)}${ampm}`;
+                        };
+
+                        return (
+                          <TouchableOpacity
+                            key={artist}
+                            activeOpacity={0.85}
+                            onPress={() => setSelectedArtist(artist)}
+                            style={[
+                              styles.artistBlock,
+                              {
+                                left,
+                                width: Math.max(width, 60),
+                                borderLeftColor: color,
+                              },
+                            ]}
+                          >
+                            <Text style={styles.artistBlockName} numberOfLines={1}>
+                              {artist.toUpperCase()}
+                            </Text>
+                            <Text style={styles.artistBlockTime}>
+                              {fmt(slotStartHour)}→{fmt(slotEndHour)}
+                            </Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </ScrollView>
                   </View>
                 </View>
               )}
@@ -437,6 +523,73 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'rgba(204,255,0,0.68)',
     lineHeight: 28,
+  },
+  timelineWrapper: {
+    borderWidth: 1,
+    borderColor: '#111',
+    backgroundColor: '#050505',
+    overflow: 'hidden',
+  },
+  timelineScroll: {
+    height: 92,
+  },
+  hourLine: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    width: 1,
+    backgroundColor: '#111',
+  },
+  hourLabel: {
+    position: 'absolute',
+    top: 4,
+    fontFamily: monoFont,
+    fontSize: 8,
+    color: '#2a2a2a',
+    letterSpacing: 1,
+  },
+  nowLine: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    width: 2,
+    backgroundColor: COLORS.acid,
+  },
+  nowLabel: {
+    position: 'absolute',
+    top: 4,
+    left: 4,
+    fontFamily: monoFont,
+    fontSize: 8,
+    color: COLORS.acid,
+    letterSpacing: 2,
+  },
+  artistBlock: {
+    position: 'absolute',
+    top: 20,
+    height: 48,
+    backgroundColor: '#0c0c0c',
+    borderWidth: 1,
+    borderColor: '#1e1e1e',
+    borderLeftWidth: 3,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    justifyContent: 'space-between',
+    overflow: 'hidden',
+  },
+  artistBlockName: {
+    fontFamily: condensedFont,
+    fontSize: 14,
+    fontWeight: '900',
+    color: '#fff',
+    letterSpacing: 0.5,
+  },
+  artistBlockTime: {
+    fontFamily: monoFont,
+    fontSize: 8,
+    color: COLORS.acid,
+    letterSpacing: 1,
   },
   actions: {
     flexDirection: 'row',
