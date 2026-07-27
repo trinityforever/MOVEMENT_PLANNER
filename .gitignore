@@ -37,3 +37,51 @@ free-claude-code/
 CLAUDE.local.md
 *.local.md
 app.json
+
+# --- workspace baseline (managed by scripts/apply-gitignore-baseline.sh) ---
+# Keep project-specific rules OUTSIDE this block; it is rewritten in place.
+
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+token.json
+
+# Local agent settings
+.claude/settings.local.json
+CLAUDE.local.md
+*.local.md
+
+# OS and editor metadata
+.DS_Store
+**/.DS_Store
+*.swp
+*.swo
+
+# Dependencies
+node_modules/
+.venv/
+venv/
+
+# Caches
+.expo/
+.pytest_cache/
+__pycache__/
+*.egg-info/
+*.tsbuildinfo
+.vite/
+coverage/
+
+# Build output
+.next/
+dist/
+build/
+web-build/
+target/
+
+# Logs
+*.log
+# --- end workspace baseline ---
