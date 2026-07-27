@@ -27,15 +27,7 @@ web-build/
 # Embedded repos / external tools
 free-claude-code/
 
-# Claude Code project config
-.claude/
-!.claude/rules/
-!.claude/rules/**
-!.claude/agents/
-!.claude/agents/**
-!.claude/settings.json
-CLAUDE.local.md
-*.local.md
+# Local Google Maps key — never commit
 app.json
 
 # --- workspace baseline (managed by scripts/apply-gitignore-baseline.sh) ---

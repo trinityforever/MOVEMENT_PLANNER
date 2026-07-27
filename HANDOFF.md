@@ -1,5 +1,21 @@
-# SESSIONS.md — Movement Planning (FLINTASTIC)
+# HANDOFF.md — Movement Planning (FLINTASTIC)
 <!-- Append newest session summary at the top. Do not create new HANDOFF files — update this instead. -->
+
+## 2026-07-27 — Paused-state docs + broken `.gitignore` fix
+
+**Done:**
+- Added `CLAUDE.md` — the project never had one. Leads with paused state + 2027 resume trigger, then the public-remote credential exposure, then the real layout (expo-router, `stubs/` webpack shims, patch-package postinstall, `proposals/` unwired).
+- Demoted `AGENTS.md` in the docs: it is a 117-line pre-build spec whose recommended `features/` tree does not match the shipped app. CLAUDE.md now says so explicitly so no future session follows it.
+- Fixed `.gitignore`. The `.claude/` + `!`-re-include block never worked — git cannot re-include a file inside an excluded directory, so `rules/`, `agents/`, and `settings.json` were silently untrackable. Removed it; the workspace baseline block below already ignores `settings.local.json`. `app.json` ignore preserved.
+- HANDOFF.md header read `# SESSIONS.md` — corrected to match the workspace convention its own commit `55fcfde` was standardizing.
+
+**Still to do:**
+- Google Maps key in commit `9340075` on public `origin/main` is still unrotated.
+- `.claude/` contents are newly committable and have never been reviewed — read before staging.
+
+**Build:** Not run. Docs-only session, no source touched.
+
+---
 
 ## 2026-05-21 — Artist popup + map drawer + Gantt mobile fixes
 
@@ -36,9 +52,6 @@
 - Moved stale `free-claude-code/` copy out (real project already at `Projects/free-claude-code/`)
 - VenueBottomSheet.web.tsx: responsive bottom sheet on mobile, side drawer on desktop (Codex change, merged in)
 
-**Still to do:**
-- RSVP state not reflected in native EventBottomSheet (native version has artist popup but no going/want buttons wired to localStorage yet)
-- No conflict detection for overlapping events in itinerary
-- `removeCustomLocation` exists in dataService but no UI to remove pins from map
+**Still to do:** same three carried into the 2026-05-21 entry above.
 
 **Build:** Clean. Pushed to `origin/main` at `88f775d`.
